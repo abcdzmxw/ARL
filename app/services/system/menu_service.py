@@ -93,18 +93,17 @@ def menu_page_list(args):
     # 获取查询结果
     results = cursor.fetchall()
 
-    cursor.close()
-    conn.close()
-
     menu_list = []
+
+    return results
     # 处理查询结果
-    for row in results:
-        # 处理每一行数据
-        menuDto = MenuDto(row[0], row[1], row[2], row[3], row[4], row[5], row[6])
-        menu_list.append(menuDto)
-
-    # 关闭游标和数据库连接
-    cursor.close()
-    conn.close()
-
-    return menu_list
+    # for row in results:
+    #     # 处理每一行数据
+    #     menuDto = MenuDto(row[0], row[1], row[2], row[3], row[4], row[5], row[6])
+    #     menu_list.append(menuDto)
+    #
+    # # 关闭游标和数据库连接
+    # cursor.close()
+    # conn.close()
+    #
+    # return menu_list
