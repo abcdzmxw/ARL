@@ -19,7 +19,7 @@ logger = utils.get_logger()
 
 
 class MenuDto:
-    def __init__(self, id, menu_name, menu_code, click_uri, parent, sort, route):
+    def __init__(self, id=None, menu_name=None, menu_code=None, click_uri=None, parent=None, sort=None, route=None):
         self.id = id
         self.menu_name = menu_name
         self.menu_code = menu_code
