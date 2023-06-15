@@ -149,7 +149,7 @@ class MenuPageList(ARLResource):
 
     @auth
     @ns.expect(pageList_fields)
-    def post(self):
+    def get(self):
         """
         查询菜单列表
         """
