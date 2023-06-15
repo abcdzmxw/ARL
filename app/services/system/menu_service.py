@@ -10,6 +10,7 @@ pool = PooledDB(
     user='root',
     password='Hjrtnbec*38',
     database='galaxy_arl',
+    maxconnections=10,  # 连接池大小
     autocommit=True,  # 自动提交事务
     charset='utf8'  # 设置字符集
 )
