@@ -19,8 +19,7 @@ def save_menu(menu_name, menu_code, sort, parent_id, click_uri, route):
         host='192.168.1.101',
         user='root',
         password='Aa*bc#1s2g3',
-        database='Hjrtnbec*38',
-        auth_plugin = 'mysql_native_password'
+        database='Hjrtnbec*38'
     )
 
     # 创建游标对象
