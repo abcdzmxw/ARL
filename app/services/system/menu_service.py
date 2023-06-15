@@ -62,9 +62,9 @@ def save_menu(menu_name, menu_code, sort, parent_id, click_uri, route):
 def menu_page_list(args):
     page = args.pop("page", 1)
     size = args.pop("size", 10)
-    menu_name = args.pop()
-    menu_code = args.pop()
-    route = args.pop()
+    menu_name = args.pop("menu_name")
+    menu_code = args.pop("menu_code")
+    route = args.pop("route")
 
     # 执行分页查询
     query = "SELECT id,menu_name,menu_code, click_uri, parent, sort, route FROM t_menu WHERE 1=1 "
