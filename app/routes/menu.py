@@ -142,13 +142,13 @@ class MenuPageList(ARLResource):
         """
         args = self.parser.parse_args()
 
-        page_size = args.pop('page.size')
-        page_current = args.pop('page.current')
+        size = args.pop('size')
+        page = args.pop('page')
         menu_name = args.pop('menuName', None)
         menu_code = args.pop('menuCode', None)
         route = args.pop('route', None)
 
-        data = MenuDto(page_size, page_current, menu_name, menu_code, route, route, route);
+        data = MenuDto(page, size, menu_name, menu_code, route, route, route);
 
         """这里直接返回成功了"""
         return utils.build_ret(ErrorMsg.Success, data)
