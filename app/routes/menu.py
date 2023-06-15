@@ -53,11 +53,11 @@ add_task_fields = ns.model('AddTask', {
 })
 
 add_menu_fields = ns.model('AddMenu', {
-    'menuName': fields.String(required=True, description="菜单名称"),
-    'menuCode': fields.String(required=True, description="菜单编码"),
+    'menu_name': fields.String(required=True, description="菜单名称"),
+    'menu_code': fields.String(required=True, description="菜单编码"),
     'sort': fields.String(required=True, description="排序"),
-    'parentId': fields.String(required=False, description="父菜单id"),
-    'clickUri': fields.String(required=False, description="uri"),
+    'parent_id': fields.String(required=False, description="父菜单id"),
+    'click_uri': fields.String(required=False, description="uri"),
     'route': fields.String(required=False, description="前端路由编码")
 })
 
@@ -73,11 +73,11 @@ class ARLTask(ARLResource):
         """
         args = self.parse_args(add_menu_fields)
 
-        menu_name = args.pop('menuName')
-        menu_code = args.pop('menuCode')
+        menu_name = args.pop('menu_name')
+        menu_code = args.pop('menu_code')
         sort = args.pop('sort')
-        parent_id = args.pop('parentId', None)
-        click_uri = args.pop('clickUri', None)
+        parent_id = args.pop('parent_id', None)
+        click_uri = args.pop('click_uri', None)
         route = args.pop('route', None)
 
         logger.info(
@@ -106,10 +106,10 @@ class MenuPageList(ARLResource):
         查询菜单列表
         """
         args = self.parser.parse_args()
-
+        data = menu_page_list(args=args);
 
         """这里直接返回成功了"""
-        return utils.build_ret(ErrorMsg.Success, args)
+        return utils.build_ret(ErrorMsg.Success, data)
 
 
 @ns.route('/stop/<string:task_id>')

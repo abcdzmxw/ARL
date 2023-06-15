@@ -59,14 +59,19 @@ def save_menu(menu_name, menu_code, sort, parent_id, click_uri, route):
     return inserted_id
 
 
-def menu_page_list(page_size, page_current, menu_name, menu_code, route):
+def menu_page_list(args):
+    page = args.pop("page", 1)
+    size = args.pop("size", 10)
+    menu_name = args.pop()
+    menu_code = args.pop()
+    route = args.pop()
     # 创建数据库连接
     conn = pool.connection()
 
     cursor = conn.cursor()
 
     # 计算查询的起始位置
-    offset = (page_current - 1) * page_size
+    offset = (page - 1) * size
 
     # 执行分页查询
     query = "SELECT id,menu_name,menu_code, click_uri, parent, sort, route FROM t_menu WHERE 1=1 "
@@ -83,7 +88,7 @@ def menu_page_list(page_size, page_current, menu_name, menu_code, route):
 
     query += " LIMIT %s OFFSET %s "
 
-    values = (page_size, offset)
+    values = (size, offset)
     cursor.execute(query, values)
 
     # 获取查询结果
