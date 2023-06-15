@@ -19,6 +19,7 @@ api = Api(arl_app, prefix="/api", doc="/api/doc", title='ARL backend API', autho
           description='ARL（Asset Reconnaissance Lighthouse）资产侦察灯塔系统', security="ApiKeyAuth", version="2.5.5")
 
 api.add_namespace(routes.task_ns)
+api.add_namespace(routes.menu_ns)
 api.add_namespace(routes.site_ns)
 api.add_namespace(routes.domain_ns)
 api.add_namespace(routes.ip_ns)
