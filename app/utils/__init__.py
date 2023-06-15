@@ -69,6 +69,9 @@ def gen_md5(s):
 
 
 def init_logger():
+    # 创建文件处理器
+    file_handler = logging.FileHandler('/opt/ARL/logfile.log')
+
     handler = colorlog.StreamHandler()
     handler.setFormatter(colorlog.ColoredFormatter(
         fmt = '%(log_color)s[%(asctime)s] [%(levelname)s] '
@@ -78,6 +81,7 @@ def init_logger():
 
     logger.setLevel(logging.INFO)
     logger.addHandler(handler)
+    logger.addHandler(file_handler)
     logger.propagate = False
 
 
