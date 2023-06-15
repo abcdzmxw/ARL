@@ -244,6 +244,7 @@ def get_arl_parser(model, location='args'):
 
 
 from .task import ns as task_ns
+from .menu import ns as menu_ns
 from .domain import ns as domain_ns
 from .site import ns as site_ns
 from .ip import ns as ip_ns
