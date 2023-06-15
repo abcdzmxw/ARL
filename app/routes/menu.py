@@ -136,16 +136,9 @@ class MenuPageList(ARLResource):
         """
         args = self.parser.parse_args()
 
-        size = args.pop('size')
-        page = args.pop('page')
-        menu_name = args.pop('menuName', None)
-        menu_code = args.pop('menuCode', None)
-        route = args.pop('route', None)
-
-        data = MenuDto(page, size, size, size, size, size, size);
 
         """这里直接返回成功了"""
-        return utils.build_ret(ErrorMsg.Success, data)
+        return utils.build_ret(ErrorMsg.Success, args)
 
 
 @ns.route('/stop/<string:task_id>')
