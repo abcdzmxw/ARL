@@ -84,18 +84,6 @@ add_menu_fields = ns.model('AddMenu', {
 
 @ns.route('/')
 class ARLTask(ARLResource):
-    parser = get_arl_parser(search_task_fields, location='args')
-
-    @auth
-    @ns.expect(parser)
-    def get(self):
-        """
-        任务信息查询
-        """
-        args = self.parser.parse_args()
-        data = self.build_data(args=args, collection='task')
-
-        return data
 
     @auth
     @ns.expect(add_menu_fields)
@@ -132,10 +120,8 @@ class ARLTask(ARLResource):
         """这里直接返回成功了"""
         return utils.build_ret(ErrorMsg.Success, inserted_id)
 
-        # return utils.build_ret(ErrorMsg.Success, {"items": task_data_list})
 
-
-pageList_fields = ns.model('pageList', {
+base_search_menu_fields = ns.model('SearchMenu', {
     'page.size': fields.Integer(required=True, description="每页条数"),
     'page.current': fields.String(required=True, description="第几页"),
     'menuName': fields.String(required=False, description="菜单名称"),
@@ -146,22 +132,22 @@ pageList_fields = ns.model('pageList', {
 
 @ns.route('/pageList')
 class MenuPageList(ARLResource):
-    parser = get_arl_parser(pageList_fields, location='args')
 
     @auth
-    @ns.expect(parser)
+    @ns.expect(base_search_menu_fields)
     def get(self):
         """
         查询菜单列表
         """
-        args = self.parse_args()
+        args = self.parse_args(base_search_menu_fields)
         page_size = args.pop('page.size')
         page_current = args.pop('page.current')
         menu_name = args.pop('menuName', None)
         menu_code = args.pop('menuCode', None)
         route = args.pop('route', None)
 
-        data = menu_page_list(page_size, page_current, menu_name, menu_code, route)
+        data = menu_page_list(page_size=page_size, page_current=page_current, menu_name=menu_name, menu_code=menu_code,
+                              route=route)
 
         """这里直接返回成功了"""
         return utils.build_ret(ErrorMsg.Success, data)
