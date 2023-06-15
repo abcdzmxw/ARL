@@ -101,13 +101,7 @@ class ARLTask(ARLResource):
         route = args.pop('route', None)
 
         logger.info(
-            "执行插入菜单----menu_name:{} menu_code:{} sort:{} parent_id:{} click_uri:{} route:{}".format(menu_name,
-                                                                                                          menu_code,
-                                                                                                          sort,
-                                                                                                          parent_id,
-                                                                                                          click_uri,
-                                                                                                          route))
-
+            "执行插入菜单----menu_name:{} menu_code:{} sort:{} parent_id:{} click_uri:{} route:{}".format(menu_name, menu_code, sort, parent_id, click_uri, route))
         try:
             inserted_id = save_menu(menu_name=menu_name, menu_code=menu_code, sort=sort, parent_id=parent_id,
                                     click_uri=click_uri, route=route)
@@ -132,7 +126,7 @@ menu_search_fields = {
 
 @ns.route('/pageList')
 class MenuPageList(ARLResource):
-    parser = get_arl_parser(menu_search_fields, location='args')
+    parser = get_arl_parser(search_task_fields, location='args')
 
     @auth
     @ns.expect(parser)
@@ -148,7 +142,7 @@ class MenuPageList(ARLResource):
         menu_code = args.pop('menuCode', None)
         route = args.pop('route', None)
 
-        data = MenuDto(page, size, menu_name, menu_code, route, route, route);
+        data = MenuDto(page, size, size, size, size, size, size);
 
         """这里直接返回成功了"""
         return utils.build_ret(ErrorMsg.Success, data)
