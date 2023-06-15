@@ -106,8 +106,8 @@ class MenuPageList(ARLResource):
         查询菜单列表
         """
         args = self.parser.parse_args()
-        data = args
-        #data = menu_page_list(args=args)
+
+        data = menu_page_list(args=args)
 
         """这里直接返回成功了"""
         return utils.build_ret(ErrorMsg.Success, data)

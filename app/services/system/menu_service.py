@@ -65,13 +65,6 @@ def menu_page_list(args):
     menu_name = args.pop()
     menu_code = args.pop()
     route = args.pop()
-    # 创建数据库连接
-    conn = pool.connection()
-
-    cursor = conn.cursor()
-
-    # 计算查询的起始位置
-    offset = (page - 1) * size
 
     # 执行分页查询
     query = "SELECT id,menu_name,menu_code, click_uri, parent, sort, route FROM t_menu WHERE 1=1 "
@@ -88,21 +81,35 @@ def menu_page_list(args):
 
     query += " LIMIT %s OFFSET %s "
 
+    # 计算查询的起始位置
+    offset = (page - 1) * size
+
     values = (size, offset)
-    cursor.execute(query, values)
 
-    # 获取查询结果
-    results = cursor.fetchall()
+    # # 创建数据库连接
+    # conn = pool.connection()
+    #
+    # cursor = conn.cursor()
+    #
+    #
+    #
+    #
+    # cursor.execute(query, values)
+    #
+    # # 获取查询结果
+    # results = cursor.fetchall()
+    #
+    # menu_list = []
+    # # 处理查询结果
+    # for row in results:
+    #     # 处理每一行数据
+    #     menuDto = MenuDto(row[0], row[1], row[2], row[3], row[4], row[5], row[6])
+    #     menu_list.append(menuDto)
+    #
+    # # 关闭游标和数据库连接
+    # cursor.close()
+    # conn.close()
+    #
+    # return menu_list
 
-    menu_list = []
-    # 处理查询结果
-    for row in results:
-        # 处理每一行数据
-        menuDto = MenuDto(row[0], row[1], row[2], row[3], row[4], row[5], row[6])
-        menu_list.append(menuDto)
-
-    # 关闭游标和数据库连接
-    cursor.close()
-    conn.close()
-
-    return menu_list
+    return query;
