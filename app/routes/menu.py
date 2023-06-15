@@ -10,7 +10,7 @@ from app.modules import TaskStatus, ErrorMsg, TaskSyncStatus, CeleryAction, Task
 from app.helpers import get_options_by_policy_id, submit_task_task, \
     submit_risk_cruising, get_scope_by_scope_id, check_target_in_scope
 from app.helpers.task import get_task_data, restart_task
-from ..services.system.menu_service import save_menu
+from ..services.system.menu_service import save_menu, menu_page_list
 
 ns = Namespace('menu', description="菜单管理")
 
@@ -81,6 +81,7 @@ add_menu_fields = ns.model('AddMenu', {
     'route': fields.String(required=False, description="前端路由编码")
 })
 
+
 @ns.route('/')
 class ARLTask(ARLResource):
     parser = get_arl_parser(search_task_fields, location='args')
@@ -107,9 +108,9 @@ class ARLTask(ARLResource):
         menu_name = args.pop('menuName')
         menu_code = args.pop('menuCode')
         sort = args.pop('sort')
-        parent_id = args.pop('parentId')
-        click_uri = args.pop('clickUri')
-        route = args.pop('route')
+        parent_id = args.pop('parentId', None)
+        click_uri = args.pop('clickUri', None)
+        route = args.pop('route', None)
 
         logger.info(
             "执行插入菜单----menu_name:{} menu_code:{} sort:{} parent_id:{} click_uri:{} route:{}".format(menu_name,
@@ -120,7 +121,8 @@ class ARLTask(ARLResource):
                                                                                                           route))
 
         try:
-            inserted_id = save_menu(menu_name=menu_name, menu_code=menu_code, sort=sort, parent_id=parent_id, click_uri=click_uri, route=route)
+            inserted_id = save_menu(menu_name=menu_name, menu_code=menu_code, sort=sort, parent_id=parent_id,
+                                    click_uri=click_uri, route=route)
             logger.info(
                 "执行插入菜单完成----inserted_id:{}".format(inserted_id))
         except Exception as e:
@@ -133,30 +135,35 @@ class ARLTask(ARLResource):
         # return utils.build_ret(ErrorMsg.Success, {"items": task_data_list})
 
 
-batch_stop_fields = ns.model('BatchStop', {
-    "task_id": fields.List(fields.String(description="任务 ID"), required=True),
+pageList_fields = ns.model('pageList', {
+    'page.size': fields.Integer(required=True, description="每页条数"),
+    'page.current': fields.String(required=True, description="第几页"),
+    'menuName': fields.String(required=False, description="菜单名称"),
+    'menuCode': fields.String(required=False, description="菜单编码"),
+    'route': fields.String(required=False, description="前端路由编码")
 })
 
 
-@ns.route('/batch_stop/')
-class BatchStopTask(ARLResource):
+@ns.route('/pageList')
+class MenuPageList(ARLResource):
 
     @auth
-    @ns.expect(batch_stop_fields)
+    @ns.expect(pageList_fields)
     def post(self):
         """
-        任务批量停止
+        查询菜单列表
         """
-        args = self.parse_args(batch_stop_fields)
-        task_id_list = args.pop("task_id", [])
+        args = self.parse_args(pageList_fields)
+        page_size = args.pop('page.size')
+        page_current = args.pop('page.current')
+        menu_name = args.pop('menuName', None)
+        menu_code = args.pop('menuCode', None)
+        route = args.pop('route', None)
 
-        for task_id in task_id_list:
-            if not task_id:
-                continue
-            stop_task(task_id)
+        data = menu_page_list(page_size, page_current, menu_name, menu_code, route)
 
         """这里直接返回成功了"""
-        return utils.build_ret(ErrorMsg.Success, {})
+        return utils.build_ret(ErrorMsg.Success, data)
 
 
 @ns.route('/stop/<string:task_id>')
@@ -440,5 +447,3 @@ class TaskRestart(ARLResource):
             return utils.build_ret(ErrorMsg.Error, {"error": str(e)})
 
         return utils.build_ret(ErrorMsg.Success, {"task_id": task_id_list})
-
-

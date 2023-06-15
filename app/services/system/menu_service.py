@@ -18,6 +18,17 @@ pool = PooledDB(
 logger = utils.get_logger()
 
 
+class MenuDto:
+    def __init__(self, id, menu_name, menu_code, click_uri, parent, sort, route):
+        self.id = id
+        self.menu_name = menu_name
+        self.menu_code = menu_code
+        self.click_uri = click_uri
+        self.parent = parent
+        self.sort = sort
+        self.route = route
+
+
 def save_menu(menu_name, menu_code, sort, parent_id, click_uri, route):
     logger.info("执行插入菜单----menu_name:{} menu_code:{} sort:{} parent_id:{} click_uri:{} route:{}".format(menu_name,
                                                                                                               menu_code,
@@ -46,3 +57,47 @@ def save_menu(menu_name, menu_code, sort, parent_id, click_uri, route):
     cursor.close()
     conn.close()
     return inserted_id
+
+
+def menu_page_list(page_size, page_current, menu_name, menu_code, route):
+    # 创建数据库连接
+    conn = pool.connection()
+
+    cursor = conn.cursor()
+
+    # 计算查询的起始位置
+    offset = (page_current - 1) * page_size
+
+    # 执行分页查询
+    query = "SELECT id,menu_name,menu_code, click_uri, parent, sort, route FROM t_menu WHERE 1=1 "
+
+    # 如果条件存在，则添加条件到查询语句
+    if menu_name:
+        query += " AND menu_name LIKE '%{}%'".format(menu_name)
+
+    if menu_code:
+        query += " AND menu_code LIKE '%{}%'".format(menu_code)
+
+    if route:
+        query += " AND route LIKE '%{}%'".format(route)
+
+    query += " LIMIT %s OFFSET %s "
+
+    values = (page_size, offset)
+    cursor.execute(query, values)
+
+    # 获取查询结果
+    results = cursor.fetchall()
+
+    menu_list = []
+    # 处理查询结果
+    for row in results:
+        # 处理每一行数据
+        menuDto = MenuDto(row[0], row[1], row[2], row[3], row[4], row[5], row[6])
+        menu_list.append(menuDto)
+
+    # 关闭游标和数据库连接
+    cursor.close()
+    conn.close()
+
+    return menu_list
