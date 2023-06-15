@@ -96,6 +96,8 @@ def menu_page_list(args):
     # 获取查询结果
     results = cursor.fetchall()
 
+    cursor.close()
+    conn.close()
     return results
     # menu_list = []
     # # 处理查询结果
