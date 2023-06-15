@@ -86,7 +86,7 @@ def menu_page_list(args):
 
     values = (size, offset)
 
-    return query + size + "   " + offset
+    return query + str(size) + "   " + str(offset)
     # 创建数据库连接
     # conn = pool.connection()
     #
