@@ -2,6 +2,17 @@ import bson
 import re
 import pymysql
 from app import utils
+from dbutils.pooled_db import PooledDB
+
+pool = PooledDB(
+    creator=pymysql,  # 使用pymysql作为连接器
+    host='192.168.1.101',
+    user='root',
+    password='Hjrtnbec*38',
+    database='galaxy_arl',
+    autocommit=True,  # 自动提交事务
+    charset='utf8'  # 设置字符集
+)
 
 logger = utils.get_logger()
 
@@ -15,15 +26,10 @@ def save_menu(menu_name, menu_code, sort, parent_id, click_uri, route):
                                                                                                               route))
 
     # 创建数据库连接
-    cnx = pymysql.connect(
-        host='192.168.1.101',
-        user='root',
-        password='Hjrtnbec*38',
-        database='galaxy_arl'
-    )
+    conn = pool.connection()
 
     # 创建游标对象
-    cursor = cnx.cursor()
+    cursor = conn.cursor()
 
     # 执行插入语句
     query = "INSERT INTO t_menu (menu_name, menu_code, click_uri, parent, sort, route) VALUES (%s, %s, %s, %s, %s, %s)"
