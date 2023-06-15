@@ -26,7 +26,7 @@ def save_menu(menu_name, menu_code, sort, parent_id, click_uri, route):
     cursor = cnx.cursor()
 
     # 执行插入语句
-    query = "INSERT INTO person (menu_name, menu_code, click_uri, parent, sort, route) VALUES (%s, %s, %s, %s, %s, %s)"
+    query = "INSERT INTO t_menu (menu_name, menu_code, click_uri, parent, sort, route) VALUES (%s, %s, %s, %s, %s, %s)"
     values = (menu_name, menu_code, click_uri, parent_id, sort, route)
     cursor.execute(query, values)
     # 获取插入的ID
