@@ -96,8 +96,16 @@ def menu_page_list(args):
 
     # 处理查询结果
     for row in results:
+        logger.info(
+            "执行插入菜单----id:{} menu_name:{} menu_code:{} sort:{} parent_id:{} click_uri:{} route:{}".format(row[0],
+                                                                                                          row[1],
+                                                                                                          row[2],
+                                                                                                          row[3],
+                                                                                                          row[4],
+                                                                                                          row[5],
+                                                                                                          row[6]))
         # 处理每一行数据
-        menuDto = MenuDto(row[0], row[0], row[0], row[0], row[0], row[0], row[0])
+        menuDto = MenuDto(1, "1", "2", "3", "4", "5", "6")
         menu_list.append(menuDto)
 
     # 关闭游标和数据库连接
