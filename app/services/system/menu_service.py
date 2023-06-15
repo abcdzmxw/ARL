@@ -86,20 +86,21 @@ def menu_page_list(args):
 
     values = (size, offset)
 
+    return query + size + "   " + offset
     # 创建数据库连接
-    conn = pool.connection()
-
-    cursor = conn.cursor()
-
-    #cursor.execute(query, values)
-    cursor.execute("SELECT id,menu_name,menu_code, click_uri, parent, sort, route FROM t_menu")
-
-    # 获取查询结果
-    results = cursor.fetchall()
-
-    cursor.close()
-    conn.close()
-    return results
+    # conn = pool.connection()
+    #
+    # cursor = conn.cursor()
+    #
+    # cursor.execute(query, values)
+    # #cursor.execute("SELECT id,menu_name,menu_code, click_uri, parent, sort, route FROM t_menu")
+    #
+    # # 获取查询结果
+    # results = cursor.fetchall()
+    #
+    # cursor.close()
+    # conn.close()
+    # return results
     # menu_list = []
     # # 处理查询结果
     # for row in results:
