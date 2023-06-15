@@ -18,15 +18,14 @@ pool = PooledDB(
 logger = utils.get_logger()
 
 
-class MenuDto:
-    def __init__(self, id=None, menu_name=None, menu_code=None, click_uri=None, parent=None, sort=None, route=None):
-        self.id = id
-        self.menu_name = menu_name
-        self.menu_code = menu_code
-        self.click_uri = click_uri
-        self.parent = parent
-        self.sort = sort
-        self.route = route
+class ResultDto:
+    def __init__(self, records=None, total=None, size=None, current=None, pages=None):
+        self.records = records
+        self.total = total
+        self.size = size
+        self.current = current
+        self.pages = pages
+
 
 
 def save_menu(menu_name, menu_code, sort, parent_id, click_uri, route):
@@ -79,6 +78,8 @@ def menu_page_list(args):
     if route:
         query += " AND route LIKE '%{}%'".format(route)
 
+    count_query_sql = query
+
     # 计算查询的起始位置
     offset = (page - 1) * size
     query += " LIMIT " + str(size) + " OFFSET " + str(offset)
@@ -86,6 +87,7 @@ def menu_page_list(args):
     conn = pool.connection()
 
     cursor = conn.cursor()
+    query_total = cursor.execute(count_query_sql)
 
     cursor.execute(query)
 
@@ -118,4 +120,8 @@ def menu_page_list(args):
     cursor.close()
     conn.close()
 
-    return menu_list
+    total_pages = (query_total + size - 1) / size
+
+    result = ResultDto(menu_list, query_total, size, page, total_pages)
+
+    return result
