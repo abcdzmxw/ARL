@@ -79,37 +79,32 @@ def menu_page_list(args):
     if route:
         query += " AND route LIKE '%{}%'".format(route)
 
-    query += " LIMIT %s OFFSET %s "
-
     # 计算查询的起始位置
     offset = (page - 1) * size
-
-    values = (size, offset)
-
-    return query + str(size) + "   " + str(offset)
+    query += " LIMIT " + str(size) + " OFFSET " + str(offset)
     # 创建数据库连接
-    # conn = pool.connection()
-    #
-    # cursor = conn.cursor()
-    #
-    # cursor.execute(query, values)
-    # #cursor.execute("SELECT id,menu_name,menu_code, click_uri, parent, sort, route FROM t_menu")
-    #
-    # # 获取查询结果
-    # results = cursor.fetchall()
-    #
-    # cursor.close()
-    # conn.close()
-    # return results
-    # menu_list = []
-    # # 处理查询结果
-    # for row in results:
-    #     # 处理每一行数据
-    #     menuDto = MenuDto(row[0], row[1], row[2], row[3], row[4], row[5], row[6])
-    #     menu_list.append(menuDto)
-    #
-    # # 关闭游标和数据库连接
-    # cursor.close()
-    # conn.close()
-    #
-    # return menu_list
+    conn = pool.connection()
+
+    cursor = conn.cursor()
+
+    cursor.execute(query)
+    #cursor.execute("SELECT id,menu_name,menu_code, click_uri, parent, sort, route FROM t_menu")
+
+    # 获取查询结果
+    results = cursor.fetchall()
+
+    cursor.close()
+    conn.close()
+
+    menu_list = []
+    # 处理查询结果
+    for row in results:
+        # 处理每一行数据
+        menuDto = MenuDto(row[0], row[1], row[2], row[3], row[4], row[5], row[6])
+        menu_list.append(menuDto)
+
+    # 关闭游标和数据库连接
+    cursor.close()
+    conn.close()
+
+    return menu_list
