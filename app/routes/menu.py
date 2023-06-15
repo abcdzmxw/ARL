@@ -146,14 +146,15 @@ pageList_fields = ns.model('pageList', {
 
 @ns.route('/pageList')
 class MenuPageList(ARLResource):
+    parser = get_arl_parser(pageList_fields, location='args')
 
     @auth
-    @ns.expect(pageList_fields)
+    @ns.expect(parser)
     def get(self):
         """
         查询菜单列表
         """
-        args = self.parse_args(pageList_fields)
+        args = self.parse_args()
         page_size = args.pop('page.size')
         page_current = args.pop('page.current')
         menu_name = args.pop('menuName', None)
