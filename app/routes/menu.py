@@ -10,7 +10,7 @@ from app.modules import TaskStatus, ErrorMsg, TaskSyncStatus, CeleryAction, Task
 from app.helpers import get_options_by_policy_id, submit_task_task, \
     submit_risk_cruising, get_scope_by_scope_id, check_target_in_scope
 from app.helpers.task import get_task_data, restart_task
-from ..services.system.menu_service import save_menu, menu_page_list
+from ..services.system.menu_service import save_menu, menu_page_list, MenuDto
 
 ns = Namespace('menu', description="菜单管理")
 
@@ -121,33 +121,34 @@ class ARLTask(ARLResource):
         return utils.build_ret(ErrorMsg.Success, inserted_id)
 
 
-base_search_menu_fields = ns.model('SearchMenu', {
-    'page.size': fields.Integer(required=True, description="每页条数"),
-    'page.current': fields.String(required=True, description="第几页"),
-    'menuName': fields.String(required=False, description="菜单名称"),
-    'menuCode': fields.String(required=False, description="菜单编码"),
+menu_search_fields = {
+    'page': fields.Integer(description="当前页数", example=1),
+    'size': fields.Integer(description="页面大小", example=10),
+    'menu_name': fields.String(required=False, description="菜单名称"),
+    'menu_code': fields.String(required=False, description="菜单编码"),
     'route': fields.String(required=False, description="前端路由编码")
-})
+}
 
 
 @ns.route('/pageList')
 class MenuPageList(ARLResource):
+    parser = get_arl_parser(menu_search_fields, location='args')
 
     @auth
-    @ns.expect(base_search_menu_fields)
+    @ns.expect(parser)
     def get(self):
         """
         查询菜单列表
         """
-        args = self.parse_args(base_search_menu_fields)
+        args = self.parser.parse_args()
+
         page_size = args.pop('page.size')
         page_current = args.pop('page.current')
         menu_name = args.pop('menuName', None)
         menu_code = args.pop('menuCode', None)
         route = args.pop('route', None)
 
-        data = menu_page_list(page_size=page_size, page_current=page_current, menu_name=menu_name, menu_code=menu_code,
-                              route=route)
+        data = MenuDto(page_size, page_current, menu_name, menu_code, route, route, route);
 
         """这里直接返回成功了"""
         return utils.build_ret(ErrorMsg.Success, data)
