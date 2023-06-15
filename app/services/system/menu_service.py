@@ -16,10 +16,10 @@ def save_menu(menu_name, menu_code, sort, parent_id, click_uri, route):
 
     # 创建数据库连接
     cnx = MySQLdb.connect(
-        host='154.39.246.13',
-        user='test',
+        host='192.168.1.101',
+        user='root',
         password='Aa*bc#1s2g3',
-        database='galaxy_arl'
+        database='Hjrtnbec*38'
     )
 
     # 创建游标对象
