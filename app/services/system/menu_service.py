@@ -94,6 +94,9 @@ def menu_page_list(args):
 
     menu_list = []
 
+    # 好像是打印字段的属性
+    index = cursor.description
+
     # 处理查询结果
     for row in results:
         logger.info(
@@ -105,8 +108,11 @@ def menu_page_list(args):
                                                                                                           row[5],
                                                                                                           row[6]))
         # 处理每一行数据
-        menuDto = MenuDto(1, "1", "2", "3", "4", "5", "6")
-        menu_list.append(menuDto)
+        obj = {}
+        for i in range(len(index)):
+            # index[i][0] 获取字段里属性中的局部信息
+            obj[index[i][0]] = row[i]
+        menu_list.append(obj)
 
     # 关闭游标和数据库连接
     cursor.close()
