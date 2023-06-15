@@ -117,16 +117,10 @@ class ARLTask(ARLResource):
                                                                                                           parent_id,
                                                                                                           click_uri,
                                                                                                           route))
-        target = args.pop('route')
-        name = args.pop('route')
 
 
-        ret = {
-            "code": 200,
-            "message": "success",
-            "items": ""
-        }
-        return ret
+        """这里直接返回成功了"""
+        return utils.build_ret(ErrorMsg.Success, {})
 
         # return utils.build_ret(ErrorMsg.Success, {"items": task_data_list})
 
