@@ -10,6 +10,7 @@ from app.modules import TaskStatus, ErrorMsg, TaskSyncStatus, CeleryAction, Task
 from app.helpers import get_options_by_policy_id, submit_task_task, \
     submit_risk_cruising, get_scope_by_scope_id, check_target_in_scope
 from app.helpers.task import get_task_data, restart_task
+from ..services.system.menu_service import save_menu
 
 ns = Namespace('menu', description="菜单管理")
 
@@ -118,9 +119,16 @@ class ARLTask(ARLResource):
                                                                                                           click_uri,
                                                                                                           route))
 
+        try:
+            inserted_id = save_menu(menu_name=menu_name, menu_code=menu_code, sort=sort, parent_id=parent_id, click_uri=click_uri, route=route)
+            logger.info(
+                "执行插入菜单完成----inserted_id:{}".format(inserted_id))
+        except Exception as e:
+            logger.exception(e)
+            return utils.build_ret(ErrorMsg.Error, {"error": str(e)})
 
         """这里直接返回成功了"""
-        return utils.build_ret(ErrorMsg.Success, {})
+        return utils.build_ret(ErrorMsg.Success, inserted_id)
 
         # return utils.build_ret(ErrorMsg.Success, {"items": task_data_list})
 
