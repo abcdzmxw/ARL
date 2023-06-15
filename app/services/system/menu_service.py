@@ -38,10 +38,10 @@ def save_menu(menu_name, menu_code, sort, parent_id, click_uri, route):
     # 获取插入的ID
     inserted_id = cursor.lastrowid
     # 提交更改
-    cnx.commit()
+    conn.commit()
     logger.info("执行插入菜单完成----inserted_id:{}".format(inserted_id))
 
     # 关闭游标和数据库连接
     cursor.close()
-    cnx.close()
+    conn.close()
     return inserted_id
