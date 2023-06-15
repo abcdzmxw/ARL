@@ -91,7 +91,8 @@ def menu_page_list(args):
 
     cursor = conn.cursor()
 
-    cursor.execute(query, values)
+    #cursor.execute(query, values)
+    cursor.execute("SELECT id,menu_name,menu_code, click_uri, parent, sort, route FROM t_menu")
 
     # 获取查询结果
     results = cursor.fetchall()
