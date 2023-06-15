@@ -17,29 +17,9 @@ ns = Namespace('menu', description="菜单管理")
 logger = get_logger()
 
 base_search_task_fields = {
-    'name': fields.String(required=False, description="任务名"),
-    'target': fields.String(description="任务目标"),
-    'status': fields.String(description="任务状态"),
-    '_id': fields.String(description="任务ID"),
-    'task_tag': fields.String(description="监控任务和侦查任务tag"),
-    'options.domain_brute': fields.Boolean(description="是否开启域名爆破"),
-    'options.domain_brute_type': fields.String(description="域名爆破类型"),
-    'options.port_scan_type': fields.Boolean(description="端口扫描类型"),
-    'options.port_scan': fields.Boolean(description="是否的端口扫描"),
-    'options.service_detection': fields.Boolean(description="是否开启服务识别"),
-    'options.service_brute': fields.Boolean(description="是否开启服务弱口令爆破"),
-    'options.os_detection': fields.Boolean(description="是否开启操作系统识别"),
-    'options.site_identify': fields.Boolean(description="是否开启站点识别"),
-    'options.file_leak': fields.Boolean(description="是否开启文件泄露扫描"),
-    'options.alt_dns': fields.Boolean(description="是否开启DNS字典智能生成"),
-    'options.search_engines': fields.Boolean(description="是否开启搜索引擎调用"),
-    'options.site_spider': fields.Boolean(description="是否开启站点爬虫"),
-    'options.arl_search': fields.Boolean(description="是否开启 ARL 历史查询"),
-    'options.dns_query_plugin': fields.Boolean(description="是否开启域名插件查询"),
-    'options.skip_scan_cdn_ip': fields.Boolean(description="是否跳过CDN IP端口扫描"),
-    'options.nuclei_scan': fields.Boolean(description="是否开启nuclei 扫描"),
-    'options.findvhost': fields.Boolean(description="是否开启Host碰撞检测")
-
+    'menu_name': fields.String(required=False, description="菜单名称"),
+    'menu_code': fields.String(required=False, description="菜单编码"),
+    'route': fields.String(required=False, description="前端路由编码")
 }
 
 base_search_task_fields.update(base_query_fields)
@@ -113,15 +93,6 @@ class ARLTask(ARLResource):
 
         """这里直接返回成功了"""
         return utils.build_ret(ErrorMsg.Success, inserted_id)
-
-
-menu_search_fields = {
-    'page': fields.Integer(description="当前页数", example=1),
-    'size': fields.Integer(description="页面大小", example=10),
-    'menu_name': fields.String(required=False, description="菜单名称"),
-    'menu_code': fields.String(required=False, description="菜单编码"),
-    'route': fields.String(required=False, description="前端路由编码")
-}
 
 
 @ns.route('/pageList')
