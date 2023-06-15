@@ -120,19 +120,11 @@ class ARLTask(ARLResource):
         target = args.pop('route')
         name = args.pop('route')
 
-        try:
-
-            inserted_id = '1'
-            logger.info(
-                "执行插入菜单完成----inserted_id:{}".format(inserted_id))
-        except Exception as e:
-            logger.exception(e)
-            return utils.build_ret(ErrorMsg.Error, {"error": str(e)})
 
         ret = {
             "code": 200,
             "message": "success",
-            "items": inserted_id
+            "items": ""
         }
         return ret
 
