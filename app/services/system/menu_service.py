@@ -1,6 +1,6 @@
 import bson
 import re
-import MySQLdb
+import pymysql
 from app import utils
 
 logger = utils.get_logger()
@@ -15,7 +15,7 @@ def save_menu(menu_name, menu_code, sort, parent_id, click_uri, route):
                                                                                                               route))
 
     # 创建数据库连接
-    cnx = MySQLdb.connect(
+    cnx = pymysql.connect(
         host='192.168.1.101',
         user='root',
         password='Aa*bc#1s2g3',
