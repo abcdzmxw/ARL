@@ -123,6 +123,6 @@ def menu_page_list(args):
     total_pages = (query_total + size - 1) / size
     logger.info("总页数----total_pages:{}, menu_list={}".format(total_pages, menu_list))
 
-    result = ResultDto(records=menu_list, total=query_total, size=size, current=page, pages=total_pages)
+    #result = ResultDto(records=menu_list, total=query_total, size=size, current=page, pages=total_pages)
 
-    return result
+    return menu_list
