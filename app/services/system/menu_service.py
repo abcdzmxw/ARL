@@ -1,3 +1,5 @@
+import json
+
 import bson
 import re
 import pymysql
@@ -27,13 +29,22 @@ class ResultDto:
         self.pages = pages
 
 
+# 定义自定义的 JSON 编码器
+class ResultDtoEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, ResultDto):
+            # 将 ResultDto 对象转换为字典
+            return obj.__dict__
+        return super().default(obj)
+
+
 def save_menu(menu_name, menu_code, sort, parent_id, click_uri, route):
     logger.info("执行插入菜单----menu_name:{} menu_code:{} sort:{} parent_id:{} click_uri:{} route:{}".format(menu_name,
-                                                                                                        menu_code,
-                                                                                                        sort,
-                                                                                                        parent_id,
-                                                                                                        click_uri,
-                                                                                                        route))
+                                                                                                              menu_code,
+                                                                                                              sort,
+                                                                                                              parent_id,
+                                                                                                              click_uri,
+                                                                                                              route))
 
     # 创建数据库连接
     conn = pool.connection()
@@ -130,4 +141,7 @@ def menu_page_list(args):
         logger.error("An error occurred: {}".format(e))
 
     logger.info("result:{}".format(result))
-    return result
+
+    # 将 ResultDto 对象序列化为 JSON 字符串
+    json_str = json.dumps(result, cls=ResultDtoEncoder)
+    return json_str
