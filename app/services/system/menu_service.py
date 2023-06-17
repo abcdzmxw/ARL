@@ -20,24 +20,6 @@ pool = PooledDB(
 logger = utils.get_logger()
 
 
-class ResultDto:
-    def __init__(self, records=None, total=None, size=None, current=None, pages=None):
-        self.records = records
-        self.total = total
-        self.size = size
-        self.current = current
-        self.pages = pages
-
-
-# 定义自定义的 JSON 编码器
-class ResultDtoEncoder(json.JSONEncoder):
-    def default(self, obj):
-        if isinstance(obj, ResultDto):
-            # 将 ResultDto 对象转换为字典
-            return obj.__dict__
-        return super().default(obj)
-
-
 def save_menu(menu_name, menu_code, sort, parent_id, click_uri, route):
     logger.info("执行插入菜单----menu_name:{} menu_code:{} sort:{} parent_id:{} click_uri:{} route:{}".format(menu_name,
                                                                                                               menu_code,
@@ -130,18 +112,17 @@ def menu_page_list(args):
     cursor.close()
     conn.close()
 
-    try:
-        total_pages = (query_total + size - 1) // size
-        logger.info("query_total:{}, size={}, page={}, total_pages={}, menu_list={}".format(query_total, size, page,
-                                                                                            total_pages, menu_list))
-        # 可能会引发异常的代码
-        result = ResultDto(records=menu_list, total=query_total, size=size, current=page, pages=total_pages)
-    except Exception as e:
-        # 捕获异常并打印异常信息
-        logger.error("An error occurred: {}".format(e))
+    total_pages = (query_total + size - 1) // size
+    logger.info("query_total:{}, size={}, page={}, total_pages={}, menu_list={}".format(query_total, size, page,
+                                                                                        total_pages, menu_list))
 
-    logger.info("result:{}".format(result))
+    result = {
+        "page": page,
+        "size": size,
+        "total": query_total,
+        "items": menu_list,
+        "query": query,
+        "code": 200
+    }
 
-    # 将 ResultDto 对象序列化为 JSON 字符串
-    json_str = json.dumps(result, cls=ResultDtoEncoder)
-    return json_str
+    return result
