@@ -108,10 +108,12 @@ class MenuPageList(ARLResource):
         args = self.parser.parse_args()
         try:
             data = menu_page_list(args=args)
+            logger.info("数据已经返回111.....{}".format(data))
         except Exception as e:
             logger.exception(e)
             return utils.build_ret(ErrorMsg.Error, {"error": str(e)})
 
+        logger.info("数据已经返回222.....{}".format(data))
         """这里直接返回成功了"""
         return utils.build_ret(ErrorMsg.Success, data)
 
