@@ -119,12 +119,14 @@ def menu_page_list(args):
     cursor.close()
     conn.close()
 
-    total_pages = (query_total + size - 1) // size
-    logger.info("query_total:{}, size={}, page={}, total_pages={}, menu_list={}".format(query_total, size, page,
-                                                                                        total_pages, menu_list))
-
-    logger.info("总页数----total_pages:{}, menu_list={}".format(total_pages, menu_list))
-
-    result = ResultDto(records=menu_list, total=query_total, size=size, current=page, pages=total_pages)
+    try:
+        total_pages = (query_total + size - 1) // size
+        logger.info("query_total:{}, size={}, page={}, total_pages={}, menu_list={}".format(query_total, size, page,
+                                                                                            total_pages, menu_list))
+        # 可能会引发异常的代码
+        result = ResultDto(records=menu_list, total=query_total, size=size, current=page, pages=total_pages)
+    except Exception as e:
+        # 捕获异常并打印异常信息
+        logger.error("An error occurred: {}".format(e))
 
     return result
