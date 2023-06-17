@@ -93,14 +93,6 @@ def menu_page_list(args):
 
     # 处理查询结果
     for row in results:
-        logger.info(
-            "执行插入菜单----id:{} menu_name:{} menu_code:{} sort:{} parent_id:{} click_uri:{} route:{}".format(row[0],
-                                                                                                                row[1],
-                                                                                                                row[2],
-                                                                                                                row[3],
-                                                                                                                row[4],
-                                                                                                                row[5],
-                                                                                                                row[6]))
         # 处理每一行数据
         obj = {}
         for i in range(len(index)):
@@ -115,14 +107,11 @@ def menu_page_list(args):
     total_pages = (query_total + size - 1) // size
     logger.info("query_total:{}, size={}, page={}, total_pages={}, menu_list={}".format(query_total, size, page,
                                                                                         total_pages, menu_list))
-
     result = {
         "page": page,
         "size": size,
         "total": query_total,
-        "items": menu_list,
-        "query": query,
-        "code": 200
+        "items": menu_list
     }
 
     return result
