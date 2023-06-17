@@ -129,4 +129,5 @@ def menu_page_list(args):
         # 捕获异常并打印异常信息
         logger.error("An error occurred: {}".format(e))
 
+    logger.info("result:{}".format(result))
     return result
