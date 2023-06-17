@@ -18,7 +18,13 @@ pool = PooledDB(
 logger = utils.get_logger()
 
 
-
+class ResultDto:
+    def __init__(self, records=None, total=None, size=None, current=None, pages=None):
+        self.records = records
+        self.total = total
+        self.size = size
+        self.current = current
+        self.pages = pages
 
 
 def save_menu(menu_name, menu_code, sort, parent_id, click_uri, route):
@@ -113,9 +119,9 @@ def menu_page_list(args):
     cursor.close()
     conn.close()
 
-    # total_pages = (query_total + size - 1) / size
-    # logger.info("总页数----total_pages:{}, menu_list={}".format(total_pages, menu_list))
+    total_pages = (query_total + size - 1) / size
+    logger.info("总页数----total_pages:{}, menu_list={}".format(total_pages, menu_list))
 
-    # result = ResultDto(records=menu_list, total=query_total, size=size, current=page, pages=total_pages)
+    result = ResultDto(records=menu_list, total=query_total, size=size, current=page, pages=total_pages)
 
-    return menu_list
+    return result
