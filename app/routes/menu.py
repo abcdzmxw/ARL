@@ -10,7 +10,7 @@ from app.modules import TaskStatus, ErrorMsg, TaskSyncStatus, CeleryAction, Task
 from app.helpers import get_options_by_policy_id, submit_task_task, \
     submit_risk_cruising, get_scope_by_scope_id, check_target_in_scope
 from app.helpers.task import get_task_data, restart_task
-from ..services.system.menu_service import save_menu, menu_page_list, MenuDto
+from ..services.system.menu_service import save_menu, menu_page_list
 
 ns = Namespace('menu', description="菜单管理")
 
