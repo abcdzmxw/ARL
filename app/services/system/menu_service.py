@@ -18,13 +18,7 @@ pool = PooledDB(
 logger = utils.get_logger()
 
 
-class ResultDto:
-    def __init__(self, records=None, total=None, size=None, current=None, pages=None):
-        self.records = records
-        self.total = total
-        self.size = size
-        self.current = current
-        self.pages = pages
+
 
 
 def save_menu(menu_name, menu_code, sort, parent_id, click_uri, route):
