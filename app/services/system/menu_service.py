@@ -27,7 +27,6 @@ class ResultDto:
         self.pages = pages
 
 
-
 def save_menu(menu_name, menu_code, sort, parent_id, click_uri, route):
     logger.info("执行插入菜单----menu_name:{} menu_code:{} sort:{} parent_id:{} click_uri:{} route:{}".format(menu_name,
                                                                                                               menu_code,
@@ -103,12 +102,12 @@ def menu_page_list(args):
     for row in results:
         logger.info(
             "执行插入菜单----id:{} menu_name:{} menu_code:{} sort:{} parent_id:{} click_uri:{} route:{}".format(row[0],
-                                                                                                          row[1],
-                                                                                                          row[2],
-                                                                                                          row[3],
-                                                                                                          row[4],
-                                                                                                          row[5],
-                                                                                                          row[6]))
+                                                                                                                row[1],
+                                                                                                                row[2],
+                                                                                                                row[3],
+                                                                                                                row[4],
+                                                                                                                row[5],
+                                                                                                                row[6]))
         # 处理每一行数据
         obj = {}
         for i in range(len(index)):
@@ -120,9 +119,9 @@ def menu_page_list(args):
     cursor.close()
     conn.close()
 
-    total_pages = (query_total + size - 1) / size
-    logger.info("总页数----total_pages:{}, menu_list={}".format(total_pages, menu_list))
+    # total_pages = (query_total + size - 1) / size
+    # logger.info("总页数----total_pages:{}, menu_list={}".format(total_pages, menu_list))
 
-    #result = ResultDto(records=menu_list, total=query_total, size=size, current=page, pages=total_pages)
+    # result = ResultDto(records=menu_list, total=query_total, size=size, current=page, pages=total_pages)
 
     return menu_list
