@@ -119,7 +119,7 @@ def menu_page_list(args):
     cursor.close()
     conn.close()
 
-    total_pages = (query_total + size - 1) / size
+    total_pages = (query_total + size - 1) // size
     logger.info("query_total:{}, size={}, page={}, total_pages={}, menu_list={}".format(query_total, size, page,
                                                                                         total_pages, menu_list))
 
