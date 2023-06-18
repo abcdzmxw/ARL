@@ -79,18 +79,13 @@ class ARLTask(ARLResource):
         parent_id = args.pop('parent_id', None)
         click_uri = args.pop('click_uri', None)
         route = args.pop('route', None)
-        logger.info("执行插入菜单入参：menu_name:{} menu_code:{} sort:{} parent_id:{} click_uri:{} route:{}".format(menu_name, menu_code, sort, parent_id, click_uri, route))
+        logger.info("执行插入菜单入参：menu_name:{} menu_code:{} sort:{} parent_id:{} click_uri:{} route:{}"
+                    .format(menu_name, menu_code, sort, parent_id, click_uri, route))
         # 判断是否存在记录
         count = is_menu_code(menu_code)
         if count > 0:
             return utils.return_msg(code=500, massage="此编码已经存在了", data=None)
-
-        # 父菜单传了的话，校验此菜单id是否存在
-        # logger.info("通过菜单id查询菜单----parent_id:{}".format(parent_id))
-        # if parent_id is not None:
-        #     menu = get_by_id(menu_id=parent_id)
-        #     if menu:
-        #         return utils.return_msg(code=500, massage="父菜单不存在", data=None)
+        logger.info("此编码不存在，可以进行插入：menu_code:{}".format(menu_code))
 
         try:
             inserted_id = save_menu(menu_name=menu_name, menu_code=menu_code, sort=sort, parent_id=parent_id,
