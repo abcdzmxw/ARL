@@ -15,8 +15,12 @@ def user_login(username=None, password=None):
     query = {"username": username, "password": gen_md5(salt + password)}
 
     if conn_db('user').find_one(query):
+        payload = {'username': username}
+        # 生成 JWT
+        jwt_token = generate_jwt(payload=payload, secret_key=Config.JWT_SECRET_KEY)
         item = {
             "username": username,
+            "jwt_token": jwt_token,
             "token": gen_md5(random_choices(50)),
             "type": "login"
         }
