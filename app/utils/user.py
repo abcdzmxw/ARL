@@ -19,12 +19,11 @@ def user_login(username=None, password=None):
         logger.info("username= {}".format(username))
         payload = {'username': username}
         secret_key = Config.JWT_SECRET_KEY
-        secret_key = "3c3285df32104267af9515ecdd03ceb7"
         logger.info("secret_key= {}".format(secret_key))
         try:
             jwt_token = jwt.encode(payload=payload, key=secret_key, algorithm='HS256')
         except Exception as e:
-            logger.info( str(e))
+            logger.info(str(e))
 
         logger.info("jwt_token= {}".format(jwt_token))
         item = {
