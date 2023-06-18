@@ -10,7 +10,7 @@ from app.modules import TaskStatus, ErrorMsg, TaskSyncStatus, CeleryAction, Task
 from app.helpers import get_options_by_policy_id, submit_task_task, \
     submit_risk_cruising, get_scope_by_scope_id, check_target_in_scope
 from app.helpers.task import get_task_data, restart_task
-from ..services.system.menu_service import save_menu, menu_page_list, is_menu_code
+from ..services.system.menu_service import save_menu, menu_page_list, is_menu_code, get_by_id
 
 ns = Namespace('menu', description="菜单管理")
 
@@ -84,6 +84,12 @@ class ARLTask(ARLResource):
         count = is_menu_code(menu_code)
         if count > 0:
             return utils.return_msg(code=500, massage="此编码已经存在了", data=None)
+
+        # 父菜单传了的话，校验此菜单id是否存在
+        if parent_id:
+            menu = get_by_id(menu_id=parent_id)
+            if menu is None:
+                return utils.return_msg(code=500, massage="父菜单不存在", data=None)
 
         logger.info(
             "执行插入菜单----menu_name:{} menu_code:{} sort:{} parent_id:{} click_uri:{} route:{}".format(menu_name, menu_code, sort, parent_id, click_uri, route))

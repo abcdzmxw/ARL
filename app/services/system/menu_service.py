@@ -20,6 +20,44 @@ pool = PooledDB(
 logger = utils.get_logger()
 
 
+def get_by_id(menu_id):
+    # 创建数据库连接
+    conn = pool.connection()
+
+    # 创建游标对象
+    cursor = conn.cursor()
+
+    # 执行查询语句
+    query = "SELECT id,menu_name,menu_code, click_uri, parent, sort, route FROM t_menu WHERE id= %s "
+    cursor.execute(query, menu_id)
+
+    # 获取查询结果
+    results = cursor.fetchall()
+
+    # 好像是打印字段的属性
+    index = cursor.description
+
+    # 处理查询结果
+    for row in results:
+        obj = {}
+        # 处理每一行数据
+        for i in range(len(index)):
+            # index[i][0] 获取字段里属性中的局部信息
+            obj[index[i][0]] = row[i]
+
+    if obj:
+        menu_obj = obj
+        logger.info("查询的数据 :{}".format(obj))
+    else:
+        logger.info("查询的数据id:{}".format(menu_id))
+        menu_obj = None
+
+    cursor.close()
+    conn.close()
+
+    return menu_obj
+
+
 def is_menu_code(menu_code):
     # 创建数据库连接
     conn = pool.connection()
