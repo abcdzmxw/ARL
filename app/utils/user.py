@@ -16,20 +16,19 @@ def user_login(username=None, password=None):
     query = {"username": username, "password": gen_md5(salt + password)}
 
     if conn_db('user').find_one(query):
-        logger.info("username= {}".format(username))
         payload = {'username': username}
         secret_key = Config.JWT_SECRET_KEY
-        logger.info("secret_key= {}".format(secret_key))
+        token = gen_md5(random_choices(50))
         try:
             jwt_token = generate_jwt(payload=payload, secret_key=secret_key)
         except Exception as e:
-            logger.info( str(e))
+            logger.info(str(e))
 
         logger.info("jwt_token= {}".format(jwt_token))
         item = {
             "username": username,
             "jwt_token": jwt_token,
-            "token": gen_md5(random_choices(50)),
+            "token": token,
             "type": "login"
         }
         conn_db('user').update_one(query, {"$set": {"token": item["token"]}})
