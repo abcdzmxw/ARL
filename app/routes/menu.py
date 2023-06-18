@@ -83,7 +83,7 @@ class ARLTask(ARLResource):
         # 判断是否存在记录
         count = is_menu_code(menu_code)
         if count > 0:
-            utils.build_ret(ErrorMsg.Error, {"error": "此编码已经存在了"})
+            return utils.build_ret(ErrorMsg.Error, {"error": "此编码已经存在了"})
 
         logger.info(
             "执行插入菜单----menu_name:{} menu_code:{} sort:{} parent_id:{} click_uri:{} route:{}".format(menu_name, menu_code, sort, parent_id, click_uri, route))
