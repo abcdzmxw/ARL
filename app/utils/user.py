@@ -16,7 +16,7 @@ def user_login(username=None, password=None):
     if conn_db('user').find_one(query):
         payload = {'username': username}
         secret_key = Config.JWT_SECRET_KEY
-
+        jwt.api_jwt.encode(payload=payload, key=secret_key)
         item = {
             "username": username,
             "token": gen_md5(random_choices(50)),
