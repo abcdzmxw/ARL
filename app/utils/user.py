@@ -16,9 +16,11 @@ def user_login(username=None, password=None):
     query = {"username": username, "password": gen_md5(salt + password)}
 
     if conn_db('user').find_one(query):
-        payload = {'username': username}
+
         secret_key = Config.JWT_SECRET_KEY
         token = gen_md5(random_choices(50))
+
+        payload = {'username': username, 'token': token}
         try:
             jwt_token = generate_jwt(payload=payload, secret_key=secret_key)
         except Exception as e:
