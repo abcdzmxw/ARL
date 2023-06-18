@@ -2,7 +2,7 @@ from flask import request
 from app.config import Config
 from . import gen_md5, random_choices, get_logger
 from .conn import conn_db
-import jwt
+from app.services.system.jwt_service import generate_jwt
 
 salt = 'arlsalt!@#'
 
@@ -19,10 +19,9 @@ def user_login(username=None, password=None):
         logger.info("username= {}".format(username))
         payload = {'username': username}
         secret_key = Config.JWT_SECRET_KEY
-        secret_key = "3c3285df32104267af9515ecdd03ceb7"
         logger.info("secret_key= {}".format(secret_key))
         try:
-            jwt_token = jwt.encode(payload=payload, key=secret_key, algorithm='HS256')
+            jwt_token = generate_jwt(payload=payload, secret_key=secret_key)
         except Exception as e:
             logger.info( str(e))
 

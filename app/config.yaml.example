@@ -71,7 +71,7 @@ DINGDING:
 
 #jwt生成密钥
 JWT:
-  SECRET_KEY: abcdefhdf%3@$
+  SECRET_KEY: 3c3285df32104267af9515ecdd03ceb7
 
 #邮件发送配置
 EMAIL:
