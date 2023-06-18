@@ -70,7 +70,8 @@ DINGDING:
   ACCESS_TOKEN: ""
 
 #jwt生成密钥
-JWT_SECRET_KEY: abcdefhdf%3@$
+JWT:
+  SECRET_KEY: abcdefhdf%3@$
 
 #邮件发送配置
 EMAIL:

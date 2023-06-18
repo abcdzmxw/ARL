@@ -157,8 +157,8 @@ try:
         if y["EMAIL"].get("TO"):
             Config.EMAIL_TO = y["EMAIL"]["TO"]
 
-    if y.get("JWT_SECRET_KEY"):
-        Config.JWT_SECRET_KEY = y["JWT_SECRET_KEY"]
+    if y.get("JWT"):
+        Config.JWT_SECRET_KEY = y["JWT"].get("SECRET_KEY")
 
     # *** GITHUB TOKEN 配置 ***
     if y.get("GITHUB"):
