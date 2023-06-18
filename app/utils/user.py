@@ -1,10 +1,12 @@
 from flask import request
 from app.config import Config
-from . import gen_md5, random_choices
+from . import gen_md5, random_choices, get_logger
 from .conn import conn_db
 import jwt
 
 salt = 'arlsalt!@#'
+
+logger = get_logger()
 
 
 def user_login(username=None, password=None):
@@ -14,9 +16,12 @@ def user_login(username=None, password=None):
     query = {"username": username, "password": gen_md5(salt + password)}
 
     if conn_db('user').find_one(query):
+        logger.info("username= {}".format(username))
         payload = {'username': username}
         secret_key = Config.JWT_SECRET_KEY
+        logger.info("secret_key= {}".format(secret_key))
         jwt_token = jwt.api_jwt.encode(payload=payload, key=secret_key)
+        logger.info("jwt_token= {}".format(jwt_token))
         item = {
             "username": username,
             "jwt_token": jwt_token,
