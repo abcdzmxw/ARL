@@ -79,7 +79,7 @@ class ARLTask(ARLResource):
         parent_id = args.pop('parent_id', None)
         click_uri = args.pop('click_uri', None)
         route = args.pop('route', None)
-        logger.info("执行插入菜单----menu_name:{} menu_code:{} sort:{} parent_id:{} click_uri:{} route:{}".format(menu_name, menu_code, sort, parent_id, click_uri, route))
+        logger.info("执行插入菜单入参：menu_name:{} menu_code:{} sort:{} parent_id:{} click_uri:{} route:{}".format(menu_name, menu_code, sort, parent_id, click_uri, route))
         # 判断是否存在记录
         count = is_menu_code(menu_code)
         if count > 0:
