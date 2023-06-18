@@ -3,10 +3,12 @@ from flask import request
 from app.config import Config
 from . import gen_md5, random_choices
 from .conn import conn_db
+from app.services.system.jwt_service import generate_jwt
 
 salt = 'arlsalt!@#'
 
-def user_login(username = None, password = None):
+
+def user_login(username=None, password=None):
     if not username or not password:
         return
 
@@ -35,13 +37,11 @@ def user_login_header():
         "type": "api"
     }
 
-
     if not token:
         return False
 
     if token == Config.API_KEY:
         return item
-
 
     data = conn_db('user').find_one({"token": token})
     if data:
@@ -51,7 +51,6 @@ def user_login_header():
         return item
 
     return False
-
 
 
 def user_logout(token):
@@ -82,7 +81,7 @@ def auth(func):
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
         if Config.AUTH and not user_login_header():
-            return  ret
+            return ret
 
         return func(*args, **kwargs)
 
