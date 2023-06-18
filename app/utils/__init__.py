@@ -56,7 +56,7 @@ def check_output(cmd, **kwargs):
         raise ValueError('stdout argument not allowed, it will be overridden.')
 
     output = subprocess.run(shlex.split(cmd), stdout=subprocess.PIPE, timeout=timeout, check=False,
-               **kwargs).stdout
+                            **kwargs).stdout
     return output
 
 
@@ -74,8 +74,8 @@ def init_logger():
 
     handler = colorlog.StreamHandler()
     handler.setFormatter(colorlog.ColoredFormatter(
-        fmt = '%(log_color)s[%(asctime)s] [%(levelname)s] '
-              '[%(threadName)s] [%(filename)s:%(lineno)d] %(message)s', datefmt = "%Y-%m-%d %H:%M:%S"))
+        fmt='%(log_color)s[%(asctime)s] [%(levelname)s] '
+            '[%(threadName)s] [%(filename)s:%(lineno)d] %(message)s', datefmt="%Y-%m-%d %H:%M:%S"))
 
     logger = colorlog.getLogger('arlv2')
 
@@ -137,10 +137,10 @@ def get_cname(domain, log_flag=True):
 def domain_parsed(domain, fail_silently=True):
     domain = domain.strip()
     try:
-        res = get_tld(domain, fix_protocol=True,  as_object=True)
+        res = get_tld(domain, fix_protocol=True, as_object=True)
         item = {
             "subdomain": res.subdomain,
-            "domain":res.domain,
+            "domain": res.domain,
             "fld": res.fld
         }
         return item
@@ -160,6 +160,17 @@ def gen_filename(site):
     filename = site.replace('://', '_')
 
     return re.sub(r'[^\w\-_\\. ]', '_', filename)
+
+
+def return_msg(code, massage, data=None):
+    result = {
+        "code": code,
+        "massage": massage
+    }
+    if data:
+        result["data"] = data
+
+    return result
 
 
 def build_ret(error, data):
@@ -208,4 +219,3 @@ def exit_gracefully(signum, frame):
 from .user import user_login, user_login_header, auth, user_logout, change_pass
 from .push import message_push
 from .fingerprint import parse_human_rule, transform_rule_map
-
