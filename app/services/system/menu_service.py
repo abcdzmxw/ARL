@@ -152,6 +152,9 @@ def menu_page_list(args):
         for i in range(len(index)):
             # index[i][0] 获取字段里属性中的局部信息
             obj[index[i][0]] = row[i]
+        if obj["parent"] is not None:
+            obj["parent_dto"] = get_by_id(obj["parent"])
+
         menu_list.append(obj)
 
     # 关闭游标和数据库连接
