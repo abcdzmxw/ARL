@@ -8,7 +8,7 @@ from app.modules import TaskStatus, ErrorMsg, TaskSyncStatus, CeleryAction, Task
 from app.helpers import get_options_by_policy_id, submit_task_task, \
     submit_risk_cruising, get_scope_by_scope_id, check_target_in_scope
 from app.helpers.task import get_task_data, restart_task
-from ..services.system.menu_service import save_menu, menu_page_list, is_exist_menu_code, get_by_id
+from ..services.system.menu_service import save_menu, menu_page_list, is_exist_menu_code, get_by_id, update_menu
 
 ns = Namespace('menu', description="菜单管理")
 
@@ -59,6 +59,15 @@ add_menu_fields = ns.model('AddMenu', {
     'route': fields.String(required=False, description="前端路由编码")
 })
 
+update_menu_fields = ns.model('updateMenu', {
+    'menu_id': fields.String(required=True, description="菜单id"),
+    'menu_name': fields.String(required=True, description="菜单名称"),
+    'sort': fields.String(required=True, description="排序"),
+    'parent_id': fields.String(required=False, description="父菜单id"),
+    'click_uri': fields.String(required=False, description="uri"),
+    'route': fields.String(required=False, description="前端路由编码")
+})
+
 
 @ns.route('/')
 class ARLTask(ARLResource):
@@ -103,6 +112,42 @@ class ARLTask(ARLResource):
         """这里直接返回成功了"""
         return utils.build_ret(ErrorMsg.Success, inserted_id)
 
+    @auth
+    @ns.expect(update_menu_fields)
+    def patch(self):
+        """
+        修改菜单
+        """
+        args = self.parse_args(update_menu_fields)
+        menu_id = args.pop('menu_id')
+        menu_name = args.pop('menu_name')
+        sort = args.pop('sort')
+        parent_id = args.pop('parent_id', None)
+        click_uri = args.pop('click_uri', None)
+        route = args.pop('route', None)
+        logger.info("执行插入菜单入参：menu_name:{} sort:{} parent_id:{} click_uri:{} route:{}"
+                    .format(menu_name, sort, parent_id, click_uri, route))
+        # 判断是否存在记录
+        menu = get_by_id(menu_id=menu_id)
+        if menu is None:
+            return utils.return_msg(code=500, massage="菜单不存在", data=None)
+
+        # 父菜单传了的话，校验此菜单id是否存在
+        logger.info("通过菜单id查询菜单----parent_id:{}".format(parent_id))
+        if parent_id is not None:
+            menu = get_by_id(menu_id=parent_id)
+            logger.info("通过菜单id查询菜单----parent_id{},menu:{}".format(parent_id, menu))
+            if menu is None:
+                return utils.return_msg(code=500, massage="父菜单不存在", data=None)
+
+        try:
+            update_menu(menu_id=menu_id, menu_name=menu_name, sort=sort, parent_id=parent_id, click_uri=click_uri, route=route)
+        except Exception as e:
+            logger.exception(e)
+            return utils.build_ret(ErrorMsg.Error, {"error": str(e)})
+
+        """这里直接返回成功了"""
+        return utils.build_ret(ErrorMsg.Success, menu_id)
 
 @ns.route('/pageList')
 class MenuPageList(ARLResource):
@@ -127,10 +172,10 @@ class MenuPageList(ARLResource):
         return utils.build_ret(ErrorMsg.Success, data)
 
 
-@ns.route('/stop/<string:task_id>')
+@ns.route('/update/<string:task_id>')
 class StopTask(ARLResource):
     @auth
-    def get(self, task_id=None):
+    def patch(self, task_id=None):
         """
         任务停止
         """

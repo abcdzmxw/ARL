@@ -104,6 +104,31 @@ def save_menu(menu_name, menu_code, sort, parent_id, click_uri, route):
     return inserted_id
 
 
+def update_menu(menu_id,menu_name, sort, parent_id, click_uri, route):
+    logger.info("update_menu方法执行更新菜单----menu_id:{},menu_name:{} sort:{} parent_id:{} click_uri:{} route:{}"
+                .format(menu_id, menu_name, sort, parent_id, click_uri, route))
+
+    # 创建数据库连接
+    conn = pool.connection()
+
+    # 创建游标对象
+    cursor = conn.cursor()
+
+    # 执行插入语句
+    query = "UPDATE t_menu SET menu_name = %s, click_uri = %s, parent = %s, sort = %s, route = %s WHERE id = %s"
+    values = (menu_name, click_uri, parent_id, sort, route , menu_id)
+    cursor.execute(query, values)
+
+    # 提交更改
+    conn.commit()
+    logger.info("update_menu方法执行更新菜单完成")
+
+    # 关闭游标和数据库连接
+    cursor.close()
+    conn.close()
+
+
+
 def menu_page_list(args):
     page = args.pop("page", 1)
     size = args.pop("size", 10)
