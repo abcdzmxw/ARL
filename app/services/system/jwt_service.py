@@ -2,14 +2,14 @@
 
 
 # 生成 JWT
-def generate_jwt(payload, secret_key):
+def generate_jwt(payload=None, secret_key=None):
     token = ""
     # jwt.encode(payload=payload, key=secret_key, algorithm='HS256')
     return token
 
 
 # 解析 JWT
-def parse_jwt(token, secret_key):
+def parse_jwt(token=None, secret_key=None):
     # try:
     payload = ""
     # jwt.decode(jwt=token, key=secret_key, algorithms=['HS256'])
