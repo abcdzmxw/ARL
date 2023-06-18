@@ -20,6 +20,27 @@ pool = PooledDB(
 logger = utils.get_logger()
 
 
+def is_menu_code(menu_code):
+    # 创建数据库连接
+    conn = pool.connection()
+
+    # 创建游标对象
+    cursor = conn.cursor()
+
+    # 执行插入语句
+    query = "SELECT id,menu_name,menu_code, click_uri, parent, sort, route FROM t_menu WHERE menu_code= %s "
+    cursor.execute(query, menu_code)
+
+    # 获取查询结果
+    result = cursor.fetchone()
+    cursor.close()
+    conn.close()
+
+    # 获取记录数
+    count = result[0]
+    return count
+
+
 def save_menu(menu_name, menu_code, sort, parent_id, click_uri, route):
     logger.info("执行插入菜单----menu_name:{} menu_code:{} sort:{} parent_id:{} click_uri:{} route:{}".format(menu_name,
                                                                                                               menu_code,
