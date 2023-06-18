@@ -86,6 +86,7 @@ class Config(object):
 
     WEB_HOOK_URL = ""
     WEB_HOOK_TOKEN = ""
+    JWT_SECRET_KEY = ""
 
 
 try:
@@ -155,6 +156,9 @@ try:
 
         if y["EMAIL"].get("TO"):
             Config.EMAIL_TO = y["EMAIL"]["TO"]
+
+    if y.get("JWT_SECRET_KEY"):
+        Config.JWT_SECRET_KEY = y["JWT_SECRET_KEY"]
 
     # *** GITHUB TOKEN 配置 ***
     if y.get("GITHUB"):
