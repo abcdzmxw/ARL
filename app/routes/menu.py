@@ -86,9 +86,9 @@ class ARLTask(ARLResource):
             return utils.return_msg(code=500, massage="此编码已经存在了", data=None)
 
         # 父菜单传了的话，校验此菜单id是否存在
-        if parent_id:
+        if parent_id is not None:
             menu = get_by_id(menu_id=parent_id)
-            if menu is None:
+            if menu:
                 return utils.return_msg(code=500, massage="父菜单不存在", data=None)
 
         logger.info(

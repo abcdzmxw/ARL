@@ -21,6 +21,7 @@ logger = utils.get_logger()
 
 
 def get_by_id(menu_id):
+    logger.info("通过菜单id查询菜单----menu_id:{}".format(menu_id))
     # 创建数据库连接
     conn = pool.connection()
 
@@ -37,21 +38,14 @@ def get_by_id(menu_id):
     # 好像是打印字段的属性
     index = cursor.description
 
+    menu_obj = {}
     # 处理查询结果
     for row in results:
-        obj = {}
         # 处理每一行数据
         for i in range(len(index)):
             # index[i][0] 获取字段里属性中的局部信息
-            obj[index[i][0]] = row[i]
-
-    if obj:
-        menu_obj = obj
-        logger.info("查询的数据 :{}".format(obj))
-    else:
-        logger.info("查询的数据id:{}".format(menu_id))
-        menu_obj = None
-
+            menu_obj[index[i][0]] = row[i]
+    logger.info("通过菜单id查询菜单----menu_obj:{}".format(menu_obj))
     cursor.close()
     conn.close()
 
