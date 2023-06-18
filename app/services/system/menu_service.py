@@ -16,6 +16,12 @@ pool = PooledDB(
 logger = utils.get_logger()
 
 
+def generate_jwt(payload=None, secret_key=None):
+    token = ""
+    logger.info("进来了generate_jwt")
+    return token
+
+
 def get_by_id(menu_id):
     logger.info("通过菜单id查询菜单----menu_id:{}".format(menu_id))
     # 创建数据库连接

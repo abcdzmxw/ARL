@@ -1,5 +1,5 @@
 from flask import request
-from app.services.system.arl_jwt_service import generate_jwt
+from app.services.system.menu_service import generate_jwt
 from app.config import Config
 from . import gen_md5, random_choices
 from .conn import conn_db
