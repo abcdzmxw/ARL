@@ -67,7 +67,11 @@ def is_exist_menu_code(menu_code):
 
     # 获取记录数
     logger.info("result:{}".format(result))
-    count = result[0]
+
+    if result is None:
+        count = 0
+    else:
+        count = result[0]
 
     logger.info("count:{}".format(count))
     return count
