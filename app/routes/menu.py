@@ -8,7 +8,8 @@ from app.modules import TaskStatus, ErrorMsg, TaskSyncStatus, CeleryAction, Task
 from app.helpers import get_options_by_policy_id, submit_task_task, \
     submit_risk_cruising, get_scope_by_scope_id, check_target_in_scope
 from app.helpers.task import get_task_data, restart_task
-from ..services.system.menu_service import save_menu, menu_page_list, is_exist_menu_code, get_by_id, update_menu
+from ..services.system.menu_service import save_menu, menu_page_list, is_exist_menu_code, get_by_id, update_menu, \
+    delete_menu_by_id
 
 ns = Namespace('menu', description="菜单管理")
 
@@ -66,6 +67,10 @@ update_menu_fields = ns.model('updateMenu', {
     'parent_id': fields.String(required=False, description="父菜单id"),
     'click_uri': fields.String(required=False, description="uri"),
     'route': fields.String(required=False, description="前端路由编码")
+})
+
+delete_menu_fields = ns.model('deleteMenu', {
+    'menu_id': fields.String(required=True, description="菜单id")
 })
 
 
@@ -141,13 +146,31 @@ class ARLTask(ARLResource):
                 return utils.return_msg(code=500, massage="父菜单不存在", data=None)
 
         try:
-            update_menu(menu_id=menu_id, menu_name=menu_name, sort=sort, parent_id=parent_id, click_uri=click_uri, route=route)
+            update_menu(menu_id=menu_id, menu_name=menu_name, sort=sort, parent_id=parent_id, click_uri=click_uri,
+                        route=route)
         except Exception as e:
             logger.exception(e)
             return utils.build_ret(ErrorMsg.Error, {"error": str(e)})
 
         """这里直接返回成功了"""
         return utils.build_ret(ErrorMsg.Success, menu_id)
+
+    @auth
+    @ns.expect(delete_menu_fields)
+    def delete(self):
+        """
+        修改菜单
+        """
+        args = self.parse_args(delete_menu_fields)
+        menu_id = args.pop('menu_id')
+        try:
+            delete_menu_by_id(menu_id=menu_id)
+        except Exception as e:
+            logger.exception(e)
+            return utils.build_ret(ErrorMsg.Error, {"error": str(e)})
+
+        """这里直接返回成功了"""
+        return utils.return_msg(code=200, massage="删除成功")
 
 @ns.route('/pageList')
 class MenuPageList(ARLResource):
