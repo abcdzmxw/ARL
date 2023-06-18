@@ -85,6 +85,7 @@ class ARLTask(ARLResource):
         count = is_menu_code(menu_code)
         if count > 0:
             return utils.return_msg(code=500, massage="此编码已经存在了", data=None)
+
         logger.info("此编码不存在，可以进行插入：menu_code:{}".format(menu_code))
 
         try:

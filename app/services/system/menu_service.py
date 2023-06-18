@@ -70,6 +70,8 @@ def is_menu_code(menu_code):
 
     # 获取记录数
     count = result[0]
+
+    logger.info("count:{}".format(count))
     return count
 
 
