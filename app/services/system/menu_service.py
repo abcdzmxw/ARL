@@ -35,6 +35,7 @@ def get_by_id(menu_id):
     # 好像是打印字段的属性
     index = cursor.description
 
+    menu_obj = None
     # 处理查询结果
     for row in results:
         menu_obj = {}
