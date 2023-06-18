@@ -1,28 +1,20 @@
-from flask import request
+from flask import  request
 from app import modules
 from app.config import Config
 from . import gen_md5, random_choices
 from .conn import conn_db
-from ..services.system.jwt_service import generate_jwt
 
 salt = 'arlsalt!@#'
 
-
-def user_login(username=None, password=None):
+def user_login(username = None, password = None):
     if not username or not password:
         return
 
     query = {"username": username, "password": gen_md5(salt + password)}
 
     if conn_db('user').find_one(query):
-        payload = {'username': username}
-
-        # 生成 JWT
-        jwt_token = generate_jwt(payload, Config.JWT_SECRET_KEY)
-
         item = {
             "username": username,
-            "jwt_token": jwt_token,
             "token": gen_md5(random_choices(50)),
             "type": "login"
         }
@@ -43,24 +35,23 @@ def user_login_header():
         "type": "api"
     }
 
+
     if not token:
         return False
 
     if token == Config.API_KEY:
         return item
 
+
     data = conn_db('user').find_one({"token": token})
     if data:
-        payload = {'username': data.get("username")}
-        # 生成 JWT
-        jwt_token = generate_jwt(payload, Config.JWT_SECRET_KEY)
         item["username"] = data.get("username")
-        item["jwt_token"] = jwt_token
         item["token"] = token
         item["type"] = "login"
         return item
 
     return False
+
 
 
 def user_logout(token):
@@ -91,7 +82,7 @@ def auth(func):
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
         if Config.AUTH and not user_login_header():
-            return ret
+            return  ret
 
         return func(*args, **kwargs)
 
