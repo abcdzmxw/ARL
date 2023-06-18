@@ -40,11 +40,11 @@ def get_by_id(menu_id):
 
     menu_obj = {}
     # 处理查询结果
-    for row in results:
-        # 处理每一行数据
-        for i in range(len(index)):
-            # index[i][0] 获取字段里属性中的局部信息
-            menu_obj[index[i][0]] = row[i]
+    # for row in results:
+    #     # 处理每一行数据
+    #     for i in range(len(index)):
+    #         # index[i][0] 获取字段里属性中的局部信息
+    #         menu_obj[index[i][0]] = row[i]
     logger.info("通过菜单id查询菜单----menu_obj:{}".format(menu_obj))
     cursor.close()
     conn.close()
