@@ -1,5 +1,3 @@
-import re
-import bson
 from flask_restx import Resource, Api, reqparse, fields, Namespace
 from bson import ObjectId
 from app import celerytask
@@ -10,7 +8,7 @@ from app.modules import TaskStatus, ErrorMsg, TaskSyncStatus, CeleryAction, Task
 from app.helpers import get_options_by_policy_id, submit_task_task, \
     submit_risk_cruising, get_scope_by_scope_id, check_target_in_scope
 from app.helpers.task import get_task_data, restart_task
-from ..services.system.menu_service import save_menu, menu_page_list, is_menu_code
+from ..services.system.menu_service import save_menu, menu_page_list, is_exist_menu_code
 
 ns = Namespace('menu', description="菜单管理")
 
@@ -82,7 +80,7 @@ class ARLTask(ARLResource):
         logger.info("执行插入菜单入参：menu_name:{} menu_code:{} sort:{} parent_id:{} click_uri:{} route:{}"
                     .format(menu_name, menu_code, sort, parent_id, click_uri, route))
         # 判断是否存在记录
-        count = is_menu_code(menu_code)
+        count = is_exist_menu_code(menu_code)
         if count > 0:
             return utils.return_msg(code=500, massage="此编码已经存在了", data=None)
 

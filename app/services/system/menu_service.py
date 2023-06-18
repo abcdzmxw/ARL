@@ -1,7 +1,4 @@
-import json
 
-import bson
-import re
 import pymysql
 from app import utils
 from dbutils.pooled_db import PooledDB
@@ -52,7 +49,7 @@ logger = utils.get_logger()
 #     return menu_obj
 
 
-def is_menu_code(menu_code):
+def is_exist_menu_code(menu_code):
     # 创建数据库连接
     conn = pool.connection()
 
@@ -69,6 +66,7 @@ def is_menu_code(menu_code):
     conn.close()
 
     # 获取记录数
+    logger.info("result:{}".format(result))
     count = result[0]
 
     logger.info("count:{}".format(count))
