@@ -89,7 +89,7 @@ class ARLTask(ARLResource):
         if parent_id is not None:
             menu = get_by_id(menu_id=parent_id)
             logger.info("通过菜单id查询菜单----parent_id{},menu:{}".format(parent_id, menu))
-            if menu:
+            if menu is None:
                 return utils.return_msg(code=500, massage="父菜单不存在", data=None)
 
         try:

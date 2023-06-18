@@ -35,9 +35,9 @@ def get_by_id(menu_id):
     # 好像是打印字段的属性
     index = cursor.description
 
-    menu_obj = {}
     # 处理查询结果
     for row in results:
+        menu_obj = {}
         # 处理每一行数据
         for i in range(len(index)):
             # index[i][0] 获取字段里属性中的局部信息
