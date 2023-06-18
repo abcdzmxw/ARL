@@ -2,7 +2,7 @@ from flask import request
 from app.config import Config
 from . import gen_md5, random_choices
 from .conn import conn_db
-from jwt.api_jwt import PyJWT
+import jwt
 
 salt = 'arlsalt!@#'
 
@@ -16,7 +16,6 @@ def user_login(username=None, password=None):
     if conn_db('user').find_one(query):
         payload = {'username': username}
         secret_key = Config.JWT_SECRET_KEY
-        jwt_token = PyJWT.encode(payload=payload, key=secret_key, algorithm='HS256')
 
         item = {
             "username": username,
