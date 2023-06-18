@@ -8,7 +8,7 @@ from dbutils.pooled_db import PooledDB
 
 pool = PooledDB(
     creator=pymysql,  # 使用pymysql作为连接器
-    host='192.168.1.101',
+    host='192.168.1.104',
     user='root',
     password='Hjrtnbec*38',
     database='galaxy_arl',
