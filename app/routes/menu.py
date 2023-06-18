@@ -87,10 +87,10 @@ class ARLTask(ARLResource):
 
         # 父菜单传了的话，校验此菜单id是否存在
         logger.info("通过菜单id查询菜单----parent_id:{}".format(parent_id))
-        if parent_id is not None:
-            menu = get_by_id(menu_id=parent_id)
-            if menu:
-                return utils.return_msg(code=500, massage="父菜单不存在", data=None)
+        # if parent_id is not None:
+        #     menu = get_by_id(menu_id=parent_id)
+        #     if menu:
+        #         return utils.return_msg(code=500, massage="父菜单不存在", data=None)
 
         logger.info(
             "执行插入菜单----menu_name:{} menu_code:{} sort:{} parent_id:{} click_uri:{} route:{}".format(menu_name, menu_code, sort, parent_id, click_uri, route))
