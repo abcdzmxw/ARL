@@ -3,7 +3,7 @@ from flask import request
 from app.config import Config
 from . import gen_md5, random_choices
 from .conn import conn_db
-from app.services.system.jwt_service import generate_jwt
+
 
 salt = 'arlsalt!@#'
 
