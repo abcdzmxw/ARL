@@ -4,7 +4,7 @@ from dbutils.pooled_db import PooledDB
 
 pool = PooledDB(
     creator=pymysql,  # 使用pymysql作为连接器
-    host='192.168.1.104',
+    host='192.168.1.100',
     user='root',
     password='Hjrtnbec*38',
     database='galaxy_arl',
@@ -223,8 +223,9 @@ def get_menu_by_role_id(role_id):
     # 创建数据库连接
     conn = pool.connection()
     cursor = conn.cursor()
+    logger.info("准备执行。。。。。。")
     cursor.execute(query, role_id)
-
+    logger.info("准备完成。。。。。。")
     # 获取查询结果
     results = cursor.fetchall()
     menu_list = []
