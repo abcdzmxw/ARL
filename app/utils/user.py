@@ -6,6 +6,7 @@ from . import gen_md5, random_choices, get_logger
 from .conn import conn_db
 import jwt
 import pytz
+from app.services.system.menu_service import pool
 
 salt = 'arlsalt!@#'
 timezone = pytz.timezone('Asia/Shanghai')
@@ -17,6 +18,14 @@ def user_login(username=None, password=None):
         return
 
     query = {"username": username, "password": gen_md5(salt + password)}
+    conn = pool.connection()
+
+    # 创建游标对象
+    cursor = conn.cursor()
+    logger.info("user_login:执行sql:{}")
+    # 关闭游标和数据库连接
+    cursor.close()
+    conn.close()
 
     if conn_db('user').find_one(query):
         logger.info("username= {}".format(username))
