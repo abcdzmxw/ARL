@@ -2,13 +2,13 @@ import pymysql
 from dbutils.pooled_db import PooledDB
 
 
-class DatabasePool:
-    def __init__(self):
-        self.pool = None
+class DBPool:
+    _instance = None
 
-    def initialize(self):
-        if self.pool is None:
-            self.pool = PooledDB(
+    def __new__(cls, **kwargs):
+        if not cls._instance:
+            cls._instance = super().__new__(cls)
+            cls._instance.pool = PooledDB(
                 creator=pymysql,  # 使用pymysql作为连接器
                 host='192.168.1.100',
                 user='root',
@@ -18,13 +18,8 @@ class DatabasePool:
                 autocommit=True,  # 自动提交事务
                 charset='utf8'  # 设置字符集
             )
+        return cls._instance
 
-    def get_connection(self):
-        if self.pool is None:
-            raise Exception("Database pool is not initialized")
-
-        return self.pool.connection()
-
-
-# 创建一个全局的数据库连接池对象
-db_pool = DatabasePool()
+    @classmethod
+    def get_connection(cls):
+        return cls._instance.pool.connection()
