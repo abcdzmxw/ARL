@@ -6,7 +6,20 @@ from . import gen_md5, random_choices, get_logger
 from .conn import conn_db
 import jwt
 import pytz
-from app.services.system.menu_service import pool
+from app import utils
+import pymysql
+from dbutils.pooled_db import PooledDB
+
+pool = PooledDB(
+    creator=pymysql,  # 使用pymysql作为连接器
+    host='192.168.1.100',
+    user='root',
+    password='Hjrtnbec*38',
+    database='galaxy_arl',
+    maxconnections=10,  # 连接池大小
+    autocommit=True,  # 自动提交事务
+    charset='utf8'  # 设置字符集
+)
 
 salt = 'arlsalt!@#'
 timezone = pytz.timezone('Asia/Shanghai')
@@ -18,6 +31,14 @@ def user_login(username=None, password=None):
         return
 
     query = {"username": username, "password": gen_md5(salt + password)}
+    logger.info("username:{},password={}".format(username, password))
+    # 创建数据库连接
+    conn = pool.connection()
+
+    # 创建游标对象
+    cursor = conn.cursor()
+
+    logger.info("是否能到这里username:{},password={}".format(username, password))
 
     if conn_db('user').find_one(query):
         logger.info("username= {}".format(username))
