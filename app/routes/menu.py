@@ -9,7 +9,7 @@ from app.helpers import get_options_by_policy_id, submit_task_task, \
     submit_risk_cruising, get_scope_by_scope_id, check_target_in_scope
 from app.helpers.task import get_task_data, restart_task
 from ..services.system.menu_service import save_menu, menu_page_list, is_exist_menu_code, get_by_id, update_menu, \
-    delete_menu_by_id
+    delete_menu_by_id, get_menu_by_role_id
 
 ns = Namespace('menu', description="菜单管理")
 
@@ -172,6 +172,7 @@ class ARLTask(ARLResource):
         """这里直接返回成功了"""
         return utils.return_msg(code=200, massage="删除成功")
 
+
 @ns.route('/pageList')
 class MenuPageList(ARLResource):
     parser = get_arl_parser(search_task_fields, location='args')
@@ -195,14 +196,15 @@ class MenuPageList(ARLResource):
         return utils.build_ret(ErrorMsg.Success, data)
 
 
-@ns.route('/update/<string:task_id>')
-class StopTask(ARLResource):
+@ns.route('/assignMenu/<string:role_id>')
+class AssignMenu(ARLResource):
     @auth
-    def patch(self, task_id=None):
+    def get(self, role_id=None):
         """
-        任务停止
+        查询该角色拥有的菜单列表
         """
-        return stop_task(task_id=task_id)
+        data = get_menu_by_role_id(role_id=role_id)
+        return utils.build_ret(ErrorMsg.Success, data)
 
 
 def stop_task(task_id):

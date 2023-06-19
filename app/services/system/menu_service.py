@@ -213,3 +213,36 @@ def menu_page_list(args):
     }
 
     return result
+
+
+def get_menu_by_role_id(role_id):
+    # 执行分页查询
+    query = "SELECT m.id,m.menu_name,m.menu_code, m.click_uri, m.parent, m.sort, m.route FROM t_menu m JOIN t_role_menu rm ON m.id=rm.menu_id JOIN t_role r ON rm.role_id=r.id WHERE r.id=%s"
+
+    # 创建数据库连接
+    conn = pool.connection()
+    cursor = conn.cursor()
+    cursor.execute(query, role_id)
+
+    # 获取查询结果
+    results = cursor.fetchall()
+    menu_list = []
+    logger.info("query:{}, role_id:{}".format(query, role_id))
+    # 好像是打印字段的属性
+    index = cursor.description
+
+    # 处理查询结果
+    for row in results:
+        # 处理每一行数据
+        obj = {}
+        for i in range(len(index)):
+            # index[i][0] 获取字段里属性中的局部信息
+            obj[index[i][0]] = row[i]
+
+        menu_list.append(obj)
+
+    # 关闭游标和数据库连接
+    cursor.close()
+    conn.close()
+    logger.info("query:{}, role_id:{},menu_list:{}".format(query, role_id, menu_list))
+    return menu_list
