@@ -1,5 +1,5 @@
 import datetime
-
+from flask import g
 from flask import request
 from app.config import Config
 from . import gen_md5, random_choices, get_logger
@@ -43,7 +43,7 @@ def user_login(username=None, password=None):
         item = {
             "username": username,
             "jwt_token": jwt_token,
-            "token": token,
+            "token": jwt_token,
             "type": "login"
         }
         conn_db('user').update_one(query, {"$set": {"token": item["token"]}})
@@ -54,6 +54,8 @@ def user_login(username=None, password=None):
 def user_login_header():
     token = request.headers.get("Token") or request.args.get("token")
     jwt_token = request.headers.get("jwt_token") or request.args.get("jwt_token")
+
+    # 这里进行jwt_token校验 TODO
 
     if not Config.AUTH:
         return True
@@ -112,7 +114,20 @@ def auth(func):
         if Config.AUTH and not user_login_header():
             return ret
         logger.info("auth wrapper token2={}".format(token))
+        secret_key = Config.JWT_SECRET_KEY
+        try:
+            decoded_payload = jwt.decode(jwt=token, key=secret_key, algorithms=['HS256'])
+            logger.info("auth wrapper decoded_payload={}".format(decoded_payload))
+        except jwt.DecodeError:
+            # JWT 解码错误
+            return ret
+        except jwt.ExpiredSignatureError:
+            # JWT 过期错误
+            return ret
+
+        # 登录成功，将当前登录账户存储到 g 中
+        g.current_user = decoded_payload['username']
+
         return func(*args, **kwargs)
 
-    logger.info("auth wrapper -----------")
     return wrapper
