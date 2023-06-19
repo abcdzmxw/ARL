@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from flask import request
 from app.config import Config
 from . import gen_md5, random_choices, get_logger
@@ -20,6 +22,10 @@ def user_login(username=None, password=None):
         payload = {'username': username}
         secret_key = Config.JWT_SECRET_KEY
         logger.info("secret_key= {}".format(secret_key))
+        # 设置过期时间
+        exp = datetime.datetime.utcnow() + datetime.timedelta(seconds=86400)
+        payload['exp'] = exp
+        logger.info("exp= {}".format(exp))
         try:
             jwt_token = jwt.encode(payload=payload, key=secret_key, algorithm='HS256')
         except Exception as e:
