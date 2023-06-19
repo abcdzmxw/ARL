@@ -203,6 +203,7 @@ class AssignMenu(ARLResource):
         """
         查询该角色拥有的菜单列表
         """
+        logger.info("role_id.....{}".format(role_id))
         data = get_menu_by_role_id(role_id=role_id)
         return utils.build_ret(ErrorMsg.Success, data)
 
