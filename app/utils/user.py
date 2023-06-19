@@ -74,14 +74,13 @@ def user_login(username=None, password=None):
             "token": jwt_token,
             "type": "login"
         }
-        conn_db('user').update_one(query, {"$set": {"token": item["token"]}})
+        # conn_db('user').update_one(query, {"$set": {"token": item["token"]}})
 
         return item
 
 
 def user_login_header():
     token = request.headers.get("Token") or request.args.get("token")
-    jwt_token = request.headers.get("jwt_token") or request.args.get("jwt_token")
 
     # 这里进行jwt_token校验 TODO
 
@@ -100,9 +99,12 @@ def user_login_header():
     if token == Config.API_KEY:
         return item
 
-    data = conn_db('user').find_one({"token": token})
-    if data:
-        item["username"] = data.get("username")
+    secret_key = Config.JWT_SECRET_KEY
+    payload = jwt.decode(jwt=token, key=secret_key, algorithms=['HS256'])
+
+    # data = conn_db('user').find_one({"token": token})
+    if payload:
+        item["username"] = payload['username']
         item["token"] = token
         item["type"] = "login"
         return item
@@ -112,16 +114,44 @@ def user_login_header():
 
 def user_logout(token):
     if user_login_header():
-        conn_db('user').update_one({"token": token}, {"$set": {"token": None}})
+        logger.info("user_logout: 这里不执行 conn_db('user')")
+        # conn_db('user').update_one({"token": token}, {"$set": {"token": None}})
 
 
 def change_pass(token, old_password, new_password):
-    query = {"token": token, "password": gen_md5(salt + old_password)}
-    data = conn_db('user').find_one(query)
-    if data:
-        conn_db('user').update_one({"token": token}, {"$set": {"password": gen_md5(salt + new_password)}})
+    # query = {"token": token, "password": gen_md5(salt + old_password)}
+    # data = conn_db('user').find_one(query)
+    secret_key = Config.JWT_SECRET_KEY
+    payload = jwt.decode(jwt=token, key=secret_key, algorithms=['HS256'])
+
+    logger.info("修改密码payload={}".format(payload))
+    conn = pool.connection()
+
+    # 创建游标对象
+    cursor = conn.cursor()
+    username = payload['username']
+    # 执行查询语句
+    query_sql = "SELECT count(*) FROM t_user u WHERE u.username=%s  AND u.password=%s "
+    logger.info("query_sql={}".format(query_sql))
+    values = (username, gen_md5(salt + old_password))
+    cursor.execute(query_sql, values)
+    query_total = cursor.fetchone()[0]
+    logger.info("query_total={}".format(query_total))
+
+    if query_total > 0:
+        # conn_db('user').update_one({"token": token}, {"$set": {"password": gen_md5(salt + new_password)}})
+        update_sql = "UPDATE t_user SET password = %s WHERE username = %s"
+        cursor.execute(update_sql, values)
+        conn.commit()
+        # 关闭游标和数据库连接
+        cursor.close()
+        conn.close()
+
         return True
     else:
+        # 关闭游标和数据库连接
+        cursor.close()
+        conn.close()
         return False
 
 
