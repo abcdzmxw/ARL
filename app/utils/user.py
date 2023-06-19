@@ -35,11 +35,13 @@ def user_login(username=None, password=None):
         except Exception as e:
             logger.info(str(e))
 
-        logger.info("jwt_token= {}".format(jwt_token))
+        token = gen_md5(random_choices(50))
+
+        logger.info("jwt_token= {}, token={}".format(jwt_token, token))
         item = {
             "username": username,
             "jwt_token": jwt_token,
-            "token": gen_md5(random_choices(50)),
+            "token": token,
             "type": "login"
         }
         conn_db('user').update_one(query, {"$set": {"token": item["token"]}})
@@ -49,6 +51,7 @@ def user_login(username=None, password=None):
 
 def user_login_header():
     token = request.headers.get("Token") or request.args.get("token")
+    jwt_token = request.headers.get("jwt_token") or request.args.get("jwt_token")
 
     if not Config.AUTH:
         return True
