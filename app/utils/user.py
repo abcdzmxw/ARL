@@ -1,4 +1,4 @@
-from datetime import datetime
+import datetime
 
 from flask import request
 from app.config import Config
