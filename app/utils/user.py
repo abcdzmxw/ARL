@@ -30,12 +30,14 @@ def user_login(username=None, password=None):
         exp = current_time + datetime.timedelta(seconds=86400)
         payload['exp'] = exp
         logger.info("exp= {}".format(exp))
+
+        token = gen_md5(random_choices(50))
+        payload['token'] = token
+
         try:
             jwt_token = jwt.encode(payload=payload, key=secret_key, algorithm='HS256')
         except Exception as e:
             logger.info(str(e))
-
-        token = gen_md5(random_choices(50))
 
         logger.info("jwt_token= {}, token={}".format(jwt_token, token))
         item = {
