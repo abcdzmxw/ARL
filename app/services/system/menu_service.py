@@ -216,9 +216,10 @@ def menu_page_list(args):
 
 
 def get_menu_by_role_id(role_id):
+    logger.info("query:{}, role_id:{}".format(query, role_id))
     # 执行分页查询
     query = "SELECT m.id,m.menu_name,m.menu_code, m.click_uri, m.parent, m.sort, m.route FROM t_menu m JOIN t_role_menu rm ON m.id=rm.menu_id JOIN t_role r ON rm.role_id=r.id WHERE r.id=%s"
-
+    logger.info("query:{}, role_id:{}".format(query, role_id))
     # 创建数据库连接
     conn = pool.connection()
     cursor = conn.cursor()
