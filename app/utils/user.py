@@ -5,9 +5,10 @@ from app.config import Config
 from . import gen_md5, random_choices, get_logger
 from .conn import conn_db
 import jwt
+import pytz
 
 salt = 'arlsalt!@#'
-
+timezone = pytz.timezone('Asia/Shanghai')
 logger = get_logger()
 
 
@@ -23,7 +24,10 @@ def user_login(username=None, password=None):
         secret_key = Config.JWT_SECRET_KEY
         logger.info("secret_key= {}".format(secret_key))
         # 设置过期时间
-        exp = datetime.datetime.utcnow() + datetime.timedelta(seconds=86400)
+
+        # 获取当前时间，使用指定时区
+        current_time = datetime.datetime.now(timezone)
+        exp = current_time + datetime.timedelta(seconds=86400)
         payload['exp'] = exp
         logger.info("exp= {}".format(exp))
         try:

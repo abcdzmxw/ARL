@@ -19,3 +19,4 @@ crontab==0.23.0
 PyMySQL
 DBUtils
 PyJWT==2.4.0
+pytz~=2023.3
