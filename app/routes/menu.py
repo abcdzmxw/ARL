@@ -9,7 +9,8 @@ from app.helpers import get_options_by_policy_id, submit_task_task, \
     submit_risk_cruising, get_scope_by_scope_id, check_target_in_scope
 from app.helpers.task import get_task_data, restart_task
 from ..services.system.menu_service import save_menu, menu_page_list, is_exist_menu_code, get_by_id, update_menu, \
-    delete_menu_by_id, get_menu_by_role_id
+    delete_menu_by_id, get_menu_by_role_id, get_user_menu_list
+from flask import g
 
 ns = Namespace('menu', description="菜单管理")
 
@@ -208,30 +209,18 @@ class AssignMenu(ARLResource):
         return utils.build_ret(ErrorMsg.Success, data)
 
 
-def stop_task(task_id):
-    """任务停止"""
-    done_status = [TaskStatus.DONE, TaskStatus.STOP, TaskStatus.ERROR]
+@ns.route('/getUserMenuList')
+class UserMenu(ARLResource):
+    @auth
+    def get(self):
+        """
+        查询用户菜单列表
+        """
+        current_user = g.get('current_user')
+        logger.info("current_user.....{}".format(current_user))
 
-    task_data = utils.conn_db('task').find_one({'_id': ObjectId(task_id)})
-    if not task_data:
-        return utils.build_ret(ErrorMsg.NotFoundTask, {"task_id": task_id})
-
-    if task_data["status"] in done_status:
-        return utils.build_ret(ErrorMsg.TaskIsDone, {"task_id": task_id})
-
-    celery_id = task_data.get("celery_id")
-    if not celery_id:
-        return utils.build_ret(ErrorMsg.CeleryIdNotFound, {"task_id": task_id})
-
-    control = celerytask.celery.control
-
-    control.revoke(celery_id, signal='SIGTERM', terminate=True)
-
-    utils.conn_db('task').update_one({'_id': ObjectId(task_id)}, {"$set": {"status": TaskStatus.STOP}})
-
-    utils.conn_db('task').update_one({'_id': ObjectId(task_id)}, {"$set": {"end_time": utils.curr_date()}})
-
-    return utils.build_ret(ErrorMsg.Success, {"task_id": task_id})
+        data = get_user_menu_list(username=current_user)
+        return utils.build_ret(ErrorMsg.Success, data)
 
 
 delete_task_fields = ns.model('DeleteTask', {

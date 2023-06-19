@@ -248,3 +248,37 @@ def get_menu_by_role_id(role_id):
     conn.close()
     logger.info("query:{}, role_id:{},menu_list:{}".format(query, role_id, menu_list))
     return menu_list
+
+
+def get_user_menu_list(username):
+    logger.info("get_user_menu_list,username:{}".format(username))
+    # 执行分页查询
+    query = "SELECT m.id,m.menu_name,m.menu_code, m.click_uri, m.parent, m.sort, m.route FROM t_menu m JOIN t_role_menu rm ON m.id=rm.menu_id JOIN t_role r ON rm.role_id=r.id JOIN t_user_role ur ON r.id=ur.role_id JOIN t_user u ON ur.user_id=u.id WHERE u.id=%s"
+    logger.info("query:{}, username:{}".format(query, username))
+    # 创建数据库连接
+    conn = pool.connection()
+    cursor = conn.cursor()
+    logger.info("准备执行。。。。。。")
+    cursor.execute(query, username)
+    logger.info("准备完成。。。。。。")
+    # 获取查询结果
+    results = cursor.fetchall()
+    menu_list = []
+    # 好像是打印字段的属性
+    index = cursor.description
+
+    # 处理查询结果
+    for row in results:
+        # 处理每一行数据
+        obj = {}
+        for i in range(len(index)):
+            # index[i][0] 获取字段里属性中的局部信息
+            obj[index[i][0]] = row[i]
+
+        menu_list.append(obj)
+
+    # 关闭游标和数据库连接
+    cursor.close()
+    conn.close()
+    logger.info("query:{}, username:{},menu_list:{}".format(query, username, menu_list))
+    return menu_list
