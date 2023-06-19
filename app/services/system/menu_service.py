@@ -1,6 +1,18 @@
+import pymysql
 
 from app import utils
-from app.utils.pooled_db import DBPool
+from dbutils.pooled_db import PooledDB
+
+pool = PooledDB(
+    creator=pymysql,  # 使用pymysql作为连接器
+    host='192.168.1.100',
+    user='root',
+    password='Hjrtnbec*38',
+    database='galaxy_arl',
+    maxconnections=10,  # 连接池大小
+    autocommit=True,  # 自动提交事务
+    charset='utf8'  # 设置字符集
+)
 
 logger = utils.get_logger()
 
@@ -8,7 +20,7 @@ logger = utils.get_logger()
 def get_by_id(menu_id):
     logger.info("通过菜单id查询菜单----menu_id:{}".format(menu_id))
     # 创建数据库连接
-    conn = DBPool.get_connection()
+    conn = pool.connection()
 
     # 创建游标对象
     cursor = conn.cursor()
@@ -40,7 +52,7 @@ def get_by_id(menu_id):
 
 def is_exist_menu_code(menu_code):
     # 创建数据库连接
-    conn = DBPool.get_connection()
+    conn = pool.connection()
 
     # 创建游标对象
     cursor = conn.cursor()
@@ -71,7 +83,7 @@ def save_menu(menu_name, menu_code, sort, parent_id, click_uri, route):
                 .format(menu_name, menu_code, sort, parent_id, click_uri, route))
 
     # 创建数据库连接
-    conn = DBPool.get_connection()
+    conn = pool.connection()
 
     # 创建游标对象
     cursor = conn.cursor()
@@ -97,7 +109,7 @@ def update_menu(menu_id, menu_name, sort, parent_id, click_uri, route):
                 .format(menu_id, menu_name, sort, parent_id, click_uri, route))
 
     # 创建数据库连接
-    conn = DBPool.get_connection()
+    conn = pool.connection()
 
     # 创建游标对象
     cursor = conn.cursor()
@@ -118,7 +130,7 @@ def update_menu(menu_id, menu_name, sort, parent_id, click_uri, route):
 
 def delete_menu_by_id(menu_id):
     # 创建数据库连接
-    conn = DBPool.get_connection()
+    conn = pool.connection()
 
     # 创建游标对象
     cursor = conn.cursor()
@@ -160,7 +172,7 @@ def menu_page_list(args):
     offset = (page - 1) * size
     query += " LIMIT " + str(size) + " OFFSET " + str(offset)
     # 创建数据库连接
-    conn = DBPool.get_connection()
+    conn = pool.connection()
 
     cursor = conn.cursor()
     query_total = cursor.execute(count_query_sql)
@@ -210,7 +222,7 @@ def get_menu_by_role_id(role_id):
     query = "SELECT m.id,m.menu_name,m.menu_code, m.click_uri, m.parent, m.sort, m.route FROM t_menu m JOIN t_role_menu rm ON m.id=rm.menu_id JOIN t_role r ON rm.role_id=r.id WHERE r.id=%s"
     logger.info("query:{}, role_id:{}".format(query, role_id))
     # 创建数据库连接
-    conn = DBPool.get_connection()
+    conn = pool.connection()
     cursor = conn.cursor()
     logger.info("准备执行。。。。。。")
     cursor.execute(query, role_id)
@@ -245,7 +257,7 @@ def get_user_menu_list(username):
     query = "SELECT m.id,m.menu_name,m.menu_code, m.click_uri, m.parent, m.sort, m.route FROM t_menu m JOIN t_role_menu rm ON m.id=rm.menu_id JOIN t_role r ON rm.role_id=r.id JOIN t_user_role ur ON r.id=ur.role_id JOIN t_user u ON ur.user_id=u.id WHERE u.username=%s"
     logger.info("query:{}, username:{}".format(query, username))
     # 创建数据库连接
-    conn = DBPool.get_connection()
+    conn = pool.connection()
     cursor = conn.cursor()
     logger.info("准备执行。。。。。。")
     cursor.execute(query, username)
@@ -271,3 +283,4 @@ def get_user_menu_list(username):
     conn.close()
     logger.info("query:{}, username:{},menu_list:{}".format(query, username, menu_list))
     return menu_list
+
