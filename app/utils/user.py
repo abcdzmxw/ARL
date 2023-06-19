@@ -207,8 +207,11 @@ def auth(func):
         query_total = cursor.fetchone()[0]
         logger.info("query_total={},username={},token={}".format(query_total, username, token))
         if query_total == 0:
+            logger.info(
+                "进入返回 {}".format(ret))
             return ret
 
+        logger.info("查询不到数据不会执行到这里query_total:{},username={},token={}".format(query_total, username, token))
         # 登录成功，将当前登录账户存储到 g 中
         g.current_user = decoded_payload['username']
 
