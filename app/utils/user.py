@@ -141,7 +141,8 @@ def change_pass(token, old_password, new_password):
     if query_total > 0:
         # conn_db('user').update_one({"token": token}, {"$set": {"password": gen_md5(salt + new_password)}})
         update_sql = "UPDATE t_user SET password = %s WHERE username = %s"
-        cursor.execute(update_sql, values)
+        new_values = (username, gen_md5(salt + new_password))
+        cursor.execute(update_sql, new_values)
         conn.commit()
         # 关闭游标和数据库连接
         cursor.close()
