@@ -198,13 +198,14 @@ def auth(func):
         conn = pool.connection()
         cursor = conn.cursor()
         username = decoded_payload['username']
+        logger.info("username={},token={}".format(username, token))
         # 执行查询语句
         query_sql = "SELECT count(*) FROM t_user u WHERE u.username=%s  AND u.token=%s "
         logger.info("query_sql={}".format(query_sql))
         values = (username, token)
         cursor.execute(query_sql, values)
         query_total = cursor.fetchone()[0]
-
+        logger.info("query_total={},username={},token={}".format(query_total, username, token))
         if query_total == 0:
             return ret
 
