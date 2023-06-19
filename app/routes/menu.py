@@ -196,7 +196,7 @@ class MenuPageList(ARLResource):
         return utils.build_ret(ErrorMsg.Success, data)
 
 
-@ns.route('/assignMenu/<string:role_id>')
+@ns.route('/assignMenu/<int:role_id>')
 class AssignMenu(ARLResource):
     @auth
     def get(self, role_id=None):
