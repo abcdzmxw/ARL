@@ -6,6 +6,7 @@ from . import gen_md5, random_choices, get_logger
 from .conn import conn_db
 import jwt
 import pytz
+from app.services.system.menu_service import pool
 
 salt = 'arlsalt!@#'
 timezone = pytz.timezone('Asia/Shanghai')
