@@ -38,17 +38,11 @@ def user_login(username=None, password=None):
     # 创建游标对象
     cursor = conn.cursor()
 
-    logger.info("是否能到这里username:{},password={}".format(username, password))
-    conn = pool.connection()
-
-    # 创建游标对象
-    cursor = conn.cursor()
-
     # 执行查询语句
-    query = "SELECT count(*) FROM t_user u WHERE u.username=%s  AND u.password=%s "
-    logger.info("query={}".format(query))
+    db_query = "SELECT count(*) FROM t_user u WHERE u.username=%s  AND u.password=%s "
+    logger.info("query={}".format(db_query))
     values = (username, gen_md5(salt + password))
-    cursor.execute(query, values)
+    cursor.execute(db_query, values)
     query_total = cursor.fetchone()[0]
     logger.info("query_total={}".format(query_total))
 
