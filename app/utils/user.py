@@ -25,7 +25,8 @@ def user_login(username=None, password=None):
     cursor = conn.cursor()
 
     # 执行查询语句
-    query = "SELECT * FROM t_user u WHERE u.username=%s  AND u.password=%s "
+    query = "SELECT count(*) FROM t_user u WHERE u.username=%s  AND u.password=%s "
+    logger.info("query={}".format(query))
     values = (username, gen_md5(salt + password))
     query_total = cursor.execute(query, values)
     logger.info("query_total={}".format(query_total))
