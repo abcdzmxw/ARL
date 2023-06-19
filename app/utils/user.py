@@ -7,8 +7,6 @@ from .conn import conn_db
 import jwt
 import pytz
 
-from ..services.system.menu_service import pool
-
 salt = 'arlsalt!@#'
 timezone = pytz.timezone('Asia/Shanghai')
 logger = get_logger()
@@ -19,19 +17,8 @@ def user_login(username=None, password=None):
         return
 
     query = {"username": username, "password": gen_md5(salt + password)}
-    conn = pool.connection()
 
-    # 创建游标对象
-    cursor = conn.cursor()
-
-    # 执行查询语句
-    query = "SELECT count(*) FROM t_user u WHERE u.username=%s  AND u.password=%s "
-    logger.info("query={}".format(query))
-    values = (username, gen_md5(salt + password))
-    query_total = cursor.execute(query, values)
-    logger.info("query_total={}".format(query_total))
-
-    if query_total > 0:
+    if conn_db('user').find_one(query):
         logger.info("username= {}".format(username))
         payload = {'username': username}
         secret_key = Config.JWT_SECRET_KEY
