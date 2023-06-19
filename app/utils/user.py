@@ -107,9 +107,12 @@ def auth(func):
 
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
+        token = request.headers.get("Token") or request.args.get("token")
+        logger.info("auth wrapper token1={}".format(token))
         if Config.AUTH and not user_login_header():
             return ret
-
+        logger.info("auth wrapper token2={}".format(token))
         return func(*args, **kwargs)
 
+    logger.info("auth wrapper -----------")
     return wrapper
