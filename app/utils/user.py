@@ -30,7 +30,7 @@ def user_login(username=None, password=None):
     if not username or not password:
         return
 
-    query = {"username": username, "password": gen_md5(salt + password)}
+    # query = {"username": username, "password": gen_md5(salt + password)}
     logger.info("username:{},password={}".format(username, password))
     # 创建数据库连接
     conn = pool.connection()
@@ -75,6 +75,17 @@ def user_login(username=None, password=None):
             "type": "login"
         }
         # conn_db('user').update_one(query, {"$set": {"token": item["token"]}})
+        conn = pool.connection()
+
+        # 创建游标对象
+        cursor = conn.cursor()
+        update_sql = "UPDATE t_user SET token = %s WHERE username = %s"
+        new_values = (jwt_token, username)
+        cursor.execute(update_sql, new_values)
+        conn.commit()
+        # 关闭游标和数据库连接
+        cursor.close()
+        conn.close()
 
         return item
 
@@ -131,9 +142,9 @@ def change_pass(token, old_password, new_password):
     cursor = conn.cursor()
     username = payload['username']
     # 执行查询语句
-    query_sql = "SELECT count(*) FROM t_user u WHERE u.username=%s  AND u.password=%s "
+    query_sql = "SELECT count(*) FROM t_user u WHERE u.username=%s  AND u.password=%s AND u.token=%s "
     logger.info("query_sql={}".format(query_sql))
-    values = (username, gen_md5(salt + old_password))
+    values = (username, gen_md5(salt + old_password), token)
     cursor.execute(query_sql, values)
     query_total = cursor.fetchone()[0]
     logger.info("query_total={}".format(query_total))
@@ -141,7 +152,7 @@ def change_pass(token, old_password, new_password):
     if query_total > 0:
         # conn_db('user').update_one({"token": token}, {"$set": {"password": gen_md5(salt + new_password)}})
         update_sql = "UPDATE t_user SET password = %s WHERE username = %s"
-        new_values = (username, gen_md5(salt + new_password))
+        new_values = (gen_md5(salt + new_password), username)
         cursor.execute(update_sql, new_values)
         conn.commit()
         # 关闭游标和数据库连接
@@ -182,6 +193,19 @@ def auth(func):
             return ret
         except jwt.ExpiredSignatureError:
             # JWT 过期错误
+            return ret
+
+        conn = pool.connection()
+        cursor = conn.cursor()
+        username = decoded_payload['username']
+        # 执行查询语句
+        query_sql = "SELECT count(*) FROM t_user u WHERE u.username=%s  AND u.token=%s "
+        logger.info("query_sql={}".format(query_sql))
+        values = (username, token)
+        cursor.execute(query_sql, values)
+        query_total = cursor.fetchone()[0]
+
+        if query_total == 0:
             return ret
 
         # 登录成功，将当前登录账户存储到 g 中
