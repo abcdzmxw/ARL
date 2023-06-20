@@ -225,7 +225,7 @@ def reset_password(user_id, password):
     # 执行查询语句
     update_sql = "Update t_user set password=%s, token= null Where user_id=%s "
 
-    values = (user_id, gen_md5(salt + password))
+    values = (gen_md5(salt + password), user_id)
     cursor.execute(update_sql, values)
 
     conn.commit()
