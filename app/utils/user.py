@@ -215,3 +215,21 @@ def auth(func):
         return func(*args, **kwargs)
 
     return wrapper
+
+
+def reset_password(user_id, password):
+    conn = pool.connection()
+
+    # 创建游标对象
+    cursor = conn.cursor()
+    # 执行查询语句
+    update_sql = "Update t_user set password=%s, token= null Where user_id=%s "
+
+    values = (user_id, gen_md5(salt + password))
+    cursor.execute(update_sql, values)
+
+    conn.commit()
+    # 关闭游标和数据库连接
+    cursor.close()
+    conn.close()
+

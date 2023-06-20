@@ -7,6 +7,7 @@ from ..modules import ErrorMsg
 from ..services.system.role_service import get_by_role_id, delete_user_role, save_user_role
 from ..services.system.user_service import user_page_list, is_exist_user, save_user, get_by_user_id, update_user, \
     delete_by_user_id
+from ..utils.user import reset_password
 
 ns = Namespace('user', description="管理员登录认证")
 
@@ -280,3 +281,27 @@ class UserAssignRole(ARLResource):
         save_user_role(user_id=arl_user['id'], role_id_str=role_id_str)
 
         return utils.build_ret(ErrorMsg.Success, "分配成功!")
+
+
+reset_pass_fields = ns.model('ResetPassARL', {
+    'password': fields.String(required=True, description="密码"),
+    'user_id': fields.String(required=True, description="用户id")
+})
+
+
+@ns.route('/reset_password')
+class ResetPassARL(ARLResource):
+    @ns.expect(reset_pass_fields)
+    def post(self):
+        """
+        给用户重置密码
+        """
+        args = self.parse_args(reset_pass_fields)
+        user_id = args.pop('user_id')
+        password = args.pop('password')
+        arl_user = get_by_user_id(user_id=user_id)
+        if arl_user is None:
+            return utils.return_msg(code=500, massage="用户不存在", data=None)
+
+        reset_password(user_id=user_id,password=password)
+        return utils.build_ret(ErrorMsg.Success, "密码重置成功!")
