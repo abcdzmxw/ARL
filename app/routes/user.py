@@ -3,10 +3,10 @@ from flask_restx import fields, Namespace
 from app.utils import get_logger, auth
 from app import utils
 from . import ARLResource, get_arl_parser
-from app import modules
 from ..modules import ErrorMsg
+from ..services.system.role_service import get_by_role_id, delete_user_role, save_user_role
 from ..services.system.user_service import user_page_list, is_exist_user, save_user, get_by_user_id, update_user, \
-    delete_by_user_id, get_by_role_id, save_user_role, delete_user_role
+    delete_by_user_id
 
 ns = Namespace('user', description="管理员登录认证")
 
@@ -244,7 +244,7 @@ class DetailUser(ARLResource):
         return utils.build_ret(ErrorMsg.Success, arl_user)
 
 
-assign_user_role_fields = ns.model('assignMenu', {
+assign_user_role_fields = ns.model('assignRole', {
     'role_id': fields.String(required=True, description="角色id")
 })
 

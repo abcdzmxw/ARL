@@ -1,6 +1,5 @@
 import re
-from flask_restx import Resource, Api, reqparse, fields
-from app import modules
+from flask_restx import Resource, reqparse, fields
 from bson.objectid import ObjectId
 from datetime import datetime
 from urllib.parse import quote
@@ -245,7 +244,7 @@ def get_arl_parser(model, location='args'):
 
 from .task import ns as task_ns
 from .menu import ns as menu_ns
-from .arl_user import ns as arl_user_ns
+from .role import ns as role_ns
 from .domain import ns as domain_ns
 from .site import ns as site_ns
 from .ip import ns as ip_ns

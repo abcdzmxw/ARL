@@ -21,6 +21,9 @@ logger = utils.get_logger()
 
 
 def user_page_list(args):
+    """
+    分页查询用户列表
+    """
     page = args.pop("page", 1)
     size = args.pop("size", 10)
     username = args.pop("username")
@@ -29,7 +32,7 @@ def user_page_list(args):
     # 执行分页查询
     query_sql = "SELECT user_id,name,username,email,phone FROM t_user WHERE 1=1 "
 
-    condition = "";
+    condition = ""
     # 如果条件存在，则添加条件到查询语句
     if username:
         condition += " AND username LIKE '%{}%'".format(username)
@@ -89,6 +92,9 @@ def user_page_list(args):
 
 
 def is_exist_user(username):
+    """
+    通过username查询是否存在此用户
+    """
     # 创建数据库连接
     conn = pool.connection()
 
@@ -108,6 +114,9 @@ def is_exist_user(username):
 
 
 def save_user(username, password, name, email=None, phone=None):
+    """
+    新增用户
+    """
     logger.info("save_user方法执行插入菜单----username:{} password:{} name:{} email:{} phone:{}"
                 .format(username, password, name, email, phone))
 
@@ -136,6 +145,9 @@ def save_user(username, password, name, email=None, phone=None):
 
 
 def get_by_user_id(user_id):
+    """
+    通过user_id查询用户信息 user_id是uuid
+    """
     # 创建数据库连接
     conn = pool.connection()
 
@@ -151,10 +163,10 @@ def get_by_user_id(user_id):
     # 好像是打印字段的属性
     index = cursor.description
 
+    obj = {}
     # 处理查询结果
     for row in results:
         # 处理每一行数据
-        obj = {}
         for i in range(len(index)):
             # index[i][0] 获取字段里属性中的局部信息
             obj[index[i][0]] = row[i]
@@ -171,6 +183,9 @@ def get_by_user_id(user_id):
 
 
 def update_user(user_id, name, email=None, phone=None):
+    """
+    更新用户的信息
+    """
     logger.info(
         "update_user方法执行更新用户信息----user_id:{},name:{} email:{} phone:{} ".format(user_id, name, email, phone))
 
@@ -194,6 +209,9 @@ def update_user(user_id, name, email=None, phone=None):
 
 
 def delete_by_user_id(user_id):
+    """
+    通过user_id删除用户  user_id是uuid
+    """
     # 创建数据库连接
     conn = pool.connection()
 
@@ -201,61 +219,6 @@ def delete_by_user_id(user_id):
     cursor = conn.cursor()
 
     query = "DELETE FROM t_user WHERE user_id = %s"
-    cursor.execute(query, user_id)
-
-    # 提交更改
-    conn.commit()
-
-    # 关闭游标和数据库连接
-    cursor.close()
-    conn.close()
-
-
-def get_by_role_id(role_id):
-    # 创建数据库连接
-    conn = pool.connection()
-
-    # 创建游标对象
-    cursor = conn.cursor()
-    logger.info("开始查询get_by_role_id  role_id:{}".format(role_id))
-    # 执行插入语句
-    query_sql = "SELECT id, role_name,role_code FROM t_role WHERE id=%s "
-    cursor.execute(query_sql, role_id)
-    result = cursor.fetchone()
-    cursor.close()
-    conn.close()
-
-    # 获取记录数
-    logger.info("get_by_role_id  role_id:{},data={}".format(role_id, result))
-    return result
-
-
-def save_user_role(user_id, role_id_str):
-    role_id_array = role_id_str.split(',')
-    # 创建数据库连接
-    conn = pool.connection()
-    values = [(user_id, role_id) for role_id in role_id_array]
-    # 创建游标对象
-    cursor = conn.cursor()
-    logger.info("save_user_role  user_id:{},values={}".format(user_id, values))
-    # 执行插入语句
-    insert_sql = "INSERT INTO t_user_role (user_id, role_id) VALUES (%s, %s)"
-    cursor.executemany(insert_sql, values)
-    logger.info("save_user_role  执行完成.....")
-    # 提交更改
-    conn.commit()
-    cursor.close()
-    conn.close()
-
-
-def delete_user_role(user_id):
-    # 创建数据库连接
-    conn = pool.connection()
-
-    # 创建游标对象
-    cursor = conn.cursor()
-
-    query = "DELETE FROM t_user_role WHERE user_id = %s"
     cursor.execute(query, user_id)
 
     # 提交更改
