@@ -11,15 +11,14 @@ ns = Namespace('menu', description="菜单管理")
 
 logger = get_logger()
 
-base_search_task_fields = {
+
+search_task_fields = ns.model('SearchMenu', {
+    'page': fields.Integer(required=True, description="当前页数"),
+    'size': fields.Integer(required=True, description="页面大小"),
     'menu_name': fields.String(required=False, description="菜单名称"),
     'menu_code': fields.String(required=False, description="菜单编码"),
     'route': fields.String(required=False, description="前端路由编码")
-}
-
-base_search_task_fields.update(base_query_fields)
-
-search_task_fields = ns.model('SearchTask', base_search_task_fields)
+})
 
 add_menu_fields = ns.model('AddMenu', {
     'menu_name': fields.String(required=True, description="菜单名称"),

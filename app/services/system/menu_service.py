@@ -281,8 +281,31 @@ def get_user_menu_list(username):
     # 关闭游标和数据库连接
     cursor.close()
     conn.close()
-    logger.info("query:{}, username:{},menu_list:{}".format(query, username, menu_list))
-    return menu_list
+
+    menu_map = {}  # 创建空的菜单字典
+
+    menus = []
+    for menu in menu_list:
+        parent = menu["parent"]
+        if parent is None:
+            menus.append(menu)
+        else:
+            a_list = menu_map.get(parent)
+            if a_list is None:
+                a_list = []
+            a_list.append(menu)
+            menu_map[parent] = a_list
+
+    for menu in menus:
+        secondMenuList = menu_map[menu["id"]]
+        if secondMenuList is not None:
+            sorted_list = sorted(secondMenuList, key=lambda x: x.sort)
+            menus["secondMenuList"] = sorted_list
+
+    result_list = sorted(menus, key=lambda x: x.sort)
+
+    logger.info("query:{}, username:{},resutl_list:{}".format(query, username, result_list))
+    return result_list
 
 
 def get_first_level_menu_list():
