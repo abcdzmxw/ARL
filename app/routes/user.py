@@ -277,4 +277,4 @@ class UserAssignRole(ARLResource):
         logger.info("开始执行保存.....arl_user:{}", arl_user)
         save_user_role(user_id=arl_user['id'], role_id_str=role_id_str)
 
-        return utils.build_ret(ErrorMsg.Success, arl_user)
+        return utils.build_ret(ErrorMsg.Success, "分配成功!")
