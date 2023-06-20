@@ -188,11 +188,8 @@ def auth(func):
         try:
             decoded_payload = jwt.decode(jwt=token, key=secret_key, algorithms=['HS256'])
             logger.info("auth wrapper decoded_payload={}".format(decoded_payload))
-        except jwt.DecodeError:
-            # JWT 解码错误
-            return ret
-        except jwt.ExpiredSignatureError:
-            # JWT 过期错误
+        except Exception as e:
+            logger.exception(e)
             return ret
 
         conn = pool.connection()

@@ -304,7 +304,7 @@ def get_user_menu_list(username):
 
     result_list = sorted(menus, key=lambda x: x['sort'])
 
-    logger.info("query:{}, username:{},resutl_list:{}".format(query, username, result_list))
+    logger.info("query:{}, username:{},result_list:{}".format(query, username, result_list))
     return result_list
 
 
