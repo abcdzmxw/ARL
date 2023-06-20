@@ -284,3 +284,33 @@ def get_user_menu_list(username):
     logger.info("query:{}, username:{},menu_list:{}".format(query, username, menu_list))
     return menu_list
 
+
+def get_first_level_menu_list():
+
+    # 执行分页查询
+    query = "SELECT m.id,m.menu_name,m.menu_code, m.click_uri, m.parent, m.sort, m.route FROM t_menu m WHERE m.parent IS NULL ORDER BY m.sort"
+    # 创建数据库连接
+    conn = pool.connection()
+    cursor = conn.cursor()
+    cursor.execute(query)
+    # 获取查询结果
+    results = cursor.fetchall()
+    menu_list = []
+    # 好像是打印字段的属性
+    index = cursor.description
+
+    # 处理查询结果
+    for row in results:
+        # 处理每一行数据
+        obj = {}
+        for i in range(len(index)):
+            # index[i][0] 获取字段里属性中的局部信息
+            obj[index[i][0]] = row[i]
+
+        menu_list.append(obj)
+
+    # 关闭游标和数据库连接
+    cursor.close()
+    conn.close()
+    logger.info("get_first_level_menu_list query:{}, menu_list:{}".format(query, menu_list))
+    return menu_list
