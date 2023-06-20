@@ -245,7 +245,7 @@ class DetailUser(ARLResource):
 
 
 assign_user_role_fields = ns.model('assignRole', {
-    'role_id': fields.Integer(required=True, description="角色id")
+    'role_id': fields.String(required=True, description="角色id")
 })
 
 
