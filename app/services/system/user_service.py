@@ -203,7 +203,7 @@ def get_by_role_id(role_id):
     cursor = conn.cursor()
     logger.info("开始查询get_by_role_id  role_id:{}".format(role_id))
     # 执行插入语句
-    query_sql = "SELECT id, role_name,name,role_code FROM t_role WHERE id=%s "
+    query_sql = "SELECT id, role_name,role_code FROM t_role WHERE id=%s "
     cursor.execute(query_sql, role_id)
     result = cursor.fetchone()
     cursor.close()
