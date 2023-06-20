@@ -155,7 +155,8 @@ def get_by_user_id(user_id):
 
 
 def update_user(user_id, name, email=None, phone=None):
-    logger.info("update_user方法执行更新用户信息----user_id:{},name:{} email:{} phone:{} ".format(user_id, name, email, phone))
+    logger.info(
+        "update_user方法执行更新用户信息----user_id:{},name:{} email:{} phone:{} ".format(user_id, name, email, phone))
 
     # 创建数据库连接
     conn = pool.connection()
@@ -170,6 +171,24 @@ def update_user(user_id, name, email=None, phone=None):
     # 提交更改
     conn.commit()
     logger.info("update_user方法执行更新用户信息完成")
+
+    # 关闭游标和数据库连接
+    cursor.close()
+    conn.close()
+
+
+def delete_by_user_id(user_id):
+    # 创建数据库连接
+    conn = pool.connection()
+
+    # 创建游标对象
+    cursor = conn.cursor()
+
+    query = "DELETE FROM t_user WHERE user_id = %s"
+    cursor.execute(query, user_id)
+
+    # 提交更改
+    conn.commit()
 
     # 关闭游标和数据库连接
     cursor.close()

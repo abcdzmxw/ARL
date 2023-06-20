@@ -129,7 +129,7 @@ class ARLTask(ARLResource):
     @ns.expect(delete_menu_fields)
     def delete(self):
         """
-        修改菜单
+        删除菜单
         """
         args = self.parse_args(delete_menu_fields)
         menu_id = args.pop('menu_id')

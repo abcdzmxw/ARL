@@ -5,7 +5,8 @@ from app import utils
 from . import ARLResource, get_arl_parser
 from app import modules
 from ..modules import ErrorMsg
-from ..services.system.user_service import user_page_list, is_exist_user, save_user, get_by_user_id, update_user
+from ..services.system.user_service import user_page_list, is_exist_user, save_user, get_by_user_id, update_user, \
+    delete_by_user_id
 
 ns = Namespace('user', description="管理员登录认证")
 
@@ -147,7 +148,7 @@ update_user_fields = ns.model('updateUser', {
 })
 
 delete_user_fields = ns.model('deleteUser', {
-    'menu_id': fields.String(required=True, description="菜单id")
+    'user_id': fields.String(required=True, description="用户id")
 })
 
 
@@ -210,3 +211,34 @@ class ARLUser(ARLResource):
         """这里直接返回成功了"""
         return utils.build_ret(ErrorMsg.Success, user_id)
 
+    @auth
+    @ns.expect(delete_user_fields)
+    def delete(self):
+        """
+        删除用户
+        """
+        args = self.parse_args(delete_user_fields)
+        user_id = args.pop('user_id')
+        try:
+            delete_by_user_id(user_id=user_id)
+        except Exception as e:
+            logger.exception(e)
+            return utils.build_ret(ErrorMsg.Error, {"error": str(e)})
+
+        """这里直接返回成功了"""
+        return utils.return_msg(code=200, massage="删除成功")
+
+
+@ns.route('/<string:user_id>')
+class DetailUser(ARLResource):
+    @auth
+    def get(self, user_id=None):
+        """
+        通过用户id查询用户详情
+        """
+        logger.info("user_id.....{}".format(user_id))
+        arl_user = get_by_user_id(user_id=user_id)
+        if arl_user is None:
+            return utils.return_msg(code=500, massage="用户不存在", data=None)
+
+        return utils.build_ret(ErrorMsg.Success, arl_user)
