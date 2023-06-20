@@ -221,10 +221,13 @@ def save_user_role(user_id, role_id_str):
     values = [(user_id, role_id) for role_id in role_id_array]
     # 创建游标对象
     cursor = conn.cursor()
-
+    logger.info("save_user_role  user_id:{},values={}".format(user_id, values))
     # 执行插入语句
     insert_sql = "INSERT INTO t_user_role (user_id, role_id) VALUES (%s, %s)"
     cursor.executemany(insert_sql, values)
+    logger.info("save_user_role  执行完成.....")
+    # 提交更改
+    conn.commit()
     cursor.close()
     conn.close()
 
