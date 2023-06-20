@@ -253,7 +253,7 @@ assign_user_role_fields = ns.model('assignMenu', {
 class UserAssignRole(ARLResource):
     @auth
     @ns.expect(assign_user_role_fields)
-    def get(self, user_id=None):
+    def patch(self, user_id=None):
         """
         给用户分配角色
         """
