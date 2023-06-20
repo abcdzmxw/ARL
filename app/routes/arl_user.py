@@ -7,7 +7,7 @@ from ..services.system.menu_service import save_menu, menu_page_list, is_exist_m
     delete_menu_by_id, get_menu_by_role_id, get_user_menu_list, get_first_level_menu_list
 from flask import g
 
-ns = Namespace('menu', description="菜单管理")
+ns = Namespace('arl_user', description="用户管理")
 
 logger = get_logger()
 
