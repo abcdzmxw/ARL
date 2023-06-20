@@ -299,10 +299,10 @@ def get_user_menu_list(username):
     for menu in menus:
         secondMenuList = menu_map[menu["id"]]
         if secondMenuList is not None:
-            sorted_list = sorted(secondMenuList, key=lambda x: x.sort)
-            menus["secondMenuList"] = sorted_list
+            sorted_list = sorted(secondMenuList, key=lambda x: x['sort'])
+            menu["secondMenuList"] = sorted_list
 
-    result_list = sorted(menus, key=lambda x: x.sort)
+    result_list = sorted(menus, key=lambda x: x['sort'])
 
     logger.info("query:{}, username:{},resutl_list:{}".format(query, username, result_list))
     return result_list
