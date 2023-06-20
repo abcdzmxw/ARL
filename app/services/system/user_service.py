@@ -145,13 +145,29 @@ def get_by_user_id(user_id):
     # 执行插入语句
     query_sql = "SELECT id, user_id,name,username,email,phone FROM t_user WHERE user_id=%s "
     cursor.execute(query_sql, user_id)
-    result = cursor.fetchone()
+    # 获取查询结果
+    results = cursor.fetchall()
+
+    # 好像是打印字段的属性
+    index = cursor.description
+
+    # 处理查询结果
+    for row in results:
+        # 处理每一行数据
+        obj = {}
+        for i in range(len(index)):
+            # index[i][0] 获取字段里属性中的局部信息
+            obj[index[i][0]] = row[i]
+
     cursor.close()
     conn.close()
 
     # 获取记录数
-    logger.info("result:{}".format(result))
-    return result
+    logger.info("result:{}".format(obj))
+    if obj:
+        return None
+
+    return obj
 
 
 def update_user(user_id, name, email=None, phone=None):
