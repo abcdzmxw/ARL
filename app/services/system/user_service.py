@@ -201,7 +201,7 @@ def get_by_role_id(role_id):
 
     # 创建游标对象
     cursor = conn.cursor()
-
+    logger.info("开始查询get_by_role_id  role_id:{}".format(role_id))
     # 执行插入语句
     query_sql = "SELECT id, role_name,name,role_code FROM t_role WHERE id=%s "
     cursor.execute(query_sql, role_id)
@@ -210,7 +210,7 @@ def get_by_role_id(role_id):
     conn.close()
 
     # 获取记录数
-    logger.info("result:{}".format(result))
+    logger.info("get_by_role_id  role_id:{},data={}".format(role_id, result))
     return result
 
 

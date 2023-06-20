@@ -257,20 +257,24 @@ class UserAssignRole(ARLResource):
         """
         给用户分配角色
         """
-        logger.info("user_id.....{}".format(user_id))
+
         arl_user = get_by_user_id(user_id=user_id)
         if arl_user is None:
             return utils.return_msg(code=500, massage="用户不存在", data=None)
 
         args = self.parse_args(assign_user_role_fields)
         role_id_str = args.pop('role_id')
-
+        logger.info("user_id.....{}, role_id_str={}".format(user_id, role_id_str))
         role_id_array = role_id_str.split(',')
+
+        logger.info("user_id.....{}, role_id_str={},role_id_array={}".format(user_id, role_id_str, role_id_array))
         for role_id in role_id_array:
+            logger.info("role_id.....{}".format(role_id))
             role = get_by_role_id(role_id=role_id)
             if role is None:
                 return utils.return_msg(code=500, massage="选择了不存在的角色", data=None)
 
+        logger.info("开始执行保存.....")
         save_user_role(user_id=user_id, role_id_str=role_id_str)
 
         return utils.build_ret(ErrorMsg.Success, arl_user)
