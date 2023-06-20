@@ -275,6 +275,6 @@ class UserAssignRole(ARLResource):
                 return utils.return_msg(code=500, massage="选择了不存在的角色", data=None)
 
         logger.info("开始执行保存.....")
-        save_user_role(user_id=user_id, role_id_str=role_id_str)
+        save_user_role(user_id=arl_user['id'], role_id_str=role_id_str)
 
         return utils.build_ret(ErrorMsg.Success, arl_user)

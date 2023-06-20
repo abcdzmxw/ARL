@@ -143,7 +143,7 @@ def get_by_user_id(user_id):
     cursor = conn.cursor()
 
     # 执行插入语句
-    query_sql = "SELECT user_id,name,username,email,phone FROM t_user WHERE user_id=%s "
+    query_sql = "SELECT id, user_id,name,username,email,phone FROM t_user WHERE user_id=%s "
     cursor.execute(query_sql, user_id)
     result = cursor.fetchone()
     cursor.close()
