@@ -5,7 +5,7 @@ from app import utils
 from . import ARLResource, get_arl_parser
 from app import modules
 from ..modules import ErrorMsg
-from ..services.system.user_service import user_page_list
+from ..services.system.user_service import user_page_list, is_exist_user, save_user
 
 ns = Namespace('user', description="管理员登录认证")
 
@@ -129,3 +129,58 @@ class MenuPageList(ARLResource):
         logger.info("数据已经返回222.....{}".format(data))
         """这里直接返回成功了"""
         return utils.build_ret(ErrorMsg.Success, data)
+
+
+add_user_fields = ns.model('AddUser', {
+    'username': fields.String(required=True, description="账户"),
+    'password': fields.String(required=True, description="密码"),
+    'name': fields.String(required=True, description="用户名称"),
+    'email': fields.String(required=False, description="邮箱"),
+    'phone': fields.String(required=False, description="电话")
+})
+
+update_user_fields = ns.model('updateUser', {
+    'menu_id': fields.String(required=True, description="菜单id"),
+    'menu_name': fields.String(required=True, description="菜单名称"),
+    'sort': fields.String(required=True, description="排序"),
+    'parent_id': fields.String(required=False, description="父菜单id"),
+    'click_uri': fields.String(required=False, description="uri"),
+    'route': fields.String(required=False, description="前端路由编码")
+})
+
+delete_user_fields = ns.model('deleteUser', {
+    'menu_id': fields.String(required=True, description="菜单id")
+})
+
+
+@ns.route('/')
+class ARLUser(ARLResource):
+
+    @auth
+    @ns.expect(add_user_fields)
+    def post(self):
+        """
+        添加用户
+        """
+        args = self.parse_args(add_user_fields)
+
+        username = args.pop('username')
+        password = args.pop('password')
+        name = args.pop('name')
+        email = args.pop('email', None)
+        phone = args.pop('phone', None)
+
+        # 判断是否存在记录
+        count = is_exist_user(username)
+        if count > 0:
+            return utils.return_msg(code=500, massage="此账户已经存在了", data=None)
+
+        try:
+            inserted_id = save_user(username=username, password=password, name=name, email=email, phone=phone)
+            logger.info("新增用户完成----inserted_id:{}".format(inserted_id))
+        except Exception as e:
+            logger.exception(e)
+            return utils.build_ret(ErrorMsg.Error, {"error": str(e)})
+
+        """这里直接返回成功了"""
+        return utils.build_ret(ErrorMsg.Success, inserted_id)

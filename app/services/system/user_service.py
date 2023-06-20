@@ -1,7 +1,10 @@
 import pymysql
-
+import uuid
 from app import utils
 from dbutils.pooled_db import PooledDB
+
+from app.utils import gen_md5
+from app.utils.user import salt
 
 pool = PooledDB(
     creator=pymysql,  # 使用pymysql作为连接器
@@ -83,6 +86,54 @@ def user_page_list(args):
     }
 
     return result
+
+
+def is_exist_user(username):
+    # 创建数据库连接
+    conn = pool.connection()
+
+    # 创建游标对象
+    cursor = conn.cursor()
+
+    # 执行插入语句
+    count_query_sql = "SELECT count(*) FROM t_user WHERE username= %s "
+    cursor.execute(count_query_sql, username)
+    query_total = cursor.fetchone()[0]
+    cursor.close()
+    conn.close()
+
+    # 获取记录数
+    logger.info("query_total:{}".format(query_total))
+    return query_total
+
+
+def save_user(username, password, name, email=None, phone=None):
+    logger.info("save_user方法执行插入菜单----username:{} password:{} name:{} email:{} phone:{}"
+                .format(username, password, name, email, phone))
+
+    # 创建数据库连接
+    conn = pool.connection()
+
+    # 创建游标对象
+    cursor = conn.cursor()
+    # 生成一个随机的UUID
+    random_uuid = uuid.uuid4()
+    user_id = random_uuid.hex
+    md5_password = gen_md5(salt + password)
+    # 执行插入语句
+    insert_sql = "INSERT INTO t_user (user_id, name, username, password, email, phone) VALUES (%s, %s, %s, %s, %s, %s)"
+    values = (user_id, name, username, md5_password, email, phone)
+    cursor.execute(insert_sql, values)
+
+    # 提交更改
+    conn.commit()
+    logger.info("save_user执行新增用户完成----user_id:{}".format(user_id))
+
+    # 关闭游标和数据库连接
+    cursor.close()
+    conn.close()
+    return user_id
+
 
 
 def get_menu_by_role_id(role_id):
