@@ -165,9 +165,9 @@ def get_by_user_id(user_id):
     # 获取记录数
     logger.info("result:{}".format(obj))
     if obj:
-        return None
+        return obj
 
-    return obj
+    return None
 
 
 def update_user(user_id, name, email=None, phone=None):
