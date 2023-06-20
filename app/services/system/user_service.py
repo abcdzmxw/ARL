@@ -135,6 +135,46 @@ def save_user(username, password, name, email=None, phone=None):
     return user_id
 
 
+def get_by_user_id(user_id):
+    # 创建数据库连接
+    conn = pool.connection()
+
+    # 创建游标对象
+    cursor = conn.cursor()
+
+    # 执行插入语句
+    query_sql = "SELECT user_id,name,username,email,phone FROM t_user WHERE user_id=%s "
+    cursor.execute(query_sql, user_id)
+    result = cursor.fetchone()
+    cursor.close()
+    conn.close()
+
+    # 获取记录数
+    logger.info("result:{}".format(result))
+    return result
+
+
+def update_user(user_id, name, email=None, phone=None):
+    logger.info("update_user方法执行更新用户信息----user_id:{},name:{} email:{} phone:{} ".format(user_id, name, email, phone))
+
+    # 创建数据库连接
+    conn = pool.connection()
+
+    # 创建游标对象
+    cursor = conn.cursor()
+
+    update_sql = "UPDATE t_user SET name = %s, email = %s, phone = %s WHERE user_id = %s"
+    values = (name, email, phone, user_id)
+    cursor.execute(update_sql, values)
+
+    # 提交更改
+    conn.commit()
+    logger.info("update_user方法执行更新用户信息完成")
+
+    # 关闭游标和数据库连接
+    cursor.close()
+    conn.close()
+
 
 def get_menu_by_role_id(role_id):
     logger.info("get_menu_by_role_id:, role_id:{}".format(role_id))

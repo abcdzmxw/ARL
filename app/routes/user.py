@@ -5,7 +5,7 @@ from app import utils
 from . import ARLResource, get_arl_parser
 from app import modules
 from ..modules import ErrorMsg
-from ..services.system.user_service import user_page_list, is_exist_user, save_user
+from ..services.system.user_service import user_page_list, is_exist_user, save_user, get_by_user_id, update_user
 
 ns = Namespace('user', description="管理员登录认证")
 
@@ -140,12 +140,10 @@ add_user_fields = ns.model('AddUser', {
 })
 
 update_user_fields = ns.model('updateUser', {
-    'menu_id': fields.String(required=True, description="菜单id"),
-    'menu_name': fields.String(required=True, description="菜单名称"),
-    'sort': fields.String(required=True, description="排序"),
-    'parent_id': fields.String(required=False, description="父菜单id"),
-    'click_uri': fields.String(required=False, description="uri"),
-    'route': fields.String(required=False, description="前端路由编码")
+    'user_id': fields.String(required=True, description="用户id"),
+    'name': fields.String(required=True, description="用户名称"),
+    'email': fields.String(required=False, description="邮箱"),
+    'phone': fields.String(required=False, description="电话")
 })
 
 delete_user_fields = ns.model('deleteUser', {
@@ -184,3 +182,31 @@ class ARLUser(ARLResource):
 
         """这里直接返回成功了"""
         return utils.build_ret(ErrorMsg.Success, inserted_id)
+
+    @auth
+    @ns.expect(update_user_fields)
+    def patch(self):
+        """
+        修改用户
+        """
+        args = self.parse_args(update_user_fields)
+        user_id = args.pop('user_id')
+        name = args.pop('name')
+        email = args.pop('email', None)
+        phone = args.pop('phone', None)
+
+        logger.info("执行插入菜单入参：user_id:{} name:{} email:{} phone:{}".format(user_id, name, email, phone))
+        # 判断是否存在记录
+        arl_user = get_by_user_id(user_id=user_id)
+        if arl_user is None:
+            return utils.return_msg(code=500, massage="用户不存在", data=None)
+
+        try:
+            update_user(user_id=user_id, name=name, email=email, phone=phone)
+        except Exception as e:
+            logger.exception(e)
+            return utils.build_ret(ErrorMsg.Error, {"error": str(e)})
+
+        """这里直接返回成功了"""
+        return utils.build_ret(ErrorMsg.Success, user_id)
+
