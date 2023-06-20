@@ -24,23 +24,23 @@ search_task_fields = ns.model('SearchTask', base_search_task_fields)
 add_menu_fields = ns.model('AddMenu', {
     'menu_name': fields.String(required=True, description="菜单名称"),
     'menu_code': fields.String(required=True, description="菜单编码"),
-    'sort': fields.String(required=True, description="排序"),
-    'parent_id': fields.String(required=False, description="父菜单id"),
+    'sort': fields.Integer(required=True, description="排序"),
+    'parent_id': fields.Integer(required=False, description="父菜单id"),
     'click_uri': fields.String(required=False, description="uri"),
     'route': fields.String(required=False, description="前端路由编码")
 })
 
 update_menu_fields = ns.model('updateMenu', {
-    'menu_id': fields.String(required=True, description="菜单id"),
+    'menu_id': fields.Integer(required=True, description="菜单id"),
     'menu_name': fields.String(required=True, description="菜单名称"),
-    'sort': fields.String(required=True, description="排序"),
-    'parent_id': fields.String(required=False, description="父菜单id"),
+    'sort': fields.Integer(required=True, description="排序"),
+    'parent_id': fields.Integer(required=False, description="父菜单id"),
     'click_uri': fields.String(required=False, description="uri"),
     'route': fields.String(required=False, description="前端路由编码")
 })
 
 delete_menu_fields = ns.model('deleteMenu', {
-    'menu_id': fields.String(required=True, description="菜单id")
+    'menu_id': fields.Integer(required=True, description="菜单id")
 })
 
 

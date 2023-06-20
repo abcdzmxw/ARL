@@ -26,12 +26,12 @@ add_role_fields = ns.model('AddRole', {
 })
 
 update_role_fields = ns.model('updateRole', {
-    'id': fields.String(required=True, description="角色id"),
+    'id': fields.Integer(required=True, description="角色id"),
     'role_name': fields.String(required=True, description="角色名称")
 })
 
 delete_role_fields = ns.model('deleteRole', {
-    'id': fields.String(required=True, description="角色id")
+    'id': fields.Integer(required=True, description="角色id")
 })
 
 
