@@ -225,10 +225,6 @@ def save_user_role(user_id, role_id_str):
     # 执行插入语句
     insert_sql = "INSERT INTO t_user_role (user_id, role_id) VALUES (%s, %s)"
     cursor.executemany(insert_sql, (user_id, role_id_array))
-    result = cursor.fetchone()
     cursor.close()
     conn.close()
 
-    # 获取记录数
-    logger.info("result:{}".format(result))
-    return result
