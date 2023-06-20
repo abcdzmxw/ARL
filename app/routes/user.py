@@ -274,7 +274,7 @@ class UserAssignRole(ARLResource):
             if role is None:
                 return utils.return_msg(code=500, massage="选择了不存在的角色", data=None)
 
-        logger.info("开始执行保存.....")
+        logger.info("开始执行保存.....arl_user:{}", arl_user)
         save_user_role(user_id=arl_user['id'], role_id_str=role_id_str)
 
         return utils.build_ret(ErrorMsg.Success, arl_user)
