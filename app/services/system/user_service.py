@@ -247,3 +247,20 @@ def save_user_role(user_id, role_id_str):
     cursor.close()
     conn.close()
 
+
+def delete_user_role(user_id):
+    # 创建数据库连接
+    conn = pool.connection()
+
+    # 创建游标对象
+    cursor = conn.cursor()
+
+    query = "DELETE FROM t_user_role WHERE user_id = %s"
+    cursor.execute(query, user_id)
+
+    # 提交更改
+    conn.commit()
+
+    # 关闭游标和数据库连接
+    cursor.close()
+    conn.close()

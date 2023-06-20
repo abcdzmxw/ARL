@@ -6,7 +6,7 @@ from . import ARLResource, get_arl_parser
 from app import modules
 from ..modules import ErrorMsg
 from ..services.system.user_service import user_page_list, is_exist_user, save_user, get_by_user_id, update_user, \
-    delete_by_user_id, get_by_role_id, save_user_role
+    delete_by_user_id, get_by_role_id, save_user_role, delete_user_role
 
 ns = Namespace('user', description="管理员登录认证")
 
@@ -274,6 +274,8 @@ class UserAssignRole(ARLResource):
             if role is None:
                 return utils.return_msg(code=500, massage="选择了不存在的角色", data=None)
 
+        logger.info("删除已分配的角色:{}", arl_user)
+        delete_user_role(arl_user['id'])
         logger.info("开始执行保存.....arl_user:{}", arl_user)
         save_user_role(user_id=arl_user['id'], role_id_str=role_id_str)
 
