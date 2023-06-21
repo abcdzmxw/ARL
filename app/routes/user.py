@@ -316,7 +316,6 @@ class ResetPassARL(ARLResource):
 @ns.route('/captcha')
 class CaptchaARL(ARLResource):
 
-    @auth
     def get(self):
         """
         获取验证码
