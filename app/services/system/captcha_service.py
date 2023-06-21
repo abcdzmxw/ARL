@@ -15,6 +15,7 @@ def generate_verification_validate_code(length=6):
 
     # 生成指定长度的验证码
     validate_code = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(length))
+    logger.info("generate_verification_validate_code开始获取验证码validate_code={}..................".format(validate_code))
     return validate_code
 
 
