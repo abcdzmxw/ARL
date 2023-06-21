@@ -11,7 +11,8 @@ logger = get_logger()
 
 def generate_verification_validate_code(length=6):
     logger.info("generate_verification_validate_code开始获取验证码..................")
-    logger.info("generate_verification_validate_code开始获取验证码..................string.ascii_uppercase={}, string.digits={}", string.ascii_uppercase, string.digits)
+    logger.info("generate_verification_validate_code开始获取验证码..................string.ascii_uppercase={}, string.digits={}".format(string.ascii_uppercase, string.digits))
+
     # 生成指定长度的验证码
     validate_code = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(length))
     return validate_code
