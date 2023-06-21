@@ -20,6 +20,7 @@ api = Api(arl_app, prefix="/api", doc="/api/doc", title='ARL backend API', autho
 
 api.add_namespace(routes.task_ns)
 api.add_namespace(routes.menu_ns)
+api.add_namespace(routes.role_ns)
 api.add_namespace(routes.site_ns)
 api.add_namespace(routes.domain_ns)
 api.add_namespace(routes.ip_ns)
