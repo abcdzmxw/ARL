@@ -332,7 +332,7 @@ class CaptchaARL(ARLResource):
 
         logger.info("开始设置redi, user_key={}，validate_code={}".format(user_key, validate_code))
         # 设置键为'key'，值为'value'，过期时间为2分钟=120秒
-        redis_utils.set(key=user_key, value=validate_code, expire=120)
+        redis_utils.set(key=user_key, value=validate_code, expiration=120)
         logger.info("设置redis完成 user_key={}，validate_code={}".format(user_key, validate_code))
 
         obj = {"userKey": user_key, "captcherImg": encoded_image}

@@ -31,6 +31,7 @@ class RedisUtils:
         return redis.Redis(connection_pool=self.connection_pool)
 
     def set(self, key, value, expiration=None):
+        logger.info("redis set, key={}，value={}, expiration={}".format(key, value, expiration))
         conn = self.get_connection()
         conn.set(key, value, ex=expiration)
 
