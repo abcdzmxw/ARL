@@ -1,9 +1,13 @@
+import uuid
+
 from flask import request
 from flask_restx import fields, Namespace
 from app.utils import get_logger, auth
 from app import utils
 from . import ARLResource, get_arl_parser
 from ..modules import ErrorMsg
+from ..services.system.captcha_service import generate_verification_validate_code, generate_verification_image
+from ..services.system.redis_service import redis_utils
 from ..services.system.role_service import get_by_role_id, delete_user_role, save_user_role
 from ..services.system.user_service import user_page_list, is_exist_user, save_user, get_by_user_id, update_user, \
     delete_by_user_id
@@ -291,6 +295,8 @@ reset_pass_fields = ns.model('ResetPassARL', {
 
 @ns.route('/reset_password')
 class ResetPassARL(ARLResource):
+
+    @auth
     @ns.expect(reset_pass_fields)
     def post(self):
         """
@@ -303,5 +309,33 @@ class ResetPassARL(ARLResource):
         if arl_user is None:
             return utils.return_msg(code=500, massage="用户不存在", data=None)
 
-        reset_password(user_id=user_id,password=password)
+        reset_password(user_id=user_id, password=password)
         return utils.build_ret(ErrorMsg.Success, "密码重置成功!")
+
+
+@ns.route('/captcha')
+class CaptchaARL(ARLResource):
+
+    @auth
+    def get(self):
+        """
+        获取验证码
+        """
+        logger.info("开始获取验证码..................")
+        # 生成验证码
+        validate_code = generate_verification_validate_code()
+        logger.info("获取验证码..................validate_code={}", validate_code)
+        # 生成验证码图片
+        encoded_image = generate_verification_image(validate_code=validate_code)
+        logger.info("生成的图片..................validate_code={}, encoded_image={}", validate_code, encoded_image)
+        random_uuid = uuid.uuid4()
+        user_key = random_uuid.hex
+
+        logger.info("开始设置redi, user_key={}，validate_code={}", user_key, validate_code)
+        # 设置键为'key'，值为'value'，过期时间为2分钟=120秒
+        redis_utils.set(key=user_key, value=validate_code, expire=120)
+        logger.info("设置redis完成 user_key={}，validate_code={}", user_key, validate_code)
+
+        obj = {"userKey": user_key, "captcherImg": encoded_image}
+
+        return utils.build_ret(ErrorMsg.Success, obj)
