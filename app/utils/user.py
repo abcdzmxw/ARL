@@ -10,6 +10,8 @@ from app import utils
 import pymysql
 from dbutils.pooled_db import PooledDB
 
+from ..services.system.redis_service import redis_utils
+
 pool = PooledDB(
     creator=pymysql,  # 使用pymysql作为连接器
     host='192.168.1.100',
@@ -26,9 +28,15 @@ timezone = pytz.timezone('Asia/Shanghai')
 logger = get_logger()
 
 
-def user_login(username=None, password=None):
-    if not username or not password:
-        return
+def user_login(username=None, password=None, validate_code=None, user_key=None):
+    if not username or not password or not validate_code or not user_key:
+        if not user_key:
+            redis_utils.delete(key=user_key)
+        return None
+
+    redis_validate_code = redis_utils.get(key=user_key)
+    if not redis_validate_code or redis_validate_code != validate_code:
+        return None
 
     # query = {"username": username, "password": gen_md5(salt + password)}
     logger.info("username:{},password={}".format(username, password))

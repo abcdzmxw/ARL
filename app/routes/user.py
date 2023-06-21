@@ -20,6 +20,8 @@ logger = get_logger()
 login_fields = ns.model('LoginARL', {
     'username': fields.String(required=True, description="用户名"),
     'password': fields.String(required=True, description="密码"),
+    'validate_code': fields.String(required=True, description="验证码"),
+    'user_key': fields.String(required=True, description="验证码标识")
 })
 
 
@@ -33,7 +35,22 @@ class LoginARL(ARLResource):
         """
         args = self.parse_args(login_fields)
 
-        return build_data(utils.user_login(**args))
+        data = utils.user_login(**args)
+        if data is None:
+            ret = {
+                "message": "输入信息错误!",
+                "code": 401,
+                "data": {}
+            }
+            return ret
+
+        ret = {
+            "message": "success",
+            "code": 200,
+            "data": data
+        }
+
+        return ret
 
 
 @ns.route('/logout')
