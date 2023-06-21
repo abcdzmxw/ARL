@@ -4,8 +4,13 @@ from captcha.image import ImageCaptcha
 import random
 import string
 
+from app.utils import get_logger
+
+logger = get_logger()
+
 
 def generate_verification_validate_code(length=6):
+    logger.info("generate_verification_validate_code开始获取验证码..................")
     # 生成指定长度的验证码
     validate_code = ''.join(random.choices(string.ascii_uppercase + string.digits, k=length))
     return validate_code
