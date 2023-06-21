@@ -36,7 +36,9 @@ class RedisUtils:
 
     def get(self, key):
         conn = self.get_connection()
-        return conn.get(key)
+        value = conn.get(key)
+        logger.info("redis获取值,key={}, value={}".format(key, value))
+        return value
 
     def delete(self, key):
         conn = self.get_connection()
