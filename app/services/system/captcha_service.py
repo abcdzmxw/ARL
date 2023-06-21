@@ -27,6 +27,6 @@ def generate_verification_image(validate_code):
     # 生成验证码图片
     image = captcha.generate(validate_code)
     logger.info("generate_verification_image 生成验证码图片成功..................")
-    encoded_image = base64.b64encode(image.tobytes()).decode('utf-8')
+    encoded_image = base64.b64encode(image.getvalue()).decode('utf-8')
     logger.info("generate_verification_image 生成验证码图片成功..encoded_image={}................".format(encoded_image))
     return encoded_image
