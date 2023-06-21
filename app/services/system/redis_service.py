@@ -37,8 +37,9 @@ class RedisUtils:
     def get(self, key):
         conn = self.get_connection()
         value = conn.get(key)
-        logger.info("redis获取值,key={}, value={}".format(key, value))
-        return value
+        decoded_value = value.decode('utf-8')
+        logger.info("redis获取值,key={}, value={}".format(key, decoded_value))
+        return decoded_value
 
     def delete(self, key):
         conn = self.get_connection()
