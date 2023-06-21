@@ -20,10 +20,13 @@ def generate_verification_validate_code(length=6):
 
 
 def generate_verification_image(validate_code):
+    logger.info("generate_verification_image, validate_code={}..................".format(validate_code))
     # 创建 ImageCaptcha 实例
     captcha = ImageCaptcha()
-
+    logger.info("generate_verification_image 创建 ImageCaptcha 实例成功..................")
     # 生成验证码图片
     image = captcha.generate(validate_code)
+    logger.info("generate_verification_image 生成验证码图片成功..................")
     encoded_image = base64.b64encode(image.tobytes()).decode('utf-8')
+    logger.info("generate_verification_image 生成验证码图片成功..encoded_image={}................".format(encoded_image))
     return encoded_image
