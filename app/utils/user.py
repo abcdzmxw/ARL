@@ -29,18 +29,16 @@ logger = get_logger()
 
 
 def user_login(username=None, password=None, validate_code=None, user_key=None):
-    logger.info("1. username:{},password={},validate_code={},user_key={}".format(username, password, validate_code, user_key))
     if not username or not password or not validate_code or not user_key:
-        logger.info("2. username:{},password={},validate_code={},user_key={}".format(username, password, validate_code, user_key))
         if not user_key:
-            logger.info("3. username:{},password={},validate_code={},user_key={}".format(username, password, validate_code, user_key))
+            # 删除redis的验证码
             redis_utils.delete(key=user_key)
         return None
 
     redis_validate_code = redis_utils.get(key=user_key)
-    logger.info("4. username:{},password={},validate_code={},user_key={}, redis_validate_code={}".format(username, password, validate_code, user_key, redis_validate_code))
     if not redis_validate_code or redis_validate_code != validate_code:
-        logger.info("5. username:{},password={},validate_code={},user_key={}, redis_validate_code={}".format(username, password, validate_code, user_key, redis_validate_code))
+        # 删除redis的验证码
+        redis_utils.delete(key=user_key)
         return None
 
     # query = {"username": username, "password": gen_md5(salt + password)}
@@ -83,7 +81,6 @@ def user_login(username=None, password=None, validate_code=None, user_key=None):
         logger.info("jwt_token= {}, token={}".format(jwt_token, token))
         item = {
             "username": username,
-            "jwt_token": jwt_token,
             "token": jwt_token,
             "type": "login"
         }
@@ -99,8 +96,13 @@ def user_login(username=None, password=None, validate_code=None, user_key=None):
         # 关闭游标和数据库连接
         cursor.close()
         conn.close()
-
         return item
+    else:
+
+        # 删除redis的验证码
+        redis_utils.delete(key=user_key)
+        return None
+
 
 
 def user_login_header():
