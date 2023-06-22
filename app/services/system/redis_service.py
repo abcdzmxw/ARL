@@ -56,6 +56,14 @@ class RedisUtils:
     def get_redis_lock():
         return RedisUtils._lock
 
+    def __enter__(self):
+        logger.info("获取锁。。。。。。")
+        self._lock.acquire()
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        logger.info("释放锁。。。。。。")
+        self._lock.release()
+
 
 # 模块级别的变量，用于存储全局实例
 redis_obj = None
