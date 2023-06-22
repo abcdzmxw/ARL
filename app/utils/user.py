@@ -183,6 +183,8 @@ def auth(func):
         query_sql = "SELECT count(*) FROM t_user u WHERE u.username=%s  AND u.token=%s "
         values = (username, token)
 
+        logger.info("query_sql={},values={}".format(query_sql, values))
+
         query_total = db_utils.get_query_total(sql=query_sql, args=values)
         logger.info("query_total={},username={},token={}".format(query_total, username, token))
         if query_total == 0:
