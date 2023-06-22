@@ -49,24 +49,23 @@ class RedisUtils:
         conn = self.get_connection()
         conn.delete(key)
 
-    @property
-    def initialized(self):
+    def is_initialized(self):
         return self._initialized
 
-    @property
-    def lock(self):
-        return self._lock
+    @staticmethod
+    def get_redis_lock():
+        return RedisUtils._lock
 
 
 # 模块级别的变量，用于存储全局实例
-redis_utils = None
+redis_obj = None
 
 
 def get_redis_utils():
-    global redis_utils
-    if not RedisUtils.initialized:
-        with RedisUtils.lock:
-            if not RedisUtils.initialized:
-                redis_utils = RedisUtils(host='154.39.246.13', port=6379, password='HRwOi8vcy5uYS1j', db=0)
-                RedisUtils._initialized = True
-    return redis_utils
+    global redis_obj
+    if not redis_obj or not redis_obj.is_initialized():
+        with RedisUtils.get_redis_lock():
+            if not redis_obj or not redis_obj.is_initialized():
+                redis_obj = RedisUtils(host='154.39.246.13', port=6379, password='HRwOi8vcy5uYS1j', db=0)
+                redis_obj._initialized = True
+    return redis_obj
