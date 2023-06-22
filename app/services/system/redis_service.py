@@ -7,6 +7,14 @@ logger = get_logger()
 
 
 class RedisUtils:
+    _instance = None
+
+    def __new__(cls, *args, **kwargs):
+        logger.info("新建RedisUtils................")
+        if not cls._instance:
+            cls._instance = super().__new__(cls)
+        return cls._instance
+
     def __init__(self, host='localhost', port=6379, password=None, db=0, max_connections=10):
         logger.info("RedisUtils初始化----host:{},port={},password={}".format(host, port, password))
         self.host = host
