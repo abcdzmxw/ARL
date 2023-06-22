@@ -1,3 +1,5 @@
+import threading
+
 import redis
 from redis import ConnectionPool
 from app.utils import get_logger
@@ -7,12 +9,17 @@ logger = get_logger()
 
 class RedisUtils:
     _instance = None
+    _lock = threading.Lock()
 
     @staticmethod
     def get_instance():
         if RedisUtils._instance is None:
-            logger.info("get_instance1......................")
-            RedisUtils._instance = RedisUtils(host='154.39.246.13', port=6379, password='HRwOi8vcy5uYS1j', db=0)
+            logger.info("instance不存在,现在加锁......................")
+            with RedisUtils._lock:
+                logger.info("instance不存在,已经加锁......................")
+                if RedisUtils._instance is None:
+                    logger.info("get_instance1......................")
+                    RedisUtils._instance = RedisUtils(host='154.39.246.13', port=6379, password='HRwOi8vcy5uYS1j', db=0)
 
         logger.info("get_instance2......................")
         return RedisUtils._instance
