@@ -104,8 +104,8 @@ def user_login(username=None, password=None, validate_code=None, user_key=None):
         return None
 
 
-
 def user_login_header():
+    logger.info("user_login_header.........")
     token = request.headers.get("Token") or request.args.get("token")
     logger.info("user_login_header1, token: {}", token)
     # 这里进行jwt_token校验 TODO
@@ -197,7 +197,10 @@ def auth(func):
     def wrapper(*args, **kwargs):
         token = request.headers.get("Token") or request.args.get("token")
         logger.info("auth wrapper token1={}".format(token))
+
+        logger.info("auth wrapper Config.AUTH1={}".format(Config.AUTH))
         if Config.AUTH and not user_login_header():
+            logger.info("auth wrapper Config.AUTH2={}".format(Config.AUTH))
             return ret
         logger.info("auth wrapper token2={}".format(token))
         secret_key = Config.JWT_SECRET_KEY
@@ -224,7 +227,8 @@ def auth(func):
                 "进入返回 {}".format(ret))
             return ret
 
-        logger.info("查询不到数据不会执行到这里query_total:{},username={},token={}".format(query_total, username, token))
+        logger.info(
+            "查询不到数据不会执行到这里query_total:{},username={},token={}".format(query_total, username, token))
         # 登录成功，将当前登录账户存储到 g 中
         g.current_user = decoded_payload['username']
 
@@ -248,4 +252,3 @@ def reset_password(user_id, password):
     # 关闭游标和数据库连接
     cursor.close()
     conn.close()
-

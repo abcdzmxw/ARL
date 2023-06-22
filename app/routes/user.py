@@ -75,10 +75,12 @@ change_pass_fields = ns.model('ChangePassARL', {
 
 @ns.route('/change_pass')
 class ChangePassARL(ARLResource):
+
+    @auth
     @ns.expect(change_pass_fields)
     def post(self):
         """
-        密码修改
+        用户修改自己的密码
         """
         args = self.parse_args(change_pass_fields)
         ret = {
@@ -181,7 +183,7 @@ class ARLUser(ARLResource):
     @ns.expect(add_user_fields)
     def post(self):
         """
-        添加用户
+        管理员添加用户
         """
         args = self.parse_args(add_user_fields)
 
@@ -210,7 +212,7 @@ class ARLUser(ARLResource):
     @ns.expect(update_user_fields)
     def patch(self):
         """
-        修改用户
+        管理员修改用户信息
         """
         args = self.parse_args(update_user_fields)
         user_id = args.pop('user_id')
@@ -237,7 +239,7 @@ class ARLUser(ARLResource):
     @ns.expect(delete_user_fields)
     def delete(self):
         """
-        删除用户
+        管理员删除用户
         """
         args = self.parse_args(delete_user_fields)
         user_id = args.pop('user_id')
@@ -277,7 +279,7 @@ class UserAssignRole(ARLResource):
     @ns.expect(assign_user_role_fields)
     def patch(self, user_id=None):
         """
-        给用户分配角色
+        管理员给用户分配角色
         """
 
         arl_user = get_by_user_id(user_id=user_id)
@@ -317,7 +319,7 @@ class ResetPassARL(ARLResource):
     @ns.expect(reset_pass_fields)
     def post(self):
         """
-        给用户重置密码
+        管理员给用户重置密码
         """
         args = self.parse_args(reset_pass_fields)
         user_id = args.pop('user_id')
