@@ -11,7 +11,10 @@ class RedisUtils:
     @staticmethod
     def get_instance():
         if RedisUtils._instance is None:
+            logger.info("get_instance1......................")
             RedisUtils._instance = RedisUtils(host='154.39.246.13', port=6379, password='HRwOi8vcy5uYS1j', db=0)
+
+        logger.info("get_instance2......................")
         return RedisUtils._instance
 
     def __init__(self, host='localhost', port=6379, password=None, db=0, max_connections=10):
