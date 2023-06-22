@@ -5,23 +5,12 @@ from app.config import Config
 from . import gen_md5, random_choices, get_logger
 import jwt
 import pytz
-import pymysql
-from dbutils.pooled_db import PooledDB
-
+import functools
+from ..services.system.db_utils import get_db_utils
 from ..services.system.redis_service import get_redis_utils
 
 redis_utils = get_redis_utils()
-
-pool = PooledDB(
-    creator=pymysql,  # 使用pymysql作为连接器
-    host='192.168.1.100',
-    user='root',
-    password='Hjrtnbec*38',
-    database='galaxy_arl',
-    maxconnections=10,  # 连接池大小
-    autocommit=True,  # 自动提交事务
-    charset='utf8'  # 设置字符集
-)
+db_utils = get_db_utils()
 
 salt = 'arlsalt!@#'
 timezone = pytz.timezone('Asia/Shanghai')
@@ -41,20 +30,11 @@ def user_login(username=None, password=None, validate_code=None, user_key=None):
         redis_utils.delete(key=user_key)
         return None
 
-    # query = {"username": username, "password": gen_md5(salt + password)}
-
-    # 创建数据库连接
-    conn = pool.connection()
-
-    # 创建游标对象
-    cursor = conn.cursor()
-
     # 执行查询语句
-    db_query = "SELECT count(*) FROM t_user u WHERE u.username=%s  AND u.password=%s "
-    logger.info("query={}".format(db_query))
+    query_total_sql = "SELECT count(*) FROM t_user u WHERE u.username=%s  AND u.password=%s "
     values = (username, gen_md5(salt + password))
-    cursor.execute(db_query, values)
-    query_total = cursor.fetchone()[0]
+    query_total = db_utils.get_query_total(sql=query_total_sql, args=values)
+
     logger.info("query_total={}".format(query_total))
 
     if query_total > 0:
@@ -84,18 +64,11 @@ def user_login(username=None, password=None, validate_code=None, user_key=None):
             "token": jwt_token,
             "type": "login"
         }
-        # conn_db('user').update_one(query, {"$set": {"token": item["token"]}})
-        conn = pool.connection()
 
-        # 创建游标对象
-        cursor = conn.cursor()
         update_sql = "UPDATE t_user SET token = %s WHERE username = %s"
         new_values = (jwt_token, username)
-        cursor.execute(update_sql, new_values)
-        conn.commit()
-        # 关闭游标和数据库连接
-        cursor.close()
-        conn.close()
+        db_utils.execute_update(sql=update_sql, args=new_values)
+
         return item
     else:
 
@@ -126,18 +99,9 @@ def user_login_header(token):
     try:
         secret_key = Config.JWT_SECRET_KEY
         payload = jwt.decode(jwt=token, key=secret_key, algorithms=['HS256'])
-
-        conn = pool.connection()
-        # 创建游标对象
-        cursor = conn.cursor()
         update_sql = "UPDATE t_user SET token = null WHERE username = %s AND token=%s"
         new_values = (payload['username'], token)
-        cursor.execute(update_sql, new_values)
-        conn.commit()
-        # 关闭游标和数据库连接
-        cursor.close()
-        conn.close()
-
+        db_utils.execute_update(sql=update_sql, args=new_values)
     except Exception as e:
         logger.exception(e)
         return False
@@ -169,38 +133,23 @@ def change_pass(token, old_password, new_password):
         return None
 
     logger.info("修改密码payload={}".format(payload))
-    conn = pool.connection()
 
-    # 创建游标对象
-    cursor = conn.cursor()
     username = payload['username']
     # 执行查询语句
     query_sql = "SELECT count(*) FROM t_user u WHERE u.username=%s  AND u.password=%s AND u.token=%s "
-    logger.info("query_sql={}".format(query_sql))
     values = (username, gen_md5(salt + old_password), token)
-    cursor.execute(query_sql, values)
-    query_total = cursor.fetchone()[0]
-    logger.info("query_total={}".format(query_total))
+    query_total = db_utils.get_query_total(sql=query_sql, args=values)
+
+    logger.info("query_sql={}, query_total={}".format(query_sql, query_total))
 
     if query_total > 0:
         # conn_db('user').update_one({"token": token}, {"$set": {"password": gen_md5(salt + new_password)}})
         update_sql = "UPDATE t_user SET password = %s, token=null WHERE username = %s"
         new_values = (gen_md5(salt + new_password), username)
-        cursor.execute(update_sql, new_values)
-        conn.commit()
-        # 关闭游标和数据库连接
-        cursor.close()
-        conn.close()
-
+        db_utils.execute_update(sql=update_sql, args=new_values)
         return True
     else:
-        # 关闭游标和数据库连接
-        cursor.close()
-        conn.close()
         return False
-
-
-import functools
 
 
 def auth(func):
@@ -228,20 +177,16 @@ def auth(func):
             logger.exception(e)
             return ret
 
-        conn = pool.connection()
-        cursor = conn.cursor()
         username = decoded_payload['username']
         logger.info("username={},token={}".format(username, token))
         # 执行查询语句
         query_sql = "SELECT count(*) FROM t_user u WHERE u.username=%s  AND u.token=%s "
-        logger.info("query_sql={}".format(query_sql))
         values = (username, token)
-        cursor.execute(query_sql, values)
-        query_total = cursor.fetchone()[0]
+
+        query_total = db_utils.get_query_total(sql=query_sql, args=values)
         logger.info("query_total={},username={},token={}".format(query_total, username, token))
         if query_total == 0:
-            logger.info(
-                "进入返回 {}".format(ret))
+            logger.info("进入返回 {}".format(ret))
             return ret
 
         logger.info(
@@ -255,17 +200,7 @@ def auth(func):
 
 
 def reset_password(user_id, password):
-    conn = pool.connection()
-
-    # 创建游标对象
-    cursor = conn.cursor()
     # 执行查询语句
     update_sql = "Update t_user set password=%s, token= null Where user_id=%s "
-
     values = (gen_md5(salt + password), user_id)
-    cursor.execute(update_sql, values)
-
-    conn.commit()
-    # 关闭游标和数据库连接
-    cursor.close()
-    conn.close()
+    db_utils.execute_update(sql=update_sql, args=values)
