@@ -61,10 +61,10 @@ redis_obj = None
 
 def get_redis_utils():
     global redis_obj
-    if redis_obj is not None or not redis_obj.is_initialized():
+    if redis_obj is None or not redis_obj.is_initialized():
         with redis_lock:
             logger.info("初始化。。thread_id ={},redis_obj={},redis_obj.is_initialized()={}".format(threading.get_ident(), redis_obj, redis_obj.is_initialized()))
-            if redis_obj is not None or not redis_obj.is_initialized():
+            if redis_obj is None or not redis_obj.is_initialized():
                 redis_obj = RedisUtils(host='154.39.246.13', port=6379, password='HRwOi8vcy5uYS1j', db=0)
                 redis_obj._initialized = True
                 logger.info("初始化成功。。。。。。{}".format(redis_obj))
