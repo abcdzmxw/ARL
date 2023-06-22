@@ -164,9 +164,7 @@ def get_db_utils():
                     user='root',
                     password='Hjrtnbec*38',
                     database='galaxy_arl',
-                    maxconnections=10,
-                    autocommit=True,
-                    charset='utf8'
+                    maxconnections=10
                 )
                 db_utils._initialized = True
     return db_utils
