@@ -76,4 +76,5 @@ def get_redis_utils():
             if not redis_obj or not redis_obj.is_initialized():
                 redis_obj = RedisUtils(host='154.39.246.13', port=6379, password='HRwOi8vcy5uYS1j', db=0)
                 redis_obj._initialized = True
+                logger.info("初始化成功。。。。。。{}".format(redis_obj))
     return redis_obj
