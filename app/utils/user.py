@@ -8,7 +8,9 @@ import pytz
 import pymysql
 from dbutils.pooled_db import PooledDB
 
-from ..services.system.redis_service import redis_utils
+from ..services.system.redis_service import get_redis_utils
+
+redis_utils = get_redis_utils()
 
 pool = PooledDB(
     creator=pymysql,  # 使用pymysql作为连接器

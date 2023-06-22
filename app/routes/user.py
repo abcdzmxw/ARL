@@ -7,12 +7,13 @@ from app import utils
 from . import ARLResource, get_arl_parser
 from ..modules import ErrorMsg
 from ..services.system.captcha_service import generate_verification_validate_code, generate_verification_image
-from ..services.system.redis_service import redis_utils
+from ..services.system.redis_service import get_redis_utils
 from ..services.system.role_service import get_by_role_id, delete_user_role, save_user_role
 from ..services.system.user_service import user_page_list, is_exist_user, save_user, get_by_user_id, update_user, \
     delete_by_user_id
 from ..utils.user import reset_password
 
+redis_utils = get_redis_utils()
 ns = Namespace('user', description="管理员登录认证")
 
 logger = get_logger()
