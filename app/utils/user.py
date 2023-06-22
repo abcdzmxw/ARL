@@ -101,6 +101,7 @@ def user_login_header(token):
         payload = jwt.decode(jwt=token, key=secret_key, algorithms=['HS256'])
         update_sql = "UPDATE t_user SET token = null WHERE username = %s AND token=%s"
         new_values = (payload['username'], token)
+        logger.info("user_login_header: {},{}".format(payload['username'], token))
         db_utils.execute_update(sql=update_sql, args=new_values)
     except Exception as e:
         logger.exception(e)
