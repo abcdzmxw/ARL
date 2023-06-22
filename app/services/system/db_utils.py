@@ -59,6 +59,34 @@ class DatabaseUtils:
         finally:
             conn.close()
 
+    def get_one(self, sql, args=None):
+        """
+        执行sql,返回查询单个数据对象
+        """
+        conn = self.get_connection()
+        try:
+            with conn.cursor() as cursor:
+                cursor.execute(sql, args)
+                results = cursor.fetchall()
+                # 字段的属性
+                index = cursor.description
+
+                obj = {}
+                # 处理查询结果
+                for row in results:
+                    # 处理每一行数据
+                    for i in range(len(index)):
+                        # index[i][0] 获取字段里属性中的局部信息
+                        obj[index[i][0]] = row[i]
+                    break
+
+                if obj:
+                    return obj
+
+                return None
+        finally:
+            conn.close()
+
     def get_query_total(self, sql, args=None):
         """
         执行sql,返回查询数据总数
@@ -93,6 +121,18 @@ class DatabaseUtils:
         try:
             with conn.cursor() as cursor:
                 cursor.execute(sql, args)
+                conn.commit()
+        finally:
+            conn.close()
+
+    def execute_executemany_insert(self, sql, args=None):
+        """
+        执行批量插入sql
+        """
+        conn = self.get_connection()
+        try:
+            with conn.cursor() as cursor:
+                cursor.executemany(sql, args)
                 conn.commit()
         finally:
             conn.close()
