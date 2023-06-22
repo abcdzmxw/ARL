@@ -11,12 +11,12 @@ class DatabaseUtils:
     _initialized = False
     _lock = threading.Lock()
 
-    def __init__(self, host='localhost', user='root', password='', database='', max_connections=10):
+    def __init__(self, host='localhost', user='root', password='', database='', maxconnections=10):
         self.host = host
         self.user = user
         self.password = password
         self.database = database
-        self.max_connections = max_connections
+        self.maxconnections = maxconnections
         self.connection_pool = None
         self.connect()
 
@@ -27,7 +27,7 @@ class DatabaseUtils:
             user=self.user,
             password=self.password,
             database=self.database,
-            maxconnections=self.max_connections
+            maxconnections=self.maxconnections
         )
 
     def get_connection(self):
