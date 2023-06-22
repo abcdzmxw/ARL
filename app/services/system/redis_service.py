@@ -17,11 +17,14 @@ class RedisUtils:
         if not cls._instance:
             with cls._lock:
                 if not cls._instance:
+                    logger.info("新建实例................")
                     cls._instance = super().__new__(cls)
         return cls._instance
 
     def __init__(self, host='localhost', port=6379, password=None, db=0, max_connections=10):
         logger.info("RedisUtils初始化----host:{},port={},password={}".format(host, port, password))
+        logger.info("_instance={}".format(self._instance))
+
         self.host = host
         self.port = port
         self.password = password
