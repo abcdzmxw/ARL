@@ -104,9 +104,9 @@ def user_login(username=None, password=None, validate_code=None, user_key=None):
         return None
 
 
-def user_login_header():
+def user_login_header(token):
     logger.info("user_login_header.........")
-    token = request.headers.get("Token") or request.args.get("token")
+
     logger.info("user_login_header1, token: {}", token)
     # 这里进行jwt_token校验 TODO
 
@@ -140,7 +140,7 @@ def user_login_header():
 
 
 def user_logout(token):
-    if user_login_header():
+    if user_login_header(token):
         logger.info("user_logout: 这里不执行 conn_db('user')")
         # conn_db('user').update_one({"token": token}, {"$set": {"token": None}})
 
@@ -199,7 +199,7 @@ def auth(func):
         logger.info("auth wrapper token1={}".format(token))
 
         logger.info("auth wrapper Config.AUTH1={}".format(Config.AUTH))
-        if Config.AUTH and not user_login_header():
+        if Config.AUTH and not user_login_header(token=token):
             logger.info("auth wrapper Config.AUTH2={}".format(Config.AUTH))
             return ret
         logger.info("auth wrapper token2={}".format(token))
