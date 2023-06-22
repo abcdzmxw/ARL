@@ -3,14 +3,12 @@ from flask import g
 from flask import request
 from app.config import Config
 from . import gen_md5, random_choices, get_logger
-from .conn import conn_db
 import jwt
 import pytz
-from app import utils
 import pymysql
 from dbutils.pooled_db import PooledDB
 
-from ..services.system.redis_service import redis_utils
+from ..services.system.redis_service import get_redis_utils
 
 pool = PooledDB(
     creator=pymysql,  # 使用pymysql作为连接器
@@ -32,13 +30,13 @@ def user_login(username=None, password=None, validate_code=None, user_key=None):
     if not username or not password or not validate_code or not user_key:
         if not user_key:
             # 删除redis的验证码
-            redis_utils.delete(key=user_key)
+            get_redis_utils().delete(key=user_key)
         return None
 
-    redis_validate_code = redis_utils.get(key=user_key)
+    redis_validate_code = get_redis_utils().get(key=user_key)
     if not redis_validate_code or redis_validate_code != validate_code:
         # 删除redis的验证码
-        redis_utils.delete(key=user_key)
+        get_redis_utils().delete(key=user_key)
         return None
 
     # query = {"username": username, "password": gen_md5(salt + password)}
@@ -100,7 +98,7 @@ def user_login(username=None, password=None, validate_code=None, user_key=None):
     else:
 
         # 删除redis的验证码
-        redis_utils.delete(key=user_key)
+        get_redis_utils().delete(key=user_key)
         return None
 
 
