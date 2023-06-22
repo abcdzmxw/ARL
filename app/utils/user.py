@@ -99,10 +99,6 @@ def user_login_header(token):
     try:
         secret_key = Config.JWT_SECRET_KEY
         payload = jwt.decode(jwt=token, key=secret_key, algorithms=['HS256'])
-        update_sql = "UPDATE t_user SET token = null WHERE username = %s AND token=%s"
-        new_values = (payload['username'], token)
-        logger.info("user_login_header: {},{}".format(payload['username'], token))
-        db_utils.execute_update(sql=update_sql, args=new_values)
     except Exception as e:
         logger.exception(e)
         return False
@@ -118,7 +114,12 @@ def user_login_header(token):
 
 def user_logout(token):
     if user_login_header(token):
-        logger.info("user_logout: 这里不执行 conn_db('user')")
+        secret_key = Config.JWT_SECRET_KEY
+        payload = jwt.decode(jwt=token, key=secret_key, algorithms=['HS256'])
+        update_sql = "UPDATE t_user SET token = null WHERE username = %s AND token=%s"
+        new_values = (payload['username'], token)
+        logger.info("user_login_header: {},{}".format(payload['username'], token))
+        db_utils.execute_update(sql=update_sql, args=new_values)
         # conn_db('user').update_one({"token": token}, {"$set": {"token": None}})
 
 
