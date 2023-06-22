@@ -5,9 +5,11 @@ from app.utils import get_logger
 
 logger = get_logger()
 
+# 创建锁对象
+redis_lock = threading.Lock()
+
 
 class RedisUtils:
-    _lock = threading.Lock()
     _initialized = False
 
     def __init__(self, host='localhost', port=6379, password=None, db=0, max_connections=10):
@@ -52,18 +54,6 @@ class RedisUtils:
     def is_initialized(self):
         return self._initialized
 
-    @staticmethod
-    def get_redis_lock():
-        return RedisUtils._lock
-
-    def __enter__(self):
-        logger.info("获取锁。。。。。。")
-        self._lock.acquire()
-
-    def __exit__(self, exc_type, exc_value, traceback):
-        logger.info("释放锁。。。。。。")
-        self._lock.release()
-
 
 # 模块级别的变量，用于存储全局实例
 redis_obj = None
@@ -72,7 +62,7 @@ redis_obj = None
 def get_redis_utils():
     global redis_obj
     if not redis_obj or not redis_obj.is_initialized():
-        with RedisUtils.get_redis_lock():
+        with redis_lock:
             if not redis_obj or not redis_obj.is_initialized():
                 redis_obj = RedisUtils(host='154.39.246.13', port=6379, password='HRwOi8vcy5uYS1j', db=0)
                 redis_obj._initialized = True
