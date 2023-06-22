@@ -106,8 +106,6 @@ def user_login(username=None, password=None, validate_code=None, user_key=None):
 
 def user_login_header(token):
     logger.info("user_login_header.........")
-
-    logger.info("user_login_header1, token: {}", token)
     # 这里进行jwt_token校验 TODO
 
     if not Config.AUTH:
@@ -125,10 +123,9 @@ def user_login_header(token):
     if token == Config.API_KEY:
         return item
 
-    logger.info("user_login_header2, token: {}", token)
     secret_key = Config.JWT_SECRET_KEY
     payload = jwt.decode(jwt=token, key=secret_key, algorithms=['HS256'])
-    logger.info("user_login_header3, token: {},payload={}", token, payload)
+
     # data = conn_db('user').find_one({"token": token})
     if payload:
         item["username"] = payload['username']
