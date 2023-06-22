@@ -1,6 +1,5 @@
 import redis
 from redis import ConnectionPool
-
 from app.utils import get_logger
 
 logger = get_logger()
@@ -9,11 +8,11 @@ logger = get_logger()
 class RedisUtils:
     _instance = None
 
-    def __new__(cls, *args, **kwargs):
-        logger.info("新建RedisUtils................")
-        if not cls._instance:
-            cls._instance = super().__new__(cls)
-        return cls._instance
+    @staticmethod
+    def get_instance():
+        if RedisUtils._instance is None:
+            RedisUtils._instance = RedisUtils(host='154.39.246.13', port=6379, password='HRwOi8vcy5uYS1j', db=0)
+        return RedisUtils._instance
 
     def __init__(self, host='localhost', port=6379, password=None, db=0, max_connections=10):
         logger.info("RedisUtils初始化----host:{},port={},password={}".format(host, port, password))
@@ -55,4 +54,4 @@ class RedisUtils:
 
 
 # 创建全局的 RedisUtils 实例
-redis_utils = RedisUtils(host='154.39.246.13', port=6379, password='HRwOi8vcy5uYS1j', db=0)
+redis_utils = RedisUtils.get_instance()
