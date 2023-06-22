@@ -5,8 +5,19 @@ from app.utils import get_logger
 
 logger = get_logger()
 
+
+class RedisLock(threading.Lock):
+    def __enter__(self):
+        logger.info("获取锁。。。。。。")
+        self.acquire()
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        logger.info("释放锁。。。。。。")
+        self.release()
+
+
 # 创建锁对象
-redis_lock = threading.Lock()
+redis_lock = RedisLock()
 
 
 class RedisUtils:
