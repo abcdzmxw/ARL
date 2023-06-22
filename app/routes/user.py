@@ -350,7 +350,7 @@ class CaptchaARL(ARLResource):
         user_key = random_uuid.hex
 
         # 设置键为'key'，值为'value'，过期时间为2分钟=120秒
-        redis_utils().set(key=user_key, value=validate_code, expiration=120)
+        redis_utils.set(key=user_key, value=validate_code, expiration=120)
 
         obj = {"userKey": user_key, "captcherImg": encoded_image}
 
