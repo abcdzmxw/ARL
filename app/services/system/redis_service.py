@@ -1,19 +1,20 @@
 import threading
 import redis
 from redis import ConnectionPool
-from app.utils import get_logger
 
-logger = get_logger()
+from app.utils import get_logger
 
 # 创建锁对象
 redis_lock = threading.Lock()
+
+# 创建全局 RedisUtils 对象
+redis_utils = None
 
 
 class RedisUtils:
     _initialized = False
 
     def __init__(self, host='localhost', port=6379, password=None, db=0, max_connections=10):
-        logger.info("RedisUtils初始化----host:{},port={},password={}".format(host, port, password))
         self.host = host
         self.port = port
         self.password = password
@@ -43,8 +44,7 @@ class RedisUtils:
     def get(self, key):
         conn = self.get_connection()
         value = conn.get(key)
-        decoded_value = value.decode('utf-8')
-        logger.info("redis获取值,key={}, value={}".format(key, decoded_value))
+        decoded_value = value.decode('utf-8') if value else None
         return decoded_value
 
     def delete(self, key):
@@ -55,17 +55,19 @@ class RedisUtils:
         return self._initialized
 
 
-# 模块级别的变量，用于存储全局实例
-redis_obj = None
+logger = get_logger()
 
 
 def get_redis_utils():
-    global redis_obj
-    if redis_obj is None or not redis_obj.is_initialized():
+    global redis_utils
+
+    if redis_utils is None:
+        logger.info("redis_utils is Node")
         with redis_lock:
-            logger.info("初始化。。thread_id ={},redis_obj={},redis_obj.is_initialized()={}".format(threading.get_ident(), redis_obj, redis_obj.is_initialized()))
-            if redis_obj is None or not redis_obj.is_initialized():
-                redis_obj = RedisUtils(host='154.39.246.13', port=6379, password='HRwOi8vcy5uYS1j', db=0)
-                redis_obj._initialized = True
-                logger.info("初始化成功。。。。。。{}".format(redis_obj))
-    return redis_obj
+            logger.info("get_redis_utils 获取锁")
+            if redis_utils is None:
+                logger.info("get_redis_utils 开始初始化RedisUtils")
+                redis_utils = RedisUtils(host='154.39.246.13', port=6379, password='HRwOi8vcy5uYS1j', db=0)
+                logger.info("get_redis_utils 初始化RedisUtils redis_utils={}".format(redis_utils))
+                redis_utils._initialized = True
+    return redis_utils
