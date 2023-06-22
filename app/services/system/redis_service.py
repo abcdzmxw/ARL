@@ -12,6 +12,7 @@ redis_utils = None
 
 
 class RedisUtils:
+    _instance_lock = threading.Lock()
     _initialized = False
 
     def __init__(self, host='localhost', port=6379, password=None, db=0, max_connections=10):
@@ -54,6 +55,13 @@ class RedisUtils:
     def is_initialized(self):
         return self._initialized
 
+    @classmethod
+    def instance(cls, *args, **kwargs):
+        with cls._instance_lock:
+            if not hasattr(cls, "_instance") or not cls._instance:
+                cls._instance = cls(*args, **kwargs)
+        return cls._instance
+
 
 logger = get_logger()
 
@@ -67,7 +75,12 @@ def get_redis_utils():
             logger.info("get_redis_utils 获取锁")
             if redis_utils is None:
                 logger.info("get_redis_utils 开始初始化RedisUtils")
-                redis_utils = RedisUtils(host='154.39.246.13', port=6379, password='HRwOi8vcy5uYS1j', db=0)
+                redis_utils = RedisUtils.instance(
+                    host='154.39.246.13',
+                    port=6379,
+                    password='HRwOi8vcy5uYS1j',
+                    db=0
+                )
                 logger.info("get_redis_utils 初始化RedisUtils redis_utils={}".format(redis_utils))
                 redis_utils._initialized = True
     return redis_utils
