@@ -5,6 +5,8 @@ from dbutils.pooled_db import PooledDB
 
 from app.utils import get_logger
 
+logger = get_logger()
+
 
 class DatabaseUtils:
     _instance = None
@@ -106,6 +108,7 @@ class DatabaseUtils:
         执行更新sql
         """
         conn = self.get_connection()
+        logger.info("execute_update,sql={},args={}".format(sql, args))
         try:
             with conn.cursor() as cursor:
                 cursor.execute(sql, args)
@@ -117,6 +120,7 @@ class DatabaseUtils:
         """
         执行插入sql
         """
+        logger.info("execute_insert,sql={},args={}".format(sql, args))
         conn = self.get_connection()
         try:
             with conn.cursor() as cursor:
@@ -129,6 +133,7 @@ class DatabaseUtils:
         """
         执行批量插入sql
         """
+        logger.info("execute_executemany_insert,sql={},args={}".format(sql, args))
         conn = self.get_connection()
         try:
             with conn.cursor() as cursor:
@@ -145,8 +150,6 @@ class DatabaseUtils:
                     cls._instance = cls(*args, **kwargs)
         return cls._instance
 
-
-logger = get_logger()
 
 # 创建全局 DatabaseUtils 对象
 db_utils = None
