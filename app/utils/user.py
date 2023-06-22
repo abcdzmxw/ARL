@@ -123,10 +123,25 @@ def user_login_header(token):
     if token == Config.API_KEY:
         return item
 
-    secret_key = Config.JWT_SECRET_KEY
-    payload = jwt.decode(jwt=token, key=secret_key, algorithms=['HS256'])
+    try:
+        secret_key = Config.JWT_SECRET_KEY
+        payload = jwt.decode(jwt=token, key=secret_key, algorithms=['HS256'])
 
-    # data = conn_db('user').find_one({"token": token})
+        conn = pool.connection()
+        # 创建游标对象
+        cursor = conn.cursor()
+        update_sql = "UPDATE t_user SET token = null WHERE username = %s AND token=%s"
+        new_values = (payload['username'], token)
+        cursor.execute(update_sql, new_values)
+        conn.commit()
+        # 关闭游标和数据库连接
+        cursor.close()
+        conn.close()
+
+    except Exception as e:
+        logger.exception(e)
+        return False
+
     if payload:
         item["username"] = payload['username']
         item["token"] = token
@@ -146,7 +161,12 @@ def change_pass(token, old_password, new_password):
     # query = {"token": token, "password": gen_md5(salt + old_password)}
     # data = conn_db('user').find_one(query)
     secret_key = Config.JWT_SECRET_KEY
-    payload = jwt.decode(jwt=token, key=secret_key, algorithms=['HS256'])
+
+    try:
+        payload = jwt.decode(jwt=token, key=secret_key, algorithms=['HS256'])
+    except Exception as e:
+        logger.exception(e)
+        return None
 
     logger.info("修改密码payload={}".format(payload))
     conn = pool.connection()
