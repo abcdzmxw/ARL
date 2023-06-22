@@ -1,36 +1,24 @@
 import threading
-
 import redis
 from redis import ConnectionPool
-
 from app.utils import get_logger
 
 logger = get_logger()
 
 
 class RedisUtils:
-    _instance = None
     _lock = threading.Lock()
-
-    def __new__(cls, *args, **kwargs):
-        logger.info("新建RedisUtils................")
-        if not cls._instance:
-            with cls._lock:
-                if not cls._instance:
-                    logger.info("新建实例................")
-                    cls._instance = super().__new__(cls)
-        return cls._instance
+    _initialized = False
 
     def __init__(self, host='localhost', port=6379, password=None, db=0, max_connections=10):
         logger.info("RedisUtils初始化----host:{},port={},password={}".format(host, port, password))
-        logger.info("_instance={}".format(self._instance))
-
         self.host = host
         self.port = port
         self.password = password
         self.db = db
         self.max_connections = max_connections
         self.connection_pool = None
+        self.connect()
 
     def connect(self):
         self.connection_pool = ConnectionPool(
@@ -61,6 +49,24 @@ class RedisUtils:
         conn = self.get_connection()
         conn.delete(key)
 
+    @property
+    def initialized(self):
+        return self._initialized
 
-# 创建全局的 RedisUtils 实例
-redis_utils = RedisUtils(host='154.39.246.13', port=6379, password='HRwOi8vcy5uYS1j', db=0)
+    @property
+    def lock(self):
+        return self._lock
+
+
+# 模块级别的变量，用于存储全局实例
+redis_utils = None
+
+
+def get_redis_utils():
+    global redis_utils
+    if not RedisUtils.initialized:
+        with RedisUtils.lock:
+            if not RedisUtils.initialized:
+                redis_utils = RedisUtils(host='154.39.246.13', port=6379, password='HRwOi8vcy5uYS1j', db=0)
+                RedisUtils._initialized = True
+    return redis_utils
