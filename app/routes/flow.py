@@ -22,8 +22,8 @@ search_flow_fields = ns.model('SearchFlow', {
 add_flow_fields = ns.model('AddFlow', {
     'title': fields.String(required=True, description="标题"),
     'domain': fields.String(required=True, description="域名"),
-    'flaw_data_package': fields.Integer(required=True, description="漏洞数据包"),
-    'flaw_detail_data': fields.Integer(required=False, description="漏洞详情")
+    'flaw_data_package': fields.String(required=True, description="漏洞数据包"),
+    'flaw_detail_data': fields.String(required=True, description="漏洞详情")
 })
 
 
@@ -113,7 +113,7 @@ class DetailFlow(ARLResource):
 
 
 submit_flow_fields = ns.model('submitFlow', {
-    'status': fields.Integer(required=True, description="状态")
+    'status': fields.String(required=True, description="状态")
 })
 
 
