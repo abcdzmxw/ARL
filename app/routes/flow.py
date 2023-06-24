@@ -50,8 +50,7 @@ class ARLFlow(ARLResource):
             logger.exception(e)
             return utils.build_ret(ErrorMsg.Error, {"error": str(e)})
 
-        """这里直接返回成功了"""
-        return utils.build_ret(ErrorMsg.Success, inserted_id)
+        return return_msg(code=200, massage="success")
 
 
 @ns.route('/pageList')
@@ -74,7 +73,7 @@ class FlowPageList(ARLResource):
 
         logger.info("数据已经返回222.....{}".format(data))
         """这里直接返回成功了"""
-        return return_msg(code=200, massage="success")
+        return return_msg(code=200, massage="success", data=data)
 
 
 @ns.route('/admin/pageList')
