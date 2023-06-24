@@ -74,7 +74,7 @@ class FlowPageList(ARLResource):
 
         logger.info("数据已经返回222.....{}".format(data))
         """这里直接返回成功了"""
-        return utils.build_ret(ErrorMsg.Success, data)
+        return return_msg(code=200, massage="success")
 
 
 @ns.route('/admin/pageList')
@@ -130,23 +130,23 @@ class SubmitFlow(ARLResource):
 
         flow_obj = get_by_id(flow_id=flow_id)
         if flow_obj is None:
-            return return_msg(code=200, massage="此漏洞被删除了,无法操作")
+            return return_msg(code=5000, massage="此漏洞被删除了,无法操作")
 
         username = g.get('current_user')
         if flow_obj['created_by'] != username:
-            return return_msg(code=200, massage="您不能操作该记录")
+            return return_msg(code=5000, massage="您不能操作该记录")
 
         if status == "1":
             if flow_obj['status'] != "0":
-                return return_msg(code=200, massage="操作已过期,请刷新后再操作")
+                return return_msg(code=5000, massage="操作已过期,请刷新后再操作")
             # 获取当前时间
             submit_time = datetime.datetime.now()
         else:
             if status == "0":
                 if flow_obj['status'] == "2":
-                    return return_msg(code=200, massage="已经审核通过的不允许撤回")
+                    return return_msg(code=5000, massage="已经审核通过的不允许撤回")
             else:
-                return return_msg(code=200, massage="请求的状态不对,无法操作")
+                return return_msg(code=5000, massage="请求的状态不对,无法操作")
 
         submit_flow(flow_id=flow_id, status=status, submit_time=submit_time)
 
@@ -167,13 +167,13 @@ class ProcessFlow(ARLResource):
 
         flow_obj = get_by_id(flow_id=flow_id)
         if flow_obj is None:
-            return return_msg(code=200, massage="此漏洞被删除了,无法操作")
+            return return_msg(code=5000, massage="此漏洞被删除了,无法操作")
 
         if status == "2" or status == "3":
             if flow_obj['status'] != "1":
-                return return_msg(code=200, massage="操作已过期,请刷新后再操作")
+                return return_msg(code=5000, massage="操作已过期,请刷新后再操作")
         else:
-            return return_msg(code=200, massage="请求的状态不对,无法操作")
+            return return_msg(code=5000, massage="请求的状态不对,无法操作")
 
         process_flow(flow_id=flow_id, status=status)
 
