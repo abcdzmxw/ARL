@@ -47,7 +47,12 @@ class LogoutARL(ARLResource):
         用户退出
         """
         utils.user_logout()
-        return build_data({})
+        ret = {
+            "message": "退出成功!",
+            "code": 200,
+            "data": {}
+        }
+        return ret
 
 
 change_pass_fields = ns.model('ChangePassARL', {
