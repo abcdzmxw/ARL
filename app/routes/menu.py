@@ -1,6 +1,6 @@
 from flask_restx import fields, Namespace
 from app.utils import get_logger, auth
-from . import base_query_fields, ARLResource, get_arl_parser
+from . import ARLResource, get_arl_parser
 from app import utils
 from app.modules import ErrorMsg
 from ..services.system.menu_service import save_menu, menu_page_list, is_exist_menu_code, get_by_id, update_menu, \
@@ -44,7 +44,7 @@ delete_menu_fields = ns.model('deleteMenu', {
 
 
 @ns.route('/')
-class ARLTask(ARLResource):
+class ARLMenu(ARLResource):
 
     @auth
     @ns.expect(add_menu_fields)
