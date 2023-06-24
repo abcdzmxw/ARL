@@ -44,8 +44,7 @@ class ARLFlow(ARLResource):
         flaw_detail_data = args.pop('flaw_detail_data')
 
         try:
-            inserted_id = save_flow(title=title, domain=domain, flaw_data_package=flaw_data_package,
-                                    flaw_detail_data=flaw_detail_data)
+            inserted_id = save_flow(title=title, domain=domain, flaw_data_package=flaw_data_package, flaw_detail_data=flaw_detail_data)
             logger.info("执行插入菜单完成----inserted_id:{}".format(inserted_id))
         except Exception as e:
             logger.exception(e)

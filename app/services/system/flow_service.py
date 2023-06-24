@@ -9,7 +9,7 @@ logger = utils.get_logger()
 
 def save_flow(title, domain, flaw_data_package, flaw_detail_data):
     # 执行插入语句
-    insert_sql = "INSERT INTO t_arl_flaw (title, domain, flaw_data_package, flaw_detail_data, status) VALUES (%s, %s, %s, %s)"
+    insert_sql = "INSERT INTO t_arl_flaw (title, domain, flaw_data_package, flaw_detail_data, status) VALUES (%s, %s, %s, %s, %s)"
     values = (title, domain, flaw_data_package, flaw_detail_data, 0)
     db_utils.execute_insert(sql=insert_sql, args=values)
     logger.info("save_menu执行插入菜单完成----")
