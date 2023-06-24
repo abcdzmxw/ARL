@@ -35,35 +35,18 @@ class LoginARL(ARLResource):
         用户登录
         """
         args = self.parse_args(login_fields)
-
-        data = utils.user_login(**args)
-        if data is None:
-            ret = {
-                "message": "输入信息错误!",
-                "code": 401,
-                "data": {}
-            }
-            return ret
-
-        ret = {
-            "message": "success",
-            "code": 200,
-            "data": data
-        }
-
-        return ret
+        return utils.user_login(**args)
 
 
 @ns.route('/logout')
 class LogoutARL(ARLResource):
 
+    @auth
     def get(self):
         """
         用户退出
         """
-        token = request.headers.get("Token")
-        utils.user_logout(token)
-
+        utils.user_logout()
         return build_data({})
 
 
@@ -102,7 +85,7 @@ class ChangePassARL(ARLResource):
             return ret
 
         if utils.change_pass(token, args["old_password"], args["new_password"]):
-            utils.user_logout(token)
+            utils.user_logout()
         else:
             ret["message"] = "旧密码错误"
             ret["code"] = 303

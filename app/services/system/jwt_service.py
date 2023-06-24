@@ -1,20 +1,35 @@
 import jwt
+import pytz
+import datetime
+from app.config import Config
+from app.utils import get_logger
+
+timezone = pytz.timezone('Asia/Shanghai')
+logger = get_logger()
 
 
 # 生成 JWT
-def generate_jwt(payload, secret_key):
+def generate_jwt(username, user_id):
+    payload = {
+        'username': username,
+        'user_id': user_id
+    }
+
+    secret_key = Config.JWT_SECRET_KEY
+
+    # 设置过期时间
+    # 获取当前时间，使用指定时区
+    current_time = datetime.datetime.now(timezone)
+    exp = current_time + datetime.timedelta(seconds=86400)
+    payload['exp'] = exp
+    logger.info("exp= {}".format(exp))
     token = jwt.encode(payload=payload, key=secret_key, algorithm='HS256')
     return token
 
 
 # 解析 JWT
-def parse_jwt(token, secret_key):
-    try:
-        payload = jwt.decode(jwt=token, key=secret_key, algorithms=['HS256'])
-        return payload
-    except jwt.DecodeError:
-        # JWT 解码错误
-        return None
-    except jwt.ExpiredSignatureError:
-        # JWT 过期错误
-        return None
+def parse_jwt(token):
+    secret_key = Config.JWT_SECRET_KEY
+    payload = jwt.decode(jwt=token, key=secret_key, algorithms=['HS256'])
+    return payload
+
