@@ -104,6 +104,7 @@ class DetailFlow(ARLResource):
         """
         根据id查询漏洞详情
         """
+        logger.info("DetailFlow,flow_id={}".format(flow_id))
         data = get_by_id(flow_id=flow_id)
         logger.info("数据已经返回111.....{}".format(data))
         return utils.build_ret(ErrorMsg.Success, data)
