@@ -185,7 +185,7 @@ class ARLUser(ARLResource):
         # 判断是否存在记录
         count = is_exist_user(username)
         if count > 0:
-            return utils.return_msg(code=500, massage="此账户已经存在了", data=None)
+            return utils.return_msg(code=500, message="此账户已经存在了", data=None)
 
         try:
             inserted_id = save_user(username=username, password=password, name=name, email=email, phone=phone)
@@ -213,7 +213,7 @@ class ARLUser(ARLResource):
         # 判断是否存在记录
         arl_user = get_by_user_id(user_id=user_id)
         if arl_user is None:
-            return utils.return_msg(code=500, massage="用户不存在", data=None)
+            return utils.return_msg(code=500, message="用户不存在", data=None)
 
         try:
             update_user(user_id=user_id, name=name, email=email, phone=phone)
@@ -239,7 +239,7 @@ class ARLUser(ARLResource):
             return utils.build_ret(ErrorMsg.Error, {"error": str(e)})
 
         """这里直接返回成功了"""
-        return utils.return_msg(code=200, massage="删除成功")
+        return utils.return_msg(code=200, message="删除成功")
 
 
 @ns.route('/<string:user_id>')
@@ -252,7 +252,7 @@ class DetailUser(ARLResource):
         logger.info("user_id.....{}".format(user_id))
         arl_user = get_by_user_id(user_id=user_id)
         if arl_user is None:
-            return utils.return_msg(code=500, massage="用户不存在", data=None)
+            return utils.return_msg(code=500, message="用户不存在", data=None)
 
         return utils.build_ret(ErrorMsg.Success, arl_user)
 
@@ -273,7 +273,7 @@ class UserAssignRole(ARLResource):
 
         arl_user = get_by_user_id(user_id=user_id)
         if arl_user is None:
-            return utils.return_msg(code=500, massage="用户不存在", data=None)
+            return utils.return_msg(code=500, message="用户不存在", data=None)
 
         args = self.parse_args(assign_user_role_fields)
         role_id_str = args.pop('role_id')
@@ -285,7 +285,7 @@ class UserAssignRole(ARLResource):
             logger.info("role_id.....{}".format(role_id))
             role = get_by_role_id(role_id=role_id)
             if role is None:
-                return utils.return_msg(code=500, massage="选择了不存在的角色", data=None)
+                return utils.return_msg(code=500, message="选择了不存在的角色", data=None)
 
         logger.info("删除已分配的角色:{}", arl_user)
         delete_user_role(arl_user['id'])
@@ -315,7 +315,7 @@ class ResetPassARL(ARLResource):
         password = args.pop('password')
         arl_user = get_by_user_id(user_id=user_id)
         if arl_user is None:
-            return utils.return_msg(code=500, massage="用户不存在", data=None)
+            return utils.return_msg(code=500, message="用户不存在", data=None)
 
         reset_password(user_id=user_id, password=password)
         return utils.build_ret(ErrorMsg.Success, "密码重置成功!")

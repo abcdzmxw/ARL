@@ -162,10 +162,10 @@ def gen_filename(site):
     return re.sub(r'[^\w\-_\\. ]', '_', filename)
 
 
-def return_msg(code, massage, data=None):
+def return_msg(code, message, data=None):
     result = {
         "code": code,
-        "massage": massage
+        "message": message
     }
     if data:
         result["data"] = data

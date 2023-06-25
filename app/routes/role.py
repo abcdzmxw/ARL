@@ -52,7 +52,7 @@ class ARLRole(ARLResource):
         # 判断是否存在记录
         role = get_by_role_code(role_code)
         if role:
-            return utils.return_msg(code=500, massage="此角色已经存在了", data=None)
+            return utils.return_msg(code=500, message="此角色已经存在了", data=None)
 
         try:
             save_role(role_name=role_name, role_code=role_code)
@@ -75,7 +75,7 @@ class ARLRole(ARLResource):
         # 判断是否存在记录
         role = get_by_role_id(role_id=role_id)
         if role is None:
-            return utils.return_msg(code=500, massage="角色不存在", data=None)
+            return utils.return_msg(code=500, message="角色不存在", data=None)
 
         try:
             update_role(role_id=role_id, role_name=role_name)
@@ -101,7 +101,7 @@ class ARLRole(ARLResource):
             return utils.build_ret(ErrorMsg.Error, {"error": str(e)})
 
         """这里直接返回成功了"""
-        return utils.return_msg(code=200, massage="删除成功")
+        return utils.return_msg(code=200, message="删除成功")
 
 
 @ns.route('/pageList')

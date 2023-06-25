@@ -65,14 +65,14 @@ class ARLMenu(ARLResource):
         # 判断是否存在记录
         count = is_exist_menu_code(menu_code)
         if count > 0:
-            return utils.return_msg(code=500, massage="此编码已经存在了", data=None)
+            return utils.return_msg(code=500, message="此编码已经存在了", data=None)
 
         # 父菜单传了的话，校验此菜单id是否存在
         if parent_id is not None:
             menu = get_by_id(menu_id=parent_id)
             logger.info("通过菜单id查询菜单----parent_id{},menu:{}".format(parent_id, menu))
             if menu is None:
-                return utils.return_msg(code=500, massage="父菜单不存在", data=None)
+                return utils.return_msg(code=500, message="父菜单不存在", data=None)
 
         try:
             inserted_id = save_menu(menu_name=menu_name, menu_code=menu_code, sort=sort, parent_id=parent_id,
@@ -103,7 +103,7 @@ class ARLMenu(ARLResource):
         # 判断是否存在记录
         menu = get_by_id(menu_id=menu_id)
         if menu is None:
-            return utils.return_msg(code=500, massage="菜单不存在", data=None)
+            return utils.return_msg(code=500, message="菜单不存在", data=None)
 
         # 父菜单传了的话，校验此菜单id是否存在
         logger.info("通过菜单id查询菜单----parent_id:{}".format(parent_id))
@@ -111,7 +111,7 @@ class ARLMenu(ARLResource):
             menu = get_by_id(menu_id=parent_id)
             logger.info("通过菜单id查询菜单----parent_id{},menu:{}".format(parent_id, menu))
             if menu is None:
-                return utils.return_msg(code=500, massage="父菜单不存在", data=None)
+                return utils.return_msg(code=500, message="父菜单不存在", data=None)
 
         try:
             update_menu(menu_id=menu_id, menu_name=menu_name, sort=sort, parent_id=parent_id, click_uri=click_uri,
@@ -138,7 +138,7 @@ class ARLMenu(ARLResource):
             return utils.build_ret(ErrorMsg.Error, {"error": str(e)})
 
         """这里直接返回成功了"""
-        return utils.return_msg(code=200, massage="删除成功")
+        return utils.return_msg(code=200, message="删除成功")
 
 
 @ns.route('/pageList')
