@@ -83,7 +83,7 @@ class AdminFlowPageList(ARLResource):
     @ns.expect(parser)
     def get(self):
         """
-        查询漏洞列表
+        管理员查询待审核+已经处理的漏洞列表
         """
         args = self.parser.parse_args()
         try:
