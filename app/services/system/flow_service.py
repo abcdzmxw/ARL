@@ -48,6 +48,8 @@ def flow_page_list(args):
     offset = (page - 1) * size
     query += " LIMIT " + str(size) + " OFFSET " + str(offset)
 
+    logger.info("count_query_sql={}".format(count_query_sql))
+    logger.info("query={}".format(query))
     query_total = db_utils.get_query_total(sql=count_query_sql)
     menu_list = db_utils.get_query_list(sql=query)
 
