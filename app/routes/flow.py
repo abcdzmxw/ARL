@@ -73,7 +73,7 @@ class FlowPageList(ARLResource):
 
         logger.info("数据已经返回222.....{}".format(data))
         """这里直接返回成功了"""
-        return return_msg(code=200, massage="success", data=data)
+        return utils.build_ret(ErrorMsg.Success, data)
 
 
 @ns.route('/admin/pageList')
