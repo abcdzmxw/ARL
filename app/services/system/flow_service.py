@@ -113,6 +113,7 @@ def submit_flow(flow_id, status, submit_time):
         update_sql += ", submit_time = now()"
     update_sql += "  WHERE id = %s"
     values = (status, flow_id)
+    logger.info("update_sql={}, values={}".format(update_sql, values))
     db_utils.execute_update(sql=update_sql, args=values)
 
 
