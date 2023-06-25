@@ -13,8 +13,8 @@ ns = Namespace('flow', description="漏洞管理")
 logger = get_logger()
 
 search_flow_fields = ns.model('SearchFlow', {
-    'page': fields.Integer(required=True, description="当前页数"),
-    'size': fields.Integer(required=True, description="页面大小"),
+    'page': fields.Integer(required=True, description="当前页数", example=1),
+    'size': fields.Integer(required=True, description="页面大小", example=10),
     'title': fields.String(required=False, description="标题"),
     'domain': fields.String(required=False, description="站点"),
     'status': fields.String(required=False, description="状态")
