@@ -4,7 +4,8 @@ from app.utils import get_logger, auth, return_msg
 from . import ARLResource, get_arl_parser
 from app import utils
 from app.modules import ErrorMsg
-from ..services.system.flow_service import save_flow, flow_page_list, admin_flow_page_list, get_by_id, submit_flow, process_flow
+from ..services.system.flow_service import save_flow, flow_page_list, admin_flow_page_list, get_by_id, submit_flow, \
+    process_flow
 from flask import g
 
 ns = Namespace('flow', description="漏洞管理")
@@ -44,7 +45,8 @@ class ARLFlow(ARLResource):
         flaw_detail_data = args.pop('flaw_detail_data')
 
         try:
-            inserted_id = save_flow(title=title, domain=domain, flaw_data_package=flaw_data_package, flaw_detail_data=flaw_detail_data)
+            inserted_id = save_flow(title=title, domain=domain, flaw_data_package=flaw_data_package,
+                                    flaw_detail_data=flaw_detail_data)
             logger.info("执行插入菜单完成----inserted_id:{}".format(inserted_id))
         except Exception as e:
             logger.exception(e)
@@ -73,7 +75,11 @@ class FlowPageList(ARLResource):
 
         logger.info("数据已经返回222.....{}".format(data))
         """这里直接返回成功了"""
-        return utils.build_ret(ErrorMsg.Success, data)
+        try:
+            return utils.build_ret(ErrorMsg.Success, data)
+        except Exception as e:
+            logger.exception(e)
+            return utils.build_ret(ErrorMsg.Error, {"error": str(e)})
 
 
 @ns.route('/admin/pageList')
