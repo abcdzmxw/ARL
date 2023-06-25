@@ -18,6 +18,7 @@ def save_flow(title, domain, flaw_data_package, flaw_detail_data):
 def get_by_id(flow_id):
     # 执行查询语句
     query = "SELECT t.id,t.title,t.domain,t.flaw_data_package,t.flaw_detail_data,t.`status`,DATE_FORMAT(t.submit_time, '%Y-%m-%d %H:%i:%s') as submit_time,DATE_FORMAT(t.process_time, '%Y-%m-%d %H:%i:%s') as process_time,t.process_by,DATE_FORMAT(t.created_at, '%Y-%m-%d %H:%i:%s') as created_at,t.created_by FROM t_arl_flaw t WHERE t.id= %s "
+    logger.info("query={}".format(query))
     flow_obj = db_utils.get_one(sql=query, args=flow_id)
     return flow_obj
 
