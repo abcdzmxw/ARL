@@ -25,14 +25,31 @@ login_fields = ns.model('LoginARL', {
     'user_key': fields.String(required=True, description="验证码标识")
 })
 
+login_fields2 = ns.model('LoginARL', {
+    'username': fields.String(required=True, description="用户名"),
+    'password': fields.String(required=True, description="密码")
+})
+
 
 @ns.route('/login')
+class LoginARL(ARLResource):
+
+    @ns.expect(login_fields2)
+    def post(self):
+        """
+        用户登录(不要验证码)
+        """
+        args = self.parse_args(login_fields2)
+        return utils.user_login2(**args)
+
+
+@ns.route('/login2')
 class LoginARL(ARLResource):
 
     @ns.expect(login_fields)
     def post(self):
         """
-        用户登录
+        用户登录(要验证码)
         """
         args = self.parse_args(login_fields)
         return utils.user_login(**args)

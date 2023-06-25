@@ -63,6 +63,37 @@ def user_login(username=None, password=None, validate_code=None, user_key=None):
         return returnObj
 
 
+def user_login2(username=None, password=None, validate_code=None, user_key=None):
+    returnObj = {'code': 401}
+
+    # 验证码只能用一次 调用了登录接口后没成功就的重新获取验证码
+    if not username or not password :
+        returnObj['message'] = '登录信息不能为空!'
+        return returnObj
+
+    # 执行查询语句
+    query_ql = "SELECT u.user_id,u.name,u.username,u.email,u.phone FROM  t_user u WHERE u.username=%s  AND u.password=%s "
+    values = (username, gen_md5(salt + password))
+    user_obj = db_utils.get_one(sql=query_ql, args=values)
+    if user_obj:
+        logger.info("登录查询用户成功,user={}".format(user_obj))
+        logger.info("username= {}".format(username))
+        jwt_token = generate_jwt(username, user_obj['user_id'])
+        logger.info("jwt_token= {}".format(jwt_token))
+
+        update_sql = "UPDATE t_user SET token = %s WHERE username = %s"
+        new_values = (jwt_token, username)
+        db_utils.execute_update(sql=update_sql, args=new_values)
+        returnObj['username'] = username
+        returnObj['token'] = jwt_token
+        returnObj['code'] = 200
+        returnObj['message'] = 'success'
+        return returnObj
+    else:
+        returnObj['message'] = '用户名密码错误!'
+        return returnObj
+
+
 def user_login_header(token):
     if not Config.AUTH:
         return True

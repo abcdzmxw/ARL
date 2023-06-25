@@ -216,6 +216,6 @@ def exit_gracefully(signum, frame):
     parent.kill()
 
 
-from .user import user_login, user_login_header, auth, user_logout, change_pass
+from .user import user_login, user_login2, user_login_header, auth, user_logout, change_pass
 from .push import message_push
 from .fingerprint import parse_human_rule, transform_rule_map
