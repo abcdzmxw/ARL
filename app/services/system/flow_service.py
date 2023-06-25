@@ -30,7 +30,7 @@ def flow_page_list(args):
     status = args.pop("status")
 
     # 执行分页查询
-    query_sql = "SELECT t.id,t.title,t.domain,t.flaw_data_package,t.flaw_detail_data,t.`status`,t.submit_time,t.process_time,t.process_by,t.created_at,t.created_by FROM t_arl_flaw t WHERE 1=1"
+    query_sql = "SELECT t.id,t.title,t.domain,t.flaw_data_package,t.flaw_detail_data,t.`status`,DATE_FORMAT(t.submit_time, '%Y-%m-%d %H:%i:%s') as submit_time,DATE_FORMAT(t.process_time, '%Y-%m-%d %H:%i:%s') as process_time,t.process_by,DATE_FORMAT(t.created_at, '%Y-%m-%d %H:%i:%s') as created_at,t.created_by FROM t_arl_flaw t WHERE 1=1"
 
     condition = " AND created_by='{}'".format(g.get('current_user'))
     # 如果条件存在，则添加条件到查询语句
