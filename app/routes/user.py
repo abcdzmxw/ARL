@@ -18,14 +18,14 @@ ns = Namespace('user', description="管理员登录认证")
 
 logger = get_logger()
 
-login_fields = ns.model('LoginARL', {
+login_fields2 = ns.model('LoginARL', {
     'username': fields.String(required=True, description="用户名"),
     'password': fields.String(required=True, description="密码"),
     'validate_code': fields.String(required=True, description="验证码"),
     'user_key': fields.String(required=True, description="验证码标识")
 })
 
-login_fields2 = ns.model('LoginARL', {
+login_fields = ns.model('LoginARL2', {
     'username': fields.String(required=True, description="用户名"),
     'password': fields.String(required=True, description="密码")
 })
@@ -34,25 +34,25 @@ login_fields2 = ns.model('LoginARL', {
 @ns.route('/login')
 class LoginARL(ARLResource):
 
-    @ns.expect(login_fields2)
+    @ns.expect(login_fields)
     def post(self):
         """
         用户登录(不要验证码)
         """
-        args = self.parse_args(login_fields2)
+        args = self.parse_args(login_fields)
         data = utils.user_login2(**args)
         return utils.build_ret(ErrorMsg.Success, data)
 
 
 @ns.route('/login2')
-class LoginARL(ARLResource):
+class LoginARL2(ARLResource):
 
-    @ns.expect(login_fields)
+    @ns.expect(login_fields2)
     def post(self):
         """
         用户登录(要验证码)
         """
-        args = self.parse_args(login_fields)
+        args = self.parse_args(login_fields2)
         data = utils.user_login(**args)
         return utils.build_ret(ErrorMsg.Success, data)
 
