@@ -17,7 +17,7 @@ def save_flow(title, domain, flaw_data_package, flaw_detail_data):
 
 def get_by_id(flow_id):
     # 执行查询语句
-    query = "SELECT t.id,t.title,t.domain,t.flaw_data_package,t.flaw_detail_data,t.`status`,t.submit_time FROM t_arl_flaw t WHERE t.id= %s "
+    query = "SELECT SELECT t.id,t.title,t.domain,t.flaw_data_package,t.flaw_detail_data,t.`status`,DATE_FORMAT(t.submit_time, '%Y-%m-%d %H:%i:%s') as submit_time,DATE_FORMAT(t.process_time, '%Y-%m-%d %H:%i:%s') as process_time,t.process_by,DATE_FORMAT(t.created_at, '%Y-%m-%d %H:%i:%s') as created_at,t.created_by FROM t_arl_flaw t WHERE t.id= %s "
     flow_obj = db_utils.get_one(sql=query, args=flow_id)
     return flow_obj
 
@@ -73,24 +73,27 @@ def admin_flow_page_list(args):
     status = args.pop("status")
 
     # 执行分页查询
-    query = "SELECT t.id,t.title,t.domain,t.flaw_data_package,t.flaw_detail_data,t.`status`,t.submit_time,t.process_time,t.process_by,t.created_at,t.created_by FROM t_arl_flaw t WHERE 1=1"
+    query_sql = "SELECT t.id,t.title,t.domain,t.flaw_data_package,t.flaw_detail_data,t.`status`,DATE_FORMAT(t.submit_time, '%Y-%m-%d %H:%i:%s') as submit_time,DATE_FORMAT(t.process_time, '%Y-%m-%d %H:%i:%s') as process_time,t.process_by,DATE_FORMAT(t.created_at, '%Y-%m-%d %H:%i:%s') as created_at,t.created_by FROM t_arl_flaw t WHERE 1=1"
+
+    condition = ""
     # 如果条件存在，则添加条件到查询语句
     if title:
-        query += " AND title LIKE '%{}%'".format(title)
+        condition += " AND title LIKE '%{}%'".format(title)
 
     if domain:
-        query += " AND domain LIKE '%{}%'".format(domain)
+        condition += " AND domain LIKE '%{}%'".format(domain)
 
-    query += " AND status in({},{},{})".format('1', '2', '3')
+    condition += " AND status in({},{},{})".format('1', '2', '3')
 
-    count_query_sql = query
+    count_query_sql = "SELECT count(*) FROM t_arl_flaw t WHERE 1=1 " + condition
 
     # 计算查询的起始位置
     offset = (page - 1) * size
-    query += " LIMIT " + str(size) + " OFFSET " + str(offset)
+    limit_info = " LIMIT " + str(size) + " OFFSET " + str(offset)
+    query_sql = query_sql + condition + limit_info
 
     query_total = db_utils.get_query_total(sql=count_query_sql)
-    menu_list = db_utils.get_query_list(sql=query)
+    menu_list = db_utils.get_query_list(sql=query_sql)
 
     result = {
         "page": page,
