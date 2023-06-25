@@ -48,10 +48,10 @@ def flow_page_list(args):
     # 计算查询的起始位置
     offset = (page - 1) * size
     limit_info = " LIMIT " + str(size) + " OFFSET " + str(offset)
-    query_sql = query_sql = condition + limit_info
+    query_sql = query_sql + condition + limit_info
 
     logger.info("count_query_sql={}".format(count_query_sql))
-    logger.info("query={}".format(query_sql))
+    logger.info("query_sql={}".format(query_sql))
     query_total = db_utils.get_query_total(sql=count_query_sql)
     menu_list = db_utils.get_query_list(sql=query_sql)
 
