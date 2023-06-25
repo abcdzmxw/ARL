@@ -31,7 +31,7 @@ def flow_page_list(args):
 
     # 执行分页查询
     query = "SELECT t.id,t.title,t.domain,t.flaw_data_package,t.flaw_detail_data,t.`status`,t.submit_time,t.process_time,t.process_by,t.created_at,t.created_by FROM t_arl_flaw t WHERE 1=1"
-    query += " AND created_by={}".format(g.get('current_user'))
+    query += " AND created_by='{}'".format(g.get('current_user'))
     # 如果条件存在，则添加条件到查询语句
     if title:
         query += " AND title LIKE '%{}%'".format(title)
@@ -40,7 +40,7 @@ def flow_page_list(args):
         query += " AND domain LIKE '%{}%'".format(domain)
 
     if status:
-        query += " AND status={}".format(status)
+        query += " AND status='{}'".format(status)
 
     count_query_sql = query
 
