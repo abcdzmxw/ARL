@@ -117,18 +117,17 @@ class ChangePassARL(ARLResource):
         return ret
 
 
-base_search_user_fields = {
+search_user_fields = ns.model('SearchUser', {
+    'page': fields.String(required=True, description="当前页数"),
+    'size': fields.String(required=True, description="每页条数"),
     'username': fields.String(required=False, description="账号"),
     'name': fields.String(required=False, description="用户名称")
-}
-
-base_search_user_fields.update(base_search_user_fields)
-search_user_fields = ns.model('SearchUser', base_search_user_fields)
+})
 
 
 @ns.route('/pageList')
 class MenuPageList(ARLResource):
-    parser = get_arl_parser(base_search_user_fields, location='args')
+    parser = get_arl_parser(search_user_fields, location='args')
 
     @auth
     @ns.expect(parser)
