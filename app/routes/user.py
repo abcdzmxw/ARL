@@ -118,8 +118,8 @@ class ChangePassARL(ARLResource):
 
 
 search_user_fields = ns.model('SearchUser', {
-    'page': fields.String(required=True, description="当前页数"),
-    'size': fields.String(required=True, description="每页条数"),
+    'page': fields.Integer(required=True, description="当前页数"),
+    'size': fields.Integer(required=True, description="每页条数"),
     'username': fields.String(required=False, description="账号"),
     'name': fields.String(required=False, description="用户名称")
 })

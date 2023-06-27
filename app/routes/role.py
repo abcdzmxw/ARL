@@ -13,8 +13,8 @@ logger = get_logger()
 
 
 search_role_fields = ns.model('SearchRole', {
-    'page': fields.String(required=True, description="当前页数"),
-    'size': fields.String(required=True, description="每页条数"),
+    'page': fields.Integer(required=True, description="当前页数"),
+    'size': fields.Integer(required=True, description="每页条数"),
     'role_name': fields.String(required=False, description="角色名称"),
     'role_code': fields.String(required=False, description="角色编码")
 })
