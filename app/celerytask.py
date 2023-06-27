@@ -26,7 +26,7 @@ def arl_task(options):
 
 def run_task(options):
     signal.signal(signal.SIGTERM, utils.exit_gracefully)
-
+    logger.info("运行任务(celerytask.run_task)  options={}".format(options))
     action = options.get("celery_action")
     data = options.get("data")
     action_map = {

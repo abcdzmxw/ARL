@@ -133,7 +133,7 @@ fi
 echo "gen cert ..."
 chmod +x ./docker/worker/gen_crt.sh
 ./docker/worker/gen_crt.sh
-
+chmod +x ./app/tools/massdns
 
 cd /opt/ARL/
 
