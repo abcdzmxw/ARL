@@ -133,7 +133,7 @@ def get_user_menu_list(username):
 
 def get_first_level_menu_list():
     # 执行分页查询
-    query = "SELECT m.id,m.menu_name,m.menu_code, m.click_uri, m.parent_id, m.sort, m.route FROM t_menu m WHERE m.parent IS NULL ORDER BY m.sort"
+    query = "SELECT m.id,m.menu_name,m.menu_code, m.click_uri, m.parent_id, m.sort, m.route FROM t_menu m WHERE m.parent_id IS NULL ORDER BY m.sort"
     menu_list = db_utils.get_query_list(sql=query)
     logger.info("get_first_level_menu_list query:{}, menu_list:{}".format(query, menu_list))
     return menu_list
