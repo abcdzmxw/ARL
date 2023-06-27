@@ -110,7 +110,9 @@ def get_user_menu_list(username):
     menus = []
     for menu in menu_list:
         parent_id = menu["parent_id"]
+        logger.info("parent_id:{}".format(parent_id))
         if parent_id is None:
+            logger.info("is None parent_id:{}".format(parent_id))
             menus.append(menu)
         else:
             a_list = menu_map.get(parent_id)
@@ -125,6 +127,7 @@ def get_user_menu_list(username):
             sorted_list = sorted(secondMenuList, key=lambda x: x['sort'])
             menu["secondMenuList"] = sorted_list
 
+    logger.info("1111menu_list:{}".format(menu_list))
     result_list = sorted(menus, key=lambda x: x['sort'])
 
     logger.info("query:{}, username:{},result_list:{}".format(query, username, result_list))
