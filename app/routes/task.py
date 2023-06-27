@@ -151,9 +151,9 @@ class DomainBruteTypeTask(ARLResource):
         获取域名爆破类型-字典
         """
         data = [
-            {"key": "大字典", "value": "big"},
-            {"key": "百万大字典", "value": "million_big"},
-            {"key": "测试", "value": "test"}
+            {"key": "big", "value": "大字典"},
+            {"key": "million_big", "value": "百万大字典"},
+            {"key": "test", "value": "测试"}
         ]
 
         return utils.return_msg(ErrorMsg.Success, "域名爆破类型", data)
@@ -167,10 +167,10 @@ class PortScanTypeTask(ARLResource):
         获取端口扫描类型-字典
         """
         data = [
-            {"key": "测试", "value": "test"},
-            {"key": "TOP100", "value": "top100"},
-            {"key": "TOP1000", "value": "top1000"},
-            {"key": "全端口", "value": "all"}
+            {"key": "test", "value": "测试"},
+            {"key": "top100", "value": "TOP100"},
+            {"key": "top1000", "value": "TOP1000"},
+            {"key": "all", "value": "全端口"}
         ]
 
         return utils.return_msg(ErrorMsg.Success, "端口扫描类型", data)
