@@ -36,6 +36,8 @@ def user_page_list(args):
     offset = (page - 1) * size
     query_sql += " LIMIT " + str(size) + " OFFSET " + str(offset)
 
+    logger.info("user_page_list, count_query_sql={}, query_sql={}".format(count_query_sql, query_sql))
+
     # 获取总条数
     query_total = db_utils.get_query_total(sql=count_query_sql)
 
@@ -61,6 +63,7 @@ def is_exist_user(username):
     """
     # 查询总数
     count_query_sql = "SELECT count(*) FROM t_user WHERE username= %s "
+    logger.info("is_exist_user, count_query_sql={}, username={}".format(count_query_sql, username))
     query_total = db_utils.get_query_total(sql=count_query_sql, args=username)
 
     # 获取记录数
@@ -84,6 +87,8 @@ def save_user(username, password, name, email=None, phone=None):
     # 执行插入语句
     insert_sql = "INSERT INTO t_user (user_id, name, username, password, email, phone) VALUES (%s, %s, %s, %s, %s, %s)"
     values = (user_id, name, username, md5_password, email, phone)
+
+    logger.info("save_user, insert_sql={}, values={}".format(insert_sql, values))
     db_utils.execute_insert(sql=insert_sql, args=values)
 
     return user_id
@@ -95,6 +100,7 @@ def get_by_user_id(user_id):
     """
     # 执行插入语句
     query_sql = "SELECT id, user_id,name,username,email,phone FROM t_user WHERE user_id=%s "
+    logger.info("get_by_user_id, query_sql={}, user_id={}".format(query_sql, user_id))
     user = db_utils.get_one(sql=query_sql, args=user_id)
     return user
 
@@ -116,5 +122,6 @@ def delete_by_user_id(user_id):
     通过user_id删除用户  user_id是uuid
     """
     query = "DELETE FROM t_user WHERE user_id = %s"
+    logger.info("delete_by_user_id, execute_sql={}, user_id={}".format(query, user_id))
     db_utils.execute_update(sql=query, args=user_id)
 
