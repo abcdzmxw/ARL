@@ -126,13 +126,12 @@ def get_user_menu_list(username):
     for menu in menus:
         logger.info("id={}, menu:{}".format(menu["id"], menu))
 
-        if menu_map:
-            logger.info("menu_map:{},secondMenuList={}".format(menu_map, menu_map.get(menu["id"])))
-            secondMenuList = menu_map.get(menu["id"])
-            logger.info("secondMenuList:{}".format(secondMenuList))
-            if secondMenuList is not None:
-                sorted_list = sorted(secondMenuList, key=lambda x: x['sort'])
-                menu["secondMenuList"] = sorted_list
+        logger.info("menu_map:{},secondMenuList={}".format(menu_map, menu_map.get(menu["id"])))
+        secondMenuList = menu_map.get(menu["id"])
+        logger.info("secondMenuList:{}".format(secondMenuList))
+        if secondMenuList is not None:
+            sorted_list = sorted(secondMenuList, key=lambda x: x['sort'])
+            menu["secondMenuList"] = sorted_list
 
     logger.info("1111menu_list:{}".format(menu_list))
     result_list = sorted(menus, key=lambda x: x['sort'])
