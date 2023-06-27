@@ -107,12 +107,10 @@ def admin_flow_page_list(args):
     return result
 
 
-def submit_flow(flow_id, status, submit_time):
-    update_sql = "UPDATE t_arl_flaw SET status = %s"
-    if submit_time:
-        update_sql += ", submit_time = now()"
-    update_sql += "  WHERE id = %s"
-    values = (status, flow_id)
+def submit_flow(flow_id, status):
+    created_by = g.get('current_user')
+    update_sql = "UPDATE t_arl_flaw SET status = %s, updated_at=NOW(), updated_by = %s, submit_time = now() WHERE id = %s"
+    values = (status, created_by, flow_id)
     logger.info("submit_flow, update_sql={},values={}".format(update_sql, values))
     db_utils.execute_update(sql=update_sql, args=values)
 

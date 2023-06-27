@@ -1,3 +1,5 @@
+from flask import g
+
 from app import utils
 from app.services.system.db_utils import get_db_utils
 
@@ -30,9 +32,10 @@ def save_role(role_name, role_code):
     """
     保存角色对象
     """
+    current_user = g.get('current_user')
     # 执行插入语句
-    insert_sql = "INSERT INTO t_role (role_name, role_code) VALUES (%s, %s)"
-    values = (role_name, role_code)
+    insert_sql = "INSERT INTO t_role (role_name, role_code, created_by) VALUES (%s, %s, %s)"
+    values = (role_name, role_code, current_user)
     logger.info("save_role, insert_sql={}, values={}".format(insert_sql, values))
     db_utils.execute_insert(sql=insert_sql, args=values)
 
@@ -86,8 +89,9 @@ def update_role(role_id, role_name):
     """
     通过rle_id来更新角色名称
     """
-    update_sql = "UPDATE t_role SET role_name = %s WHERE id = %s"
-    values = (role_name, role_id)
+    current_user = g.get('current_user')
+    update_sql = "UPDATE t_role SET role_name = %s, updated_at=NOW(), updated_by= %s WHERE id = %s"
+    values = (role_name, current_user, role_id)
     logger.info("update_role, update_sql={}, values={}".format(update_sql, values))
     db_utils.execute_update(sql=update_sql, args=values)
 
@@ -105,12 +109,13 @@ def save_user_role(user_id, role_id_str):
     """
     保存用户角色关系
     """
+    current_user = g.get('current_user')
     role_id_array = role_id_str.split(',')
-    values = [(user_id, role_id) for role_id in role_id_array]
+    values = [(user_id, role_id, current_user) for role_id in role_id_array]
 
     logger.info("save_user_role  user_id:{},values={}".format(user_id, values))
     # 执行插入语句
-    insert_sql = "INSERT INTO t_user_role (user_id, role_id) VALUES (%s, %s)"
+    insert_sql = "INSERT INTO t_user_role (user_id, role_id, created_by) VALUES (%s, %s, %s)"
     logger.info("save_user_role, insert_sql={}, values={}".format(insert_sql, values))
     db_utils.execute_executemany_insert(sql=insert_sql, args=values)
     logger.info("save_user_role  执行完成.....")

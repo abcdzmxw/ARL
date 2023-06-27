@@ -1,3 +1,4 @@
+from flask import g
 
 from app import utils
 from app.services.system.db_utils import get_db_utils
@@ -84,9 +85,11 @@ def save_user(username, password, name, email=None, phone=None):
     # 密码md5加密
     md5_password = gen_md5(salt + password)
 
+    # 当前登录用户
+    current_user = g.get('current_user')
     # 执行插入语句
-    insert_sql = "INSERT INTO t_user (user_id, name, username, password, email, phone) VALUES (%s, %s, %s, %s, %s, %s)"
-    values = (user_id, name, username, md5_password, email, phone)
+    insert_sql = "INSERT INTO t_user (user_id, name, username, password, email, phone, created_by) VALUES (%s, %s, %s, %s, %s, %s, %s)"
+    values = (user_id, name, username, md5_password, email, phone, current_user)
 
     logger.info("save_user, insert_sql={}, values={}".format(insert_sql, values))
     db_utils.execute_insert(sql=insert_sql, args=values)
@@ -109,9 +112,11 @@ def update_user(user_id, name, email=None, phone=None):
     """
     更新用户的信息
     """
+    # 当前登录用户
+    current_user = g.get('current_user')
     logger.info("update_user方法执行更新用户信息----user_id:{},name:{} email:{} phone:{} ".format(user_id, name, email, phone))
-    update_sql = "UPDATE t_user SET name = %s, email = %s, phone = %s WHERE user_id = %s"
-    values = (name, email, phone, user_id)
+    update_sql = "UPDATE t_user SET name = %s, email = %s, phone = %s, updated_at=NOW(), updated_by= %s WHERE user_id = %s"
+    values = (name, email, phone, current_user, user_id)
 
     db_utils.execute_update(sql=update_sql, args=values)
     logger.info("update_user方法执行更新用户信息完成")
