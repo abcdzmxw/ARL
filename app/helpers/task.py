@@ -45,7 +45,8 @@ def get_ip_domain_list(target):
 
 
 def build_task_data(task_name, task_target, task_type, task_tag, options):
-
+    logger.info("进入构建任务(build_task_data)  task_name={}, task_target={}, task_type={}, task_ta{}, options={}"
+                .format(task_name, task_target, task_type, task_tag, options))
     # 检查是不是IP ,域名任务等
     avail_task_type = [TaskType.IP, TaskType.DOMAIN, TaskType.RISK_CRUISING]
     if task_type not in avail_task_type:
@@ -99,10 +100,12 @@ def build_task_data(task_name, task_target, task_type, task_tag, options):
 
         task_data["target"] = target_field
 
+    logger.info("构建任务成功(build_task_data)  task_data={}".format(task_data))
     return task_data
 
 
 def submit_task(task_data):
+    logger.info("提交任务(submit_task)  task_data={}".format(task_data))
     target = task_data["target"]
     utils.conn_db('task').insert_one(task_data)
     task_id = str(task_data.pop("_id"))
@@ -151,6 +154,7 @@ def submit_task_task(target, name, options):
 
     ip_list, domain_list = get_ip_domain_list(target)
 
+    logger.info("submit_task_task  ip_list={}, domain_list".format(ip_list, domain_list))
     if ip_list:
         ip_target = " ".join(ip_list)
         task_data = build_task_data(task_name=name, task_target=ip_target,
