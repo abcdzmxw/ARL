@@ -61,7 +61,7 @@ class ARLRole(ARLResource):
             return utils.build_ret(ErrorMsg.Error, {"error": str(e)})
 
         """这里直接返回成功了"""
-        return utils.build_ret(ErrorMsg.Success, {})
+        return utils.return_msg(code=200, message="新增角色成功")
 
     @auth
     @ns.expect(update_role_fields)
@@ -84,7 +84,7 @@ class ARLRole(ARLResource):
             return utils.build_ret(ErrorMsg.Error, {"error": str(e)})
 
         """这里直接返回成功了"""
-        return utils.build_ret(ErrorMsg.Success, {})
+        return utils.return_msg(code=200, message="修改角色成功")
 
     @auth
     @ns.expect(delete_role_fields)
