@@ -55,26 +55,27 @@ def menu_page_list(args):
     route = args.pop("route")
 
     # 执行分页查询
-    query = "SELECT id,menu_name,menu_code, click_uri, parent, sort, route FROM t_menu WHERE 1=1 "
+    query_sql = "SELECT id,menu_name,menu_code, click_uri, parent, sort, route FROM t_menu WHERE 1=1 "
 
+    condition = ""
     # 如果条件存在，则添加条件到查询语句
     if menu_name:
-        query += " AND menu_name LIKE '%{}%'".format(menu_name)
+        condition += " AND menu_name LIKE '%{}%'".format(menu_name)
 
     if menu_code:
-        query += " AND menu_code LIKE '%{}%'".format(menu_code)
+        condition += " AND menu_code LIKE '%{}%'".format(menu_code)
 
     if route:
-        query += " AND route LIKE '%{}%'".format(route)
+        condition += " AND route LIKE '%{}%'".format(route)
 
-    count_query_sql = query
-
+    query_sql = query_sql + condition
+    count_query_sql = " SELECT COUNT(*) FROM t_menu WHERE 1=1 " + condition
     # 计算查询的起始位置
     offset = (page - 1) * size
-    query += " LIMIT " + str(size) + " OFFSET " + str(offset)
+    query_sql += " LIMIT " + str(size) + " OFFSET " + str(offset)
 
     query_total = db_utils.get_query_total(sql=count_query_sql)
-    menu_list = db_utils.get_query_list(sql=query)
+    menu_list = db_utils.get_query_list(sql=query_sql)
     for menu in menu_list:
         if menu["parent"] is not None:
             menu["parent_dto"] = get_by_id(menu["parent"])
