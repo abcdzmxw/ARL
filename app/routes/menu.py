@@ -62,19 +62,19 @@ class ARLMenu(ARLResource):
         route = args.pop('route', None)
         logger.info("执行插入菜单入参：menu_name:{} menu_code:{} sort:{} parent_id:{} click_uri:{} route:{}"
                     .format(menu_name, menu_code, sort, parent_id, click_uri, route))
-        # 判断是否存在记录
-        count = is_exist_menu_code(menu_code)
-        if count > 0:
-            return utils.return_msg(code=500, message="此编码已经存在了", data=None)
-
-        # 父菜单传了的话，校验此菜单id是否存在
-        if parent_id is not None:
-            menu = get_by_id(menu_id=parent_id)
-            logger.info("通过菜单id查询菜单----parent_id{},menu:{}".format(parent_id, menu))
-            if menu is None:
-                return utils.return_msg(code=500, message="父菜单不存在", data=None)
-
         try:
+            # 判断是否存在记录
+            count = is_exist_menu_code(menu_code)
+            if count > 0:
+                return utils.return_msg(code=500, message="此编码已经存在了", data=None)
+
+            # 父菜单传了的话，校验此菜单id是否存在
+            if parent_id is not None:
+                menu = get_by_id(menu_id=parent_id)
+                logger.info("通过菜单id查询菜单----parent_id{},menu:{}".format(parent_id, menu))
+                if menu is None:
+                    return utils.return_msg(code=500, message="父菜单不存在", data=None)
+
             save_menu(menu_name=menu_name, menu_code=menu_code, sort=sort, parent_id=parent_id, click_uri=click_uri, route=route)
             logger.info("执行插入菜单完成----")
         except Exception as e:
@@ -99,20 +99,20 @@ class ARLMenu(ARLResource):
         route = args.pop('route', None)
         logger.info("执行插入菜单入参：menu_name:{} sort:{} parent_id:{} click_uri:{} route:{}"
                     .format(menu_name, sort, parent_id, click_uri, route))
-        # 判断是否存在记录
-        menu = get_by_id(menu_id=menu_id)
-        if menu is None:
-            return utils.return_msg(code=500, message="菜单不存在", data=None)
-
-        # 父菜单传了的话，校验此菜单id是否存在
-        logger.info("通过菜单id查询菜单----parent_id:{}".format(parent_id))
-        if parent_id is not None:
-            menu = get_by_id(menu_id=parent_id)
-            logger.info("通过菜单id查询菜单----parent_id{},menu:{}".format(parent_id, menu))
-            if menu is None:
-                return utils.return_msg(code=500, message="父菜单不存在", data=None)
-
         try:
+
+            # 判断是否存在记录
+            menu = get_by_id(menu_id=menu_id)
+            if menu is None:
+                return utils.return_msg(code=500, message="菜单不存在", data=None)
+
+            # 父菜单传了的话，校验此菜单id是否存在
+            logger.info("通过菜单id查询菜单----parent_id:{}".format(parent_id))
+            if parent_id is not None:
+                menu = get_by_id(menu_id=parent_id)
+                logger.info("通过菜单id查询菜单----parent_id{},menu:{}".format(parent_id, menu))
+                if menu is None:
+                    return utils.return_msg(code=500, message="父菜单不存在", data=None)
             update_menu(menu_id=menu_id, menu_name=menu_name, sort=sort, parent_id=parent_id, click_uri=click_uri,
                         route=route)
         except Exception as e:
