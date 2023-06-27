@@ -11,16 +11,17 @@ def save_flow(title, domain, flaw_data_package, flaw_detail_data):
     created_by = g.get('current_user')
     insert_sql = "INSERT INTO t_arl_flaw (title, domain, flaw_data_package, flaw_detail_data, status, created_by) VALUES (%s, %s, %s, %s, %s, %s)"
     values = (title, domain, flaw_data_package, flaw_detail_data, 0, created_by)
+    logger.info("save_flow, insert_sql={}, values={}".format(insert_sql, values))
     db_utils.execute_insert(sql=insert_sql, args=values)
     logger.info("save_menu执行插入菜单完成----")
 
 
 def get_by_id(flow_id):
     # 执行查询语句
-    query = "SELECT t.id,t.title,t.domain,t.flaw_data_package,t.flaw_detail_data,t.`status`,DATE_FORMAT(t.submit_time, '%Y-%m-%d %H:%i:%s') as submit_time,DATE_FORMAT(t.process_time, '%Y-%m-%d %H:%i:%s') as process_time,t.process_by,DATE_FORMAT(t.created_at, '%Y-%m-%d %H:%i:%s') as created_at,t.created_by FROM t_arl_flaw t WHERE t.id= "
-    query += str(flow_id)
-    logger.info("query={}".format(query))
-    flow_obj = db_utils.get_one(sql=query)
+    query_sql = "SELECT t.id,t.title,t.domain,t.flaw_data_package,t.flaw_detail_data,t.`status`,DATE_FORMAT(t.submit_time, '%Y-%m-%d %H:%i:%s') as submit_time,DATE_FORMAT(t.process_time, '%Y-%m-%d %H:%i:%s') as process_time,t.process_by,DATE_FORMAT(t.created_at, '%Y-%m-%d %H:%i:%s') as created_at,t.created_by FROM t_arl_flaw t WHERE t.id= "
+    query_sql += str(flow_id)
+    logger.info("get_by_id, query_sql={}".format(query_sql))
+    flow_obj = db_utils.get_one(sql=query_sql)
     return flow_obj
 
 
@@ -52,8 +53,7 @@ def flow_page_list(args):
     limit_info = " LIMIT " + str(size) + " OFFSET " + str(offset)
     query_sql = query_sql + condition + limit_info
 
-    logger.info("count_query_sql={}".format(count_query_sql))
-    logger.info("query_sql={}".format(query_sql))
+    logger.info("flow_page_list, query_sql={},count_query_sql={}".format(query_sql, count_query_sql))
     query_total = db_utils.get_query_total(sql=count_query_sql)
     menu_list = db_utils.get_query_list(sql=query_sql)
 
@@ -93,7 +93,7 @@ def admin_flow_page_list(args):
     offset = (page - 1) * size
     limit_info = " LIMIT " + str(size) + " OFFSET " + str(offset)
     query_sql = query_sql + condition + limit_info
-
+    logger.info("admin_flow_page_list, query_sql={},count_query_sql={}".format(query_sql, count_query_sql))
     query_total = db_utils.get_query_total(sql=count_query_sql)
     menu_list = db_utils.get_query_list(sql=query_sql)
 
@@ -113,7 +113,7 @@ def submit_flow(flow_id, status, submit_time):
         update_sql += ", submit_time = now()"
     update_sql += "  WHERE id = %s"
     values = (status, flow_id)
-    logger.info("update_sql={}, values={}".format(update_sql, values))
+    logger.info("submit_flow, update_sql={},values={}".format(update_sql, values))
     db_utils.execute_update(sql=update_sql, args=values)
 
 
@@ -121,4 +121,5 @@ def process_flow(flow_id, status):
     update_sql = "UPDATE t_arl_flaw SET status = %s, process_time=now(),process_by= %s WHERE id= %s"
     username = g.get('current_user')
     values = (status, username, flow_id)
+    logger.info("process_flow, update_sql={},values={}".format(update_sql, values))
     db_utils.execute_update(sql=update_sql, args=values)

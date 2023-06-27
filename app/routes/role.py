@@ -1,6 +1,6 @@
 from flask_restx import fields, Namespace
 from app.utils import get_logger, auth
-from . import base_query_fields, ARLResource, get_arl_parser
+from . import ARLResource, get_arl_parser
 from app import utils
 from app.modules import ErrorMsg
 from flask import g
@@ -11,14 +11,13 @@ ns = Namespace('role', description="角色管理")
 
 logger = get_logger()
 
-base_search_role_fields = {
+
+search_role_fields = ns.model('SearchRole', {
+    'page': fields.Integer(required=True, description="当前页数"),
+    'size': fields.Integer(required=True, description="每页条数"),
     'role_name': fields.String(required=False, description="角色名称"),
     'role_code': fields.String(required=False, description="角色编码")
-}
-
-base_search_role_fields.update(base_query_fields)
-
-search_role_fields = ns.model('SearchRole', base_search_role_fields)
+})
 
 add_role_fields = ns.model('AddRole', {
     'role_name': fields.String(required=True, description="角色名称"),
@@ -61,7 +60,7 @@ class ARLRole(ARLResource):
             return utils.build_ret(ErrorMsg.Error, {"error": str(e)})
 
         """这里直接返回成功了"""
-        return utils.build_ret(ErrorMsg.Success, {})
+        return utils.return_msg(code=200, message="新增角色成功")
 
     @auth
     @ns.expect(update_role_fields)
@@ -84,7 +83,7 @@ class ARLRole(ARLResource):
             return utils.build_ret(ErrorMsg.Error, {"error": str(e)})
 
         """这里直接返回成功了"""
-        return utils.build_ret(ErrorMsg.Success, {})
+        return utils.return_msg(code=200, message="修改角色成功")
 
     @auth
     @ns.expect(delete_role_fields)

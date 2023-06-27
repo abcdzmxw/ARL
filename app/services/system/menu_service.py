@@ -6,16 +6,17 @@ logger = utils.get_logger()
 
 
 def get_by_id(menu_id):
-    logger.info("通过菜单id查询菜单----menu_id:{}".format(menu_id))
     # 执行查询语句
-    query = "SELECT id,menu_name,menu_code, click_uri, parent_id, sort, route FROM t_menu WHERE id= %s "
-    menu_obj = db_utils.get_one(sql=query, args=menu_id)
+    query_sql = "SELECT id,menu_name,menu_code, click_uri, parent_id, sort, route FROM t_menu WHERE id= %s "
+    logger.info("get_by_id, query_sql={}, menu_id={}".format(query_sql, menu_id))
+    menu_obj = db_utils.get_one(sql=query_sql, args=menu_id)
     return menu_obj
 
 
 def is_exist_menu_code(menu_code):
-    query = "SELECT count(1) FROM t_menu WHERE menu_code= %s "
-    total_count = db_utils.get_query_total(sql=query, args=menu_code)
+    query_count_sql = "SELECT count(1) FROM t_menu WHERE menu_code= %s "
+    logger.info("is_exist_menu_code, query_count_sql={}, menu_code={}".format(query_count_sql, menu_code))
+    total_count = db_utils.get_query_total(sql=query_count_sql, args=menu_code)
     logger.info("total_count:{}".format(total_count))
     return total_count
 
@@ -26,6 +27,7 @@ def save_menu(menu_name, menu_code, sort, parent_id, click_uri, route):
     # 执行插入语句
     insert_sql = "INSERT INTO t_menu (menu_name, menu_code, click_uri, parent_id, sort, route) VALUES (%s, %s, %s, %s, %s, %s)"
     values = (menu_name, menu_code, click_uri, parent_id, sort, route)
+    logger.info("save_menu, insert_sql={}, values={}".format(insert_sql, values))
     db_utils.execute_insert(sql=insert_sql, args=values)
     logger.info("save_menu执行插入菜单完成----")
 
@@ -36,12 +38,14 @@ def update_menu(menu_id, menu_name, sort, parent_id, click_uri, route):
     # 执行插入语句
     update_sql = "UPDATE t_menu SET menu_name = %s, click_uri = %s, parent_id = %s, sort = %s, route = %s WHERE id = %s"
     values = (menu_name, click_uri, parent_id, sort, route, menu_id)
+    logger.info("update_menu, update_sql={}, values={}".format(update_sql, values))
     db_utils.execute_update(sql=update_sql, args=values)
     logger.info("update_menu方法执行更新菜单完成")
 
 
 def delete_menu_by_id(menu_id):
     delete_sql = "DELETE FROM t_menu WHERE id = %s"
+    logger.info("delete_menu_by_id, delete_sql={}, menu_id={}".format(delete_sql, menu_id))
     db_utils.execute_update(sql=delete_sql, args=menu_id)
 
 
@@ -71,7 +75,7 @@ def menu_page_list(args):
     # 计算查询的起始位置
     offset = (page - 1) * size
     query_sql += " LIMIT " + str(size) + " OFFSET " + str(offset)
-
+    logger.info("menu_page_list, count_query_sql={}, query_sql={}".format(count_query_sql, query_sql))
     query_total = db_utils.get_query_total(sql=count_query_sql)
     menu_list = db_utils.get_query_list(sql=query_sql)
     for menu in menu_list:
@@ -91,28 +95,26 @@ def menu_page_list(args):
 def get_menu_by_role_id(role_id):
     logger.info("get_menu_by_role_id:, role_id:{}".format(role_id))
     # 执行分页查询
-    query = "SELECT m.id,m.menu_name,m.menu_code, m.click_uri, m.parent_id, m.sort, m.route FROM t_menu m JOIN t_role_menu rm ON m.id=rm.menu_id JOIN t_role r ON rm.role_id=r.id WHERE r.id=%s"
-    logger.info("query:{}, role_id:{}".format(query, role_id))
-    menu_list = db_utils.get_query_list(sql=query, args=role_id)
-    logger.info("query:{}, role_id:{},menu_list:{}".format(query, role_id, menu_list))
+    query_sql = "SELECT m.id,m.menu_name,m.menu_code, m.click_uri, m.parent_id, m.sort, m.route FROM t_menu m JOIN t_role_menu rm ON m.id=rm.menu_id JOIN t_role r ON rm.role_id=r.id WHERE r.id=%s"
+    logger.info("get_menu_by_role_id, query_sql={}, role_id={}".format(query_sql, role_id))
+    menu_list = db_utils.get_query_list(sql=query_sql, args=role_id)
     return menu_list
 
 
 def get_user_menu_list(username):
     logger.info("get_user_menu_list,username:{}".format(username))
     # 执行分页查询
-    query = "SELECT distinct m.id,m.menu_name,m.menu_code, m.click_uri, m.parent_id, m.sort, m.route FROM t_menu m JOIN t_role_menu rm ON m.id=rm.menu_id JOIN t_role r ON rm.role_id=r.id JOIN t_user_role ur ON r.id=ur.role_id JOIN t_user u ON ur.user_id=u.id WHERE u.username=%s"
-    logger.info("query:{}, username:{}".format(query, username))
-    menu_list = db_utils.get_query_list(sql=query, args=username)
-    logger.info("menu_list:{}".format(menu_list))
+    query_sql = "SELECT distinct m.id,m.menu_name,m.menu_code, m.click_uri, m.parent_id, m.sort, m.route FROM t_menu m JOIN t_role_menu rm ON m.id=rm.menu_id JOIN t_role r ON rm.role_id=r.id JOIN t_user_role ur ON r.id=ur.role_id JOIN t_user u ON ur.user_id=u.id WHERE u.username=%s"
+
+    logger.info("get_user_menu_list, query_sql={}, username={}".format(query_sql, username))
+    menu_list = db_utils.get_query_list(sql=query_sql, args=username)
+
     menu_map = {}  # 创建空的菜单字典
 
     menus = []
     for menu in menu_list:
         parent_id = menu["parent_id"]
-        logger.info("parent_id:{}".format(parent_id))
         if parent_id is None:
-            logger.info("is None parent_id:{}".format(parent_id))
             menus.append(menu)
         else:
             a_list = menu_map.get(parent_id)
@@ -121,28 +123,21 @@ def get_user_menu_list(username):
             a_list.append(menu)
             menu_map[parent_id] = a_list
 
-    logger.info("menus:{}".format(menus))
-
     for menu in menus:
-        logger.info("id={}, menu:{}".format(menu["id"], menu))
-
-        logger.info("menu_map:{},secondMenuList={}".format(menu_map, menu_map.get(menu["id"])))
         secondMenuList = menu_map.get(menu["id"])
         logger.info("secondMenuList:{}".format(secondMenuList))
         if secondMenuList is not None:
             sorted_list = sorted(secondMenuList, key=lambda x: x['sort'])
             menu["secondMenuList"] = sorted_list
 
-    logger.info("1111menu_list:{}".format(menu_list))
     result_list = sorted(menus, key=lambda x: x['sort'])
 
-    logger.info("query:{}, username:{},result_list:{}".format(query, username, result_list))
     return result_list
 
 
 def get_first_level_menu_list():
     # 执行分页查询
-    query = "SELECT m.id,m.menu_name,m.menu_code, m.click_uri, m.parent_id, m.sort, m.route FROM t_menu m WHERE m.parent_id IS NULL ORDER BY m.sort"
-    menu_list = db_utils.get_query_list(sql=query)
-    logger.info("get_first_level_menu_list query:{}, menu_list:{}".format(query, menu_list))
+    query_sql = "SELECT m.id,m.menu_name,m.menu_code, m.click_uri, m.parent_id, m.sort, m.route FROM t_menu m WHERE m.parent_id IS NULL ORDER BY m.sort"
+    logger.info("get_first_level_menu_list, query_sql={}".format(query_sql))
+    menu_list = db_utils.get_query_list(sql=query_sql)
     return menu_list
