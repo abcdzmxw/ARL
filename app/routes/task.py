@@ -7,7 +7,7 @@ from app.utils import get_logger, auth
 from . import base_query_fields, ARLResource, get_arl_parser, conn
 from app import utils
 from app.modules import TaskStatus, ErrorMsg, TaskSyncStatus, CeleryAction, TaskTag, TaskType
-from app.helpers import get_options_by_policy_id, submit_task_task,\
+from app.helpers import get_options_by_policy_id, submit_task_task, \
     submit_risk_cruising, get_scope_by_scope_id, check_target_in_scope
 from app.helpers.task import get_task_data, restart_task
 
@@ -117,7 +117,7 @@ class ARLTask(ARLResource):
         # return utils.build_ret(ErrorMsg.Success, {"items": task_data_list})
 
 
-batch_stop_fields = ns.model('BatchStop',  {
+batch_stop_fields = ns.model('BatchStop', {
     "task_id": fields.List(fields.String(description="任务 ID"), required=True),
 })
 
@@ -141,6 +141,68 @@ class BatchStopTask(ARLResource):
 
         """这里直接返回成功了"""
         return utils.build_ret(ErrorMsg.Success, {})
+
+
+@ns.route('/get_domain_brute_type')
+class DomainBruteTypeTask(ARLResource):
+    @auth
+    def get(self):
+        """
+        获取域名爆破类型-字典
+        """
+        data = [
+            {"key": "大字典", "value": "big"},
+            {"key": "百万大字典", "value": "million_big"},
+            {"key": "测试", "value": "test"}
+        ]
+
+        return utils.return_msg(ErrorMsg.Success, "域名爆破类型", data)
+
+
+@ns.route('/get_port_scan_type')
+class PortScanTypeTask(ARLResource):
+    @auth
+    def get(self):
+        """
+        获取端口扫描类型-字典
+        """
+        data = [
+            {"key": "测试", "value": "test"},
+            {"key": "TOP100", "value": "top100"},
+            {"key": "TOP1000", "value": "top1000"},
+            {"key": "全端口", "value": "all"}
+        ]
+
+        return utils.return_msg(ErrorMsg.Success, "端口扫描类型", data)
+
+
+@ns.route('/get_function')
+class PortScanTypeTask(ARLResource):
+    @auth
+    def get(self):
+        """
+        获取功能列表-字典
+        """
+        data = [
+            {"key": "domain_brute", "value": "域名爆破"},
+            {"key": "alt_dns", "value": "DNS字典智能生成"},
+            {"key": "dns_query_plugin", "value": "域名查询插件"},
+            {"key": "arl_search", "value": "ARL 历史查询"},
+            {"key": "port_scan", "value": "端口扫描"},
+            {"key": "service_detection", "value": "服务识别"},
+            {"key": "os_detection", "value": "操作系统识别"},
+            {"key": "ssl_cert", "value": "SSL 证书获取"},
+            {"key": "skip_scan_cdn_ip", "value": "跳过CDN"},
+            {"key": "site_identify", "value": "站点识别"},
+            {"key": "search_engines", "value": "搜索引擎调用"},
+            {"key": "site_spider", "value": "站点爬虫"},
+            {"key": "site_capture", "value": "站点截图"},
+            {"key": "file_leak", "value": "文件泄露"},
+            {"key": "findvhost", "value": "Host 碰撞"},
+            {"key": "nuclei_scan", "value": "nuclei 调用"}
+        ]
+
+        return utils.return_msg(ErrorMsg.Success, "功能列表", data)
 
 
 @ns.route('/stop/<string:task_id>')
@@ -179,7 +241,7 @@ def stop_task(task_id):
     return utils.build_ret(ErrorMsg.Success, {"task_id": task_id})
 
 
-delete_task_fields = ns.model('DeleteTask',  {
+delete_task_fields = ns.model('DeleteTask', {
     'del_task_data': fields.Boolean(required=False, default=False, description="是否删除任务数据"),
     'task_id': fields.List(fields.String(required=True, description="任务ID"))
 })
@@ -216,7 +278,7 @@ class DeleteTask(ARLResource):
         return utils.build_ret(ErrorMsg.Success, {"task_id": task_id_list})
 
 
-sync_task_fields = ns.model('SyncTask',  {
+sync_task_fields = ns.model('SyncTask', {
     'task_id': fields.String(required=True, description="任务ID"),
     'scope_id': fields.String(required=True, description="资产范围ID"),
 })
@@ -274,7 +336,7 @@ class SyncTask(ARLResource):
         return utils.build_ret(ErrorMsg.Success, {"task_id": task_id})
 
 
-sync_scope_fields = ns.model('SyncScope',  {
+sync_scope_fields = ns.model('SyncScope', {
     'target': fields.String(required=True, description="需要同步的目标"),
 })
 
@@ -354,7 +416,7 @@ class TaskByPolicy(ARLResource):
                     scope_data = get_scope_by_scope_id(scope_id=related_scope_id)
                     if not scope_data:
                         return utils.build_ret(ErrorMsg.NotFoundScopeID, {"scope_id": related_scope_id})
-                    
+
                     check_target_in_scope(target=target, scope_list=scope_data["scope_array"])
 
                 task_data_list = submit_task_task(target=target, name=name, options=options)
@@ -391,7 +453,7 @@ class TaskByPolicy(ARLResource):
         return utils.build_ret(ErrorMsg.Success, {"items": task_data_list})
 
 
-restart_task_fields = ns.model('DeleteTask',  {
+restart_task_fields = ns.model('DeleteTask', {
     'task_id': fields.List(fields.String(required=True, description="任务ID"))
 })
 
@@ -424,5 +486,3 @@ class TaskRestart(ARLResource):
             return utils.build_ret(ErrorMsg.Error, {"error": str(e)})
 
         return utils.build_ret(ErrorMsg.Success, {"task_id": task_id_list})
-
-
