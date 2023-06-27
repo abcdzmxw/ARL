@@ -1,4 +1,3 @@
-
 from app import utils
 from app.services.system.db_utils import get_db_utils
 
@@ -9,7 +8,7 @@ logger = utils.get_logger()
 def get_by_id(menu_id):
     logger.info("通过菜单id查询菜单----menu_id:{}".format(menu_id))
     # 执行查询语句
-    query = "SELECT id,menu_name,menu_code, click_uri, parent, sort, route FROM t_menu WHERE id= %s "
+    query = "SELECT id,menu_name,menu_code, click_uri, parent_id, sort, route FROM t_menu WHERE id= %s "
     menu_obj = db_utils.get_one(sql=query, args=menu_id)
     return menu_obj
 
@@ -25,18 +24,17 @@ def save_menu(menu_name, menu_code, sort, parent_id, click_uri, route):
     logger.info("save_menu方法执行插入菜单----menu_name:{} menu_code:{} sort:{} parent_id:{} click_uri:{} route:{}"
                 .format(menu_name, menu_code, sort, parent_id, click_uri, route))
     # 执行插入语句
-    insert_sql = "INSERT INTO t_menu (menu_name, menu_code, click_uri, parent, sort, route) VALUES (%s, %s, %s, %s, %s, %s)"
+    insert_sql = "INSERT INTO t_menu (menu_name, menu_code, click_uri, parent_id, sort, route) VALUES (%s, %s, %s, %s, %s, %s)"
     values = (menu_name, menu_code, click_uri, parent_id, sort, route)
     db_utils.execute_insert(sql=insert_sql, args=values)
     logger.info("save_menu执行插入菜单完成----")
-
 
 
 def update_menu(menu_id, menu_name, sort, parent_id, click_uri, route):
     logger.info("update_menu方法执行更新菜单----menu_id:{},menu_name:{} sort:{} parent_id:{} click_uri:{} route:{}"
                 .format(menu_id, menu_name, sort, parent_id, click_uri, route))
     # 执行插入语句
-    update_sql = "UPDATE t_menu SET menu_name = %s, click_uri = %s, parent = %s, sort = %s, route = %s WHERE id = %s"
+    update_sql = "UPDATE t_menu SET menu_name = %s, click_uri = %s, parent_id = %s, sort = %s, route = %s WHERE id = %s"
     values = (menu_name, click_uri, parent_id, sort, route, menu_id)
     db_utils.execute_update(sql=update_sql, args=values)
     logger.info("update_menu方法执行更新菜单完成")
@@ -55,7 +53,7 @@ def menu_page_list(args):
     route = args.pop("route")
 
     # 执行分页查询
-    query_sql = "SELECT id,menu_name,menu_code, click_uri, parent, sort, route FROM t_menu WHERE 1=1 "
+    query_sql = "SELECT id,menu_name,menu_code, click_uri, parent_id, sort, route FROM t_menu WHERE 1=1 "
 
     condition = ""
     # 如果条件存在，则添加条件到查询语句
@@ -77,8 +75,8 @@ def menu_page_list(args):
     query_total = db_utils.get_query_total(sql=count_query_sql)
     menu_list = db_utils.get_query_list(sql=query_sql)
     for menu in menu_list:
-        if menu["parent"] is not None:
-            menu["parent_dto"] = get_by_id(menu["parent"])
+        if menu["parent_id"] is not None:
+            menu["parent_dto"] = get_by_id(menu["parent_id"])
 
     result = {
         "page": page,
@@ -93,7 +91,7 @@ def menu_page_list(args):
 def get_menu_by_role_id(role_id):
     logger.info("get_menu_by_role_id:, role_id:{}".format(role_id))
     # 执行分页查询
-    query = "SELECT m.id,m.menu_name,m.menu_code, m.click_uri, m.parent, m.sort, m.route FROM t_menu m JOIN t_role_menu rm ON m.id=rm.menu_id JOIN t_role r ON rm.role_id=r.id WHERE r.id=%s"
+    query = "SELECT m.id,m.menu_name,m.menu_code, m.click_uri, m.parent_id, m.sort, m.route FROM t_menu m JOIN t_role_menu rm ON m.id=rm.menu_id JOIN t_role r ON rm.role_id=r.id WHERE r.id=%s"
     logger.info("query:{}, role_id:{}".format(query, role_id))
     menu_list = db_utils.get_query_list(sql=query, args=role_id)
     logger.info("query:{}, role_id:{},menu_list:{}".format(query, role_id, menu_list))
@@ -103,7 +101,7 @@ def get_menu_by_role_id(role_id):
 def get_user_menu_list(username):
     logger.info("get_user_menu_list,username:{}".format(username))
     # 执行分页查询
-    query = "SELECT distinct m.id,m.menu_name,m.menu_code, m.click_uri, m.parent, m.sort, m.route FROM t_menu m JOIN t_role_menu rm ON m.id=rm.menu_id JOIN t_role r ON rm.role_id=r.id JOIN t_user_role ur ON r.id=ur.role_id JOIN t_user u ON ur.user_id=u.id WHERE u.username=%s"
+    query = "SELECT distinct m.id,m.menu_name,m.menu_code, m.click_uri, m.parent_id, m.sort, m.route FROM t_menu m JOIN t_role_menu rm ON m.id=rm.menu_id JOIN t_role r ON rm.role_id=r.id JOIN t_user_role ur ON r.id=ur.role_id JOIN t_user u ON ur.user_id=u.id WHERE u.username=%s"
     logger.info("query:{}, username:{}".format(query, username))
     menu_list = db_utils.get_query_list(sql=query, args=username)
 
@@ -135,7 +133,7 @@ def get_user_menu_list(username):
 
 def get_first_level_menu_list():
     # 执行分页查询
-    query = "SELECT m.id,m.menu_name,m.menu_code, m.click_uri, m.parent, m.sort, m.route FROM t_menu m WHERE m.parent IS NULL ORDER BY m.sort"
+    query = "SELECT m.id,m.menu_name,m.menu_code, m.click_uri, m.parent_id, m.sort, m.route FROM t_menu m WHERE m.parent IS NULL ORDER BY m.sort"
     menu_list = db_utils.get_query_list(sql=query)
     logger.info("get_first_level_menu_list query:{}, menu_list:{}".format(query, menu_list))
     return menu_list

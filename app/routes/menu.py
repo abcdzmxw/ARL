@@ -75,15 +75,14 @@ class ARLMenu(ARLResource):
                 return utils.return_msg(code=500, message="父菜单不存在", data=None)
 
         try:
-            inserted_id = save_menu(menu_name=menu_name, menu_code=menu_code, sort=sort, parent_id=parent_id,
-                                    click_uri=click_uri, route=route)
-            logger.info("执行插入菜单完成----inserted_id:{}".format(inserted_id))
+            save_menu(menu_name=menu_name, menu_code=menu_code, sort=sort, parent_id=parent_id, click_uri=click_uri, route=route)
+            logger.info("执行插入菜单完成----")
         except Exception as e:
             logger.exception(e)
             return utils.build_ret(ErrorMsg.Error, {"error": str(e)})
 
         """这里直接返回成功了"""
-        return utils.build_ret(ErrorMsg.Success, inserted_id)
+        return utils.return_msg(code=200, message="新增成功")
 
     @auth
     @ns.expect(update_menu_fields)
@@ -121,7 +120,7 @@ class ARLMenu(ARLResource):
             return utils.build_ret(ErrorMsg.Error, {"error": str(e)})
 
         """这里直接返回成功了"""
-        return utils.build_ret(ErrorMsg.Success, menu_id)
+        return utils.return_msg(code=200, message="修改成功")
 
     @auth
     @ns.expect(delete_menu_fields)
