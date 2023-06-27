@@ -138,8 +138,6 @@ class SubmitFlow(ARLResource):
         if status == "1":
             if flow_obj['status'] != "0":
                 return return_msg(code=5000, message="操作已过期,请刷新后再操作")
-            # 获取当前时间
-            submit_time = datetime.datetime.now()
         else:
             if status == "0":
                 if flow_obj['status'] == "2":
@@ -147,7 +145,7 @@ class SubmitFlow(ARLResource):
             else:
                 return return_msg(code=5000, message="请求的状态不对,无法操作")
 
-        submit_flow(flow_id=flow_id, status=status, submit_time=submit_time)
+        submit_flow(flow_id=flow_id, status=status)
 
         return return_msg(code=200, message="操作成功!")
 
