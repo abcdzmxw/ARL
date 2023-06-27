@@ -104,7 +104,7 @@ def get_user_menu_list(username):
     query = "SELECT distinct m.id,m.menu_name,m.menu_code, m.click_uri, m.parent_id, m.sort, m.route FROM t_menu m JOIN t_role_menu rm ON m.id=rm.menu_id JOIN t_role r ON rm.role_id=r.id JOIN t_user_role ur ON r.id=ur.role_id JOIN t_user u ON ur.user_id=u.id WHERE u.username=%s"
     logger.info("query:{}, username:{}".format(query, username))
     menu_list = db_utils.get_query_list(sql=query, args=username)
-
+    logger.info("menu_list:{}".format(menu_list))
     menu_map = {}  # 创建空的菜单字典
 
     menus = []
