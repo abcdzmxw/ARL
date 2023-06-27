@@ -121,8 +121,12 @@ def get_user_menu_list(username):
             a_list.append(menu)
             menu_map[parent_id] = a_list
 
+    logger.info("menus:{}".format(menus))
+
     for menu in menus:
+        logger.info("menu:{}".format(menu))
         secondMenuList = menu_map[menu["id"]]
+        logger.info("secondMenuList:{}".format(secondMenuList))
         if secondMenuList is not None:
             sorted_list = sorted(secondMenuList, key=lambda x: x['sort'])
             menu["secondMenuList"] = sorted_list
