@@ -12,11 +12,7 @@ def get_by_role_id(role_id):
     logger.info("开始查询get_by_role_id  role_id:{}".format(role_id))
     # 执行插入语句
     query_sql = "SELECT id, role_name,role_code FROM t_role WHERE id=%s "
-    role_list = db_utils.get_query_list(sql=query_sql, args=role_id)
-
-    role = None
-    if role_list:
-        role = role_list[0]
+    role = db_utils.get_one(sql=query_sql, args=role_id)
     return role
 
 
@@ -25,11 +21,7 @@ def get_by_role_code(role_code):
     通过role_code查询角色对象
     """
     query_sql = "SELECT id, role_name,role_code FROM t_role WHERE role_code=%s "
-    role_list = db_utils.get_query_list(sql=query_sql, args=role_code)
-
-    role = None
-    if role_list:
-        role = role_list[0]
+    role = db_utils.get_one(sql=query_sql, args=role_code)
     return role
 
 
@@ -61,7 +53,7 @@ def role_page_list(args):
         condition += " AND role_name LIKE '%{}%'".format(role_name)
 
     if role_code:
-        condition += " AND name LIKE '%{}%'".format(role_code)
+        condition += " AND role_code LIKE '%{}%'".format(role_code)
 
     count_query_sql = " SELECT COUNT(*) FROM t_role WHERE 1=1 " + condition
     query_sql += condition
@@ -89,7 +81,7 @@ def update_role(role_id, role_name):
     """
     通过rle_id来更新角色名称
     """
-    update_sql = "UPDATE t_role SET role_name = %s WHERE user_id = %s"
+    update_sql = "UPDATE t_role SET role_name = %s WHERE id = %s"
     values = (role_name, role_id)
     db_utils.execute_update(sql=update_sql, args=values)
 
@@ -98,7 +90,7 @@ def delete_by_role_id(role_id):
     """
     删除角色
     """
-    query = "DELETE FROM t_role WHERE role_id = %s"
+    query = "DELETE FROM t_role WHERE id = %s"
     db_utils.execute_update(sql=query, args=role_id)
 
 
