@@ -15,7 +15,7 @@ def get_by_id(menu_id):
 
 
 def is_exist_menu_code(menu_code):
-    query = "SELECT id,menu_name,menu_code, click_uri, parent, sort, route FROM t_menu WHERE menu_code= %s "
+    query = "SELECT count(1) FROM t_menu WHERE menu_code= %s "
     total_count = db_utils.get_query_total(sql=query, args=menu_code)
     logger.info("total_count:{}".format(total_count))
     return total_count
