@@ -96,7 +96,7 @@ class ChangePassARL(ARLResource):
             "code": 200,
             "data": {}
         }
-        token = request.headers.get("Token")
+        token = request.headers.get("token")
 
         if args["new_password"] != args["check_password"]:
             ret["code"] = 301
@@ -115,21 +115,6 @@ class ChangePassARL(ARLResource):
             ret["code"] = 303
 
         return ret
-
-
-def build_data(data):
-    ret = {
-        "message": "success",
-        "code": 200,
-        "data": {}
-    }
-
-    if data:
-        ret["data"] = data
-    else:
-        ret["code"] = 401
-
-    return ret
 
 
 base_search_user_fields = {
@@ -161,7 +146,7 @@ class MenuPageList(ARLResource):
 
         logger.info("数据已经返回222.....{}".format(data))
         """这里直接返回成功了"""
-        return utils.build_ret(ErrorMsg.Success, data)
+        return utils.return_msg(code=200, message="success", data=data)
 
 
 add_user_fields = ns.model('AddUser', {
@@ -200,21 +185,19 @@ class ARLUser(ARLResource):
         name = args.pop('name')
         email = args.pop('email', None)
         phone = args.pop('phone', None)
-
-        # 判断是否存在记录
-        count = is_exist_user(username)
-        if count > 0:
-            return utils.return_msg(code=500, message="此账户已经存在了", data=None)
-
         try:
-            inserted_id = save_user(username=username, password=password, name=name, email=email, phone=phone)
-            logger.info("新增用户完成----inserted_id:{}".format(inserted_id))
+            # 判断是否存在记录
+            count = is_exist_user(username)
+            if count > 0:
+                return utils.return_msg(code=500, message="此账户已经存在了", data=None)
+            save_user(username=username, password=password, name=name, email=email, phone=phone)
+            logger.info("新增用户完成----")
         except Exception as e:
             logger.exception(e)
             return utils.build_ret(ErrorMsg.Error, {"error": str(e)})
 
         """这里直接返回成功了"""
-        return utils.build_ret(ErrorMsg.Success, inserted_id)
+        return utils.return_msg(code=200, message="新增成功")
 
     @auth
     @ns.expect(update_user_fields)
@@ -229,19 +212,19 @@ class ARLUser(ARLResource):
         phone = args.pop('phone', None)
 
         logger.info("执行插入菜单入参：user_id:{} name:{} email:{} phone:{}".format(user_id, name, email, phone))
-        # 判断是否存在记录
-        arl_user = get_by_user_id(user_id=user_id)
-        if arl_user is None:
-            return utils.return_msg(code=500, message="用户不存在", data=None)
 
         try:
+            # 判断是否存在记录
+            arl_user = get_by_user_id(user_id=user_id)
+            if arl_user is None:
+                return utils.return_msg(code=500, message="用户不存在", data=None)
             update_user(user_id=user_id, name=name, email=email, phone=phone)
         except Exception as e:
             logger.exception(e)
             return utils.build_ret(ErrorMsg.Error, {"error": str(e)})
 
         """这里直接返回成功了"""
-        return utils.build_ret(ErrorMsg.Success, user_id)
+        return utils.return_msg(code=200, message="修改成功")
 
     @auth
     @ns.expect(delete_user_fields)
@@ -273,7 +256,7 @@ class DetailUser(ARLResource):
         if arl_user is None:
             return utils.return_msg(code=500, message="用户不存在", data=None)
 
-        return utils.build_ret(ErrorMsg.Success, arl_user)
+        return utils.return_msg(code=200, message="success", data=arl_user)
 
 
 assign_user_role_fields = ns.model('assignRole', {
@@ -311,7 +294,7 @@ class UserAssignRole(ARLResource):
         logger.info("开始执行保存.....arl_user:{}", arl_user)
         save_user_role(user_id=arl_user['id'], role_id_str=role_id_str)
 
-        return utils.build_ret(ErrorMsg.Success, "分配成功!")
+        return utils.return_msg(code=200, message="分配成功")
 
 
 reset_pass_fields = ns.model('ResetPassARL', {
@@ -337,7 +320,7 @@ class ResetPassARL(ARLResource):
             return utils.return_msg(code=500, message="用户不存在", data=None)
 
         reset_password(user_id=user_id, password=password)
-        return utils.build_ret(ErrorMsg.Success, "密码重置成功!")
+        return utils.return_msg(code=200, message="密码重置成功!")
 
 
 @ns.route('/captcha')
