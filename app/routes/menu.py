@@ -30,7 +30,7 @@ add_menu_fields = ns.model('AddMenu', {
 })
 
 update_menu_fields = ns.model('updateMenu', {
-    'menu_id': fields.Integer(required=True, description="菜单id"),
+    'id': fields.Integer(required=True, description="菜单id"),
     'menu_name': fields.String(required=True, description="菜单名称"),
     'sort': fields.Integer(required=True, description="排序"),
     'parent_id': fields.Integer(required=False, description="父菜单id"),
@@ -91,7 +91,7 @@ class ARLMenu(ARLResource):
         修改菜单
         """
         args = self.parse_args(update_menu_fields)
-        menu_id = args.pop('menu_id')
+        menu_id = args.pop('id')
         menu_name = args.pop('menu_name')
         sort = args.pop('sort')
         parent_id = args.pop('parent_id', None)
