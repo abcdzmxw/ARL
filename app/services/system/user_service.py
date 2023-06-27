@@ -61,10 +61,10 @@ def is_exist_user(username):
     """
     # 查询总数
     count_query_sql = "SELECT count(*) FROM t_user WHERE username= %s "
-    query_total = db_utils.get_query_total(sql=count_query_sql)
+    query_total = db_utils.get_query_total(sql=count_query_sql, args=username)
 
     # 获取记录数
-    logger.info("query_total:{}".format(query_total))
+    logger.info("query_total:{}".format(username))
     return query_total
 
 
@@ -95,11 +95,7 @@ def get_by_user_id(user_id):
     """
     # 执行插入语句
     query_sql = "SELECT id, user_id,name,username,email,phone FROM t_user WHERE user_id=%s "
-    user_list = db_utils.get_query_list(sql=query_sql, args=user_id)
-    user = None
-    if user_list:
-        user = user_list[0]
-
+    user = db_utils.get_one(sql=query_sql, args=user_id)
     return user
 
 
@@ -107,8 +103,7 @@ def update_user(user_id, name, email=None, phone=None):
     """
     更新用户的信息
     """
-    logger.info(
-        "update_user方法执行更新用户信息----user_id:{},name:{} email:{} phone:{} ".format(user_id, name, email, phone))
+    logger.info("update_user方法执行更新用户信息----user_id:{},name:{} email:{} phone:{} ".format(user_id, name, email, phone))
     update_sql = "UPDATE t_user SET name = %s, email = %s, phone = %s WHERE user_id = %s"
     values = (name, email, phone, user_id)
 

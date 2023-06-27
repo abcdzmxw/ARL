@@ -109,15 +109,15 @@ def get_user_menu_list(username):
 
     menus = []
     for menu in menu_list:
-        parent = menu["parent"]
-        if parent is None:
+        parent_id = menu["parent_id"]
+        if parent_id is None:
             menus.append(menu)
         else:
-            a_list = menu_map.get(parent)
+            a_list = menu_map.get(parent_id)
             if a_list is None:
                 a_list = []
             a_list.append(menu)
-            menu_map[parent] = a_list
+            menu_map[parent_id] = a_list
 
     for menu in menus:
         secondMenuList = menu_map[menu["id"]]
