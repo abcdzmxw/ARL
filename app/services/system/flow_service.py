@@ -16,6 +16,14 @@ def save_flow(title, domain, flaw_data_package, flaw_detail_data):
     logger.info("save_menu执行插入菜单完成----")
 
 
+def update_flow(flow_id, title, domain, flaw_data_package, flaw_detail_data):
+    current_user = g.get('current_user')
+    update_sql = "UPDATE t_arl_flaw SET title = %s, domain= %s, flaw_data_package= %s, flaw_detail_data = %s, updated_at=NOW(), updated_by = %s, status=%s WHERE id = %s"
+    values = (title, domain, flaw_data_package, flaw_detail_data, current_user, 0, flow_id)
+    logger.info("save_flow, insert_sql={}, values={}".format(update_sql, values))
+    db_utils.execute_insert(sql=update_sql, args=values)
+
+
 def get_by_id(flow_id):
     # 执行查询语句
     query_sql = "SELECT t.id,t.title,t.domain,t.flaw_data_package,t.flaw_detail_data,t.`status`,DATE_FORMAT(t.submit_time, '%Y-%m-%d %H:%i:%s') as submit_time,DATE_FORMAT(t.process_time, '%Y-%m-%d %H:%i:%s') as process_time,t.process_by,DATE_FORMAT(t.created_at, '%Y-%m-%d %H:%i:%s') as created_at,t.created_by FROM t_arl_flaw t WHERE t.id= "
@@ -23,6 +31,15 @@ def get_by_id(flow_id):
     logger.info("get_by_id, query_sql={}".format(query_sql))
     flow_obj = db_utils.get_one(sql=query_sql)
     return flow_obj
+
+
+def delete_by_flow_id(flow_id):
+    """
+    删除漏洞
+    """
+    delete_sql = "DELETE FROM t_arl_flaw WHERE id = %s"
+    logger.info("delete_by_flow_id, delete_sql={}, flow_id={}".format(delete_sql, flow_id))
+    db_utils.execute_update(sql=delete_sql, args=flow_id)
 
 
 def flow_page_list(args):
