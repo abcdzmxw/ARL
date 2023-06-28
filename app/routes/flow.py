@@ -5,7 +5,7 @@ from . import ARLResource, get_arl_parser
 from app import utils
 from app.modules import ErrorMsg
 from ..services.system.flow_service import save_flow, flow_page_list, admin_flow_page_list, get_by_id, submit_flow, \
-    process_flow
+    process_flow, update_flow, delete_by_flow_id
 from flask import g
 
 ns = Namespace('flow', description="漏洞管理")
@@ -25,6 +25,18 @@ add_flow_fields = ns.model('AddFlow', {
     'domain': fields.String(required=True, description="域名"),
     'flaw_data_package': fields.String(required=True, description="漏洞数据包"),
     'flaw_detail_data': fields.String(required=True, description="漏洞详情")
+})
+
+update_flow_fields = ns.model('UpdateFlow', {
+    'id': fields.Integer(required=True, description="id"),
+    'title': fields.String(required=True, description="标题"),
+    'domain': fields.String(required=True, description="域名"),
+    'flaw_data_package': fields.String(required=True, description="漏洞数据包"),
+    'flaw_detail_data': fields.String(required=True, description="漏洞详情")
+})
+
+delete_flow_fields = ns.model('deleteFlow', {
+    'id': fields.Integer(required=True, description="漏洞id")
 })
 
 
@@ -51,8 +63,61 @@ class ARLFlow(ARLResource):
         except Exception as e:
             logger.exception(e)
             return utils.build_ret(ErrorMsg.Error, {"error": str(e)})
+        return return_msg(code=200, message="success")
+
+    @auth
+    @ns.expect(update_flow_fields)
+    def patch(self):
+        """
+        修改漏洞
+        """
+        args = self.parse_args(update_flow_fields)
+        flow_id = args.pop('id')
+        title = args.pop('title')
+        domain = args.pop('domain')
+        flaw_data_package = args.pop('flaw_data_package')
+        flaw_detail_data = args.pop('flaw_detail_data')
+
+        try:
+            flow = get_by_id(flow_id)
+            if flow is None:
+                return utils.return_msg(code=500, message="该漏洞不存在", data=None)
+            else:
+                if flow['status'] == '1' or flow['status'] == '2':
+                    return utils.return_msg(code=500, message="漏洞目前状态不允许修改", data=None)
+
+            update_flow(flow_id=flow_id, title=title, domain=domain, flaw_data_package=flaw_data_package,
+                        flaw_detail_data=flaw_detail_data)
+
+        except Exception as e:
+            logger.exception(e)
+            return utils.build_ret(ErrorMsg.Error, {"error": str(e)})
 
         return return_msg(code=200, message="success")
+
+    @auth
+    @ns.expect(delete_flow_fields)
+    def delete(self):
+        """
+        删除漏洞
+        """
+        args = self.parse_args(delete_flow_fields)
+        flow_id = args.pop('id')
+        try:
+            flow = get_by_id(flow_id)
+            if flow is None:
+                return utils.return_msg(code=500, message="该漏洞不存在", data=None)
+            else:
+                if flow['status'] != '0':
+                    return utils.return_msg(code=500, message="漏洞目前状态不允许删除", data=None)
+
+            delete_by_flow_id(flow_id=flow_id)
+        except Exception as e:
+            logger.exception(e)
+            return utils.build_ret(ErrorMsg.Error, {"error": str(e)})
+
+        """这里直接返回成功了"""
+        return utils.return_msg(code=200, message="删除成功")
 
 
 @ns.route('/pageList')
