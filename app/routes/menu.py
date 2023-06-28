@@ -4,13 +4,12 @@ from . import ARLResource, get_arl_parser
 from app import utils
 from app.modules import ErrorMsg
 from ..services.system.menu_service import save_menu, menu_page_list, is_exist_menu_code, get_by_id, update_menu, \
-    delete_menu_by_id, get_menu_by_role_id, get_user_menu_list, get_first_level_menu_list
+    delete_menu_by_id, get_menu_by_role_id, get_user_menu_list, get_first_level_menu_list, menu_list
 from flask import g
 
 ns = Namespace('menu', description="菜单管理")
 
 logger = get_logger()
-
 
 search_task_fields = ns.model('SearchMenu', {
     'page': fields.Integer(required=True, description="当前页数"),
@@ -75,7 +74,8 @@ class ARLMenu(ARLResource):
                 if menu is None:
                     return utils.return_msg(code=500, message="父菜单不存在", data=None)
 
-            save_menu(menu_name=menu_name, menu_code=menu_code, sort=sort, parent_id=parent_id, click_uri=click_uri, route=route)
+            save_menu(menu_name=menu_name, menu_code=menu_code, sort=sort, parent_id=parent_id, click_uri=click_uri,
+                      route=route)
             logger.info("执行插入菜单完成----")
         except Exception as e:
             logger.exception(e)
@@ -153,6 +153,27 @@ class MenuPageList(ARLResource):
         args = self.parser.parse_args()
         try:
             data = menu_page_list(args=args)
+            logger.info("数据已经返回111.....{}".format(data))
+        except Exception as e:
+            logger.exception(e)
+            return utils.build_ret(ErrorMsg.Error, {"error": str(e)})
+
+        logger.info("数据已经返回222.....{}".format(data))
+        """这里直接返回成功了"""
+        return utils.build_ret(ErrorMsg.Success, data)
+
+
+@ns.route('/list')
+class MenuList(ARLResource):
+
+    @auth
+    @ns.expect()
+    def get(self):
+        """
+        查询所有菜单列表
+        """
+        try:
+            data = menu_list()
             logger.info("数据已经返回111.....{}".format(data))
         except Exception as e:
             logger.exception(e)

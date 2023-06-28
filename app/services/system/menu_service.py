@@ -96,6 +96,37 @@ def menu_page_list(args):
     return result
 
 
+def menu_list():
+    # 执行分页查询
+    query_sql = "SELECT id,menu_name,menu_code, click_uri, parent_id, sort, route FROM t_menu WHERE 1=1 "
+    menu_list = db_utils.get_query_list(sql=query_sql)
+
+    menu_map = {}  # 创建空的菜单字典
+
+    menus = []
+    for menu in menu_list:
+        parent_id = menu["parent_id"]
+        if parent_id is None:
+            menus.append(menu)
+        else:
+            a_list = menu_map.get(parent_id)
+            if a_list is None:
+                a_list = []
+            a_list.append(menu)
+            menu_map[parent_id] = a_list
+
+    for menu in menus:
+        secondMenuList = menu_map.get(menu["id"])
+        logger.info("secondMenuList:{}".format(secondMenuList))
+        if secondMenuList is not None:
+            sorted_list = sorted(secondMenuList, key=lambda x: x['sort'])
+            menu["childrens"] = sorted_list
+
+    result_list = sorted(menus, key=lambda x: x['sort'])
+
+    return result_list
+
+
 def get_menu_by_role_id(role_id):
     logger.info("get_menu_by_role_id:, role_id:{}".format(role_id))
     # 执行分页查询
