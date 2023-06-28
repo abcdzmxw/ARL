@@ -140,6 +140,23 @@ class FlowPageList(ARLResource):
             return utils.build_ret(ErrorMsg.Error, {"error": str(e)})
 
 
+@ns.route('/get_status')
+class DomainBruteTypeTask(ARLResource):
+    @auth
+    def get(self):
+        """
+        获取漏洞状态-字典
+        """
+        data = [
+            {"key": "0", "value": "待提交"},
+            {"key": "1", "value": "待审核"},
+            {"key": "2", "value": "审核通过"},
+            {"key": "3", "value": "审核不通过"}
+        ]
+
+        return utils.return_msg(ErrorMsg.Success, "漏洞状态", data)
+
+
 @ns.route('/admin/pageList')
 class AdminFlowPageList(ARLResource):
     parser = get_arl_parser(search_flow_fields, location='args')
