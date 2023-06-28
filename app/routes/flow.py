@@ -215,15 +215,15 @@ class SubmitFlow(ARLResource):
 
         username = g.get('current_user')
         if flow_obj['created_by'] != username:
-            return return_msg(code=5000, message="您不能操作该记录")
+            return return_msg(code=5000, message="创建人才能操作该记录")
 
         if status == "1":
             if flow_obj['status'] != "0":
                 return return_msg(code=5000, message="操作已过期,请刷新后再操作")
         else:
             if status == "0":
-                if flow_obj['status'] == "2":
-                    return return_msg(code=5000, message="已经审核通过的不允许撤回")
+                if flow_obj['status'] != "1":
+                    return return_msg(code=5000, message="已提交(待审核)的数据才允许撤回")
             else:
                 return return_msg(code=5000, message="请求的状态不对,无法操作")
 
