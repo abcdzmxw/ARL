@@ -17,7 +17,7 @@ db_utils = get_db_utils()
 logger = get_logger()
 
 
-def login_log(username=None, user_id=None, token=None):
+def login_log(username, user_id, token):
     insert_sql = "INSERT INTO t_login_log (username, user_id, token) VALUES (%s, %s, %s)"
     values = (username, user_id, token)
     logger.info("login_log, insert_sql={}, values={}".format(insert_sql, values))
@@ -54,7 +54,7 @@ def user_login(username=None, password=None, validate_code=None, user_key=None):
         logger.info("username= {}".format(username))
         jwt_token = generate_jwt(username, user_obj['user_id'])
         logger.info("jwt_token= {}".format(jwt_token))
-        login_log(username=username, user_id=user_obj['user_id'], token=jwt_token)
+        login_log(username, user_obj['user_id'], jwt_token)
         update_sql = "UPDATE t_user SET last_login_time=NOW(), token = %s WHERE username = %s "
         new_values = (jwt_token, username)
         db_utils.execute_update(sql=update_sql, args=new_values)
@@ -88,8 +88,7 @@ def user_login2(username=None, password=None, validate_code=None, user_key=None)
         logger.info("username= {}".format(username))
         jwt_token = generate_jwt(username, user_obj['user_id'])
         logger.info("jwt_token= {}".format(jwt_token))
-
-        login_log(username=username, user_id=user_obj['user_id'], token=jwt_token)
+        login_log(username, user_obj['user_id'], jwt_token)
         update_sql = "UPDATE t_user SET last_login_time=NOW(), token = %s WHERE username = %s"
         new_values = (jwt_token, username)
         db_utils.execute_update(sql=update_sql, args=new_values)
