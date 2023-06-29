@@ -17,6 +17,13 @@ db_utils = get_db_utils()
 logger = get_logger()
 
 
+def login_log(username=None, user_id=None, token=None):
+    insert_sql = "INSERT INTO t_login_log (username, user_id, token) VALUES (%s, %s, %s)"
+    values = (username, user_id, token)
+    logger.info("login_log, insert_sql={}, values={}".format(insert_sql, values))
+    db_utils.execute_insert(sql=insert_sql, args=values)
+
+
 def user_login(username=None, password=None, validate_code=None, user_key=None):
     returnObj = {'code': 401}
 
@@ -47,14 +54,15 @@ def user_login(username=None, password=None, validate_code=None, user_key=None):
         logger.info("username= {}".format(username))
         jwt_token = generate_jwt(username, user_obj['user_id'])
         logger.info("jwt_token= {}".format(jwt_token))
-
-        update_sql = "UPDATE t_user SET token = %s WHERE username = %s"
+        login_log(username=username, user_id=user_obj['user_id'], token=jwt_token)
+        update_sql = "UPDATE t_user SET last_login_time=NOW(), token = %s WHERE username = %s "
         new_values = (jwt_token, username)
         db_utils.execute_update(sql=update_sql, args=new_values)
         returnObj['username'] = username
         returnObj['token'] = jwt_token
         returnObj['code'] = 200
         returnObj['message'] = 'success'
+
         return returnObj
     else:
         # 删除redis的验证码
@@ -67,7 +75,7 @@ def user_login2(username=None, password=None, validate_code=None, user_key=None)
     returnObj = {'code': 401}
 
     # 验证码只能用一次 调用了登录接口后没成功就的重新获取验证码
-    if not username or not password :
+    if not username or not password:
         returnObj['message'] = '登录信息不能为空!'
         return returnObj
 
@@ -81,13 +89,15 @@ def user_login2(username=None, password=None, validate_code=None, user_key=None)
         jwt_token = generate_jwt(username, user_obj['user_id'])
         logger.info("jwt_token= {}".format(jwt_token))
 
-        update_sql = "UPDATE t_user SET token = %s WHERE username = %s"
+        login_log(username=username, user_id=user_obj['user_id'], token=jwt_token)
+        update_sql = "UPDATE t_user SET last_login_time=NOW(), token = %s WHERE username = %s"
         new_values = (jwt_token, username)
         db_utils.execute_update(sql=update_sql, args=new_values)
         returnObj['username'] = username
         returnObj['token'] = jwt_token
         returnObj['code'] = 200
         returnObj['message'] = 'success'
+
         return returnObj
     else:
         returnObj['message'] = '用户名密码错误!'
@@ -187,7 +197,8 @@ def auth(func):
             logger.info("进入返回 {}".format(ret))
             return ret
 
-        logger.info("查询不到数据不会执行到这里query_total:{},username={},token={}".format(query_total, username, token))
+        logger.info(
+            "查询不到数据不会执行到这里query_total:{},username={},token={}".format(query_total, username, token))
         # 登录成功，将当前登录账户存储到 g 中
         g.current_user = decoded_payload['username']
 
