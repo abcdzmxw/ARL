@@ -486,7 +486,8 @@ class DomainTask(CommonTask):
         if self._domain_word_file is None:
             brute_dict_map = {
                 "test": DomainDictType.TEST,
-                "big": DomainDictType.BIG
+                "big": DomainDictType.BIG,
+                "million_big": DomainDictType.MILLION_BIG
             }
             domain_brute_type = self.options.get("domain_brute_type", "test")
             domain_word_file = brute_dict_map.get(domain_brute_type, DomainDictType.TEST)

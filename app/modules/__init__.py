@@ -15,6 +15,7 @@ class ScanPortType:
 class DomainDictType:
     TEST = Config.DOMAIN_DICT_TEST
     BIG = Config.DOMAIN_DICT_2W
+    MILLION_BIG = Config.DOMAIN_DICT_200W
 
 
 class CollectSource:

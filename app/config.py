@@ -22,6 +22,7 @@ class Config(object):
 
     DOMAIN_DICT_TEST = os.path.join(basedir, 'dicts/domain_dict_test.txt')
     DOMAIN_DICT_2W = os.path.join(basedir, 'dicts/domain_2w.txt')
+    DOMAIN_DICT_200W = os.path.join(basedir, 'dicts/domain_200w.txt')
     DNS_SERVER = os.path.join(basedir, 'dicts/dnsserver.txt')
 
     CDN_JSON_PATH = os.path.join(basedir, 'dicts/cdn_info.json')
