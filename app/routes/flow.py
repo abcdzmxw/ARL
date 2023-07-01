@@ -154,7 +154,7 @@ class DomainBruteTypeTask(ARLResource):
             {"key": "3", "value": "审核不通过"}
         ]
 
-        return utils.return_msg(ErrorMsg.Success, "漏洞状态", data)
+        return utils.return_msg(200, "漏洞状态", data)
 
 
 @ns.route('/admin/pageList')

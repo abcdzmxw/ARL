@@ -156,7 +156,7 @@ class DomainBruteTypeTask(ARLResource):
             {"key": "test", "value": "测试"}
         ]
 
-        return utils.return_msg(ErrorMsg.Success, "域名爆破类型", data)
+        return utils.return_msg(200, "域名爆破类型", data)
 
 
 @ns.route('/get_port_scan_type')
@@ -173,7 +173,7 @@ class PortScanTypeTask(ARLResource):
             {"key": "all", "value": "全端口"}
         ]
 
-        return utils.return_msg(ErrorMsg.Success, "端口扫描类型", data)
+        return utils.return_msg(200, "端口扫描类型", data)
 
 
 @ns.route('/get_function')
@@ -202,7 +202,7 @@ class PortScanTypeTask(ARLResource):
             {"key": "nuclei_scan", "value": "nuclei 调用"}
         ]
 
-        return utils.return_msg(ErrorMsg.Success, "功能列表", data)
+        return utils.return_msg(200, "功能列表", data)
 
 
 @ns.route('/stop/<string:task_id>')
