@@ -115,6 +115,8 @@ fi
 if [ ! -f /usr/bin/phantomjs ]; then
   echo "install phantomjs"
   ln -s `pwd`/app/tools/phantomjs  /usr/bin/phantomjs
+  chmod +x ./app/tools/phantomjs
+  chmod +x  /usr/bin/phantomjs
 fi
 
 if [ ! -f /etc/nginx/conf.d/arl.conf ]; then
