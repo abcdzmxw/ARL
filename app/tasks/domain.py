@@ -191,7 +191,6 @@ class ScanPort(object):
         logger.info("start port_scan {}".format(len(all_ipv4_list)))
         ip_port_result = []
         if all_ipv4_list:
-            logger.
             ip_port_result = services.port_scan(all_ipv4_list, **self.option)
             elapse = time.time() - start_time
             logger.info("end port_scan result {}, elapse {}".format(len(ip_port_result), elapse))
