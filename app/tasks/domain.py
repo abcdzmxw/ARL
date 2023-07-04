@@ -147,6 +147,7 @@ class ScanPort(object):
 
         del option["skip_scan_cdn_ip"]
 
+        logger.info("----------------------------ScanPort__init__    option={}".format(option))
         self.option = option
 
     def get_cdn_name(self, ip, domain_info):
@@ -191,6 +192,7 @@ class ScanPort(object):
         logger.info("start port_scan {}".format(len(all_ipv4_list)))
         ip_port_result = []
         if all_ipv4_list:
+            logger.info("----------------------------all_ipv4_list={},    option={}".format(all_ipv4_list, self.option))
             ip_port_result = services.port_scan(all_ipv4_list, **self.option)
             elapse = time.time() - start_time
             logger.info("end port_scan result {}, elapse {}".format(len(ip_port_result), elapse))
