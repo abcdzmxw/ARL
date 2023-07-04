@@ -215,6 +215,9 @@ def get_task_data(task_id):
 def restart_task(task_id):
     name_pre = "重新运行-"
     task_data = get_task_data(task_id)
+
+    logger.info("11111112222222-----restart_task-----------------------task_data={}".format(task_data))
+
     if not task_data:
         raise Exception("没有找到 task_id : {}".format(task_id))
 
