@@ -467,13 +467,22 @@ class DomainTask(CommonTask):
             "custom": self.options.get("port_custom", "80,443")
         }
         option_scan_port_type = self.options.get("port_scan_type", "test")
+
+        port_parallelism = self.options.get("port_parallelism", 32)
+        if port_parallelism == 0:
+            port_parallelism = 32
+
+        port_min_rate = self.options.get("port_min_rate", 64)
+        if port_min_rate == 0:
+            port_min_rate = 64
+
         scan_port_option = {
             "ports": scan_port_map.get(option_scan_port_type, ScanPortType.TEST),
             "service_detect": self.options.get("service_detection", False),
             "os_detect": self.options.get("os_detection", False),
             "skip_scan_cdn_ip": self.options.get("skip_scan_cdn_ip", False),  # 跳过扫描CDN IP
-            "port_parallelism": self.options.get("port_parallelism", 32),  # 探测报文并行度
-            "port_min_rate": self.options.get("port_min_rate", 64),  # 最少发包速率
+            "port_parallelism": port_parallelism,  # 探测报文并行度
+            "port_min_rate": port_min_rate,  # 最少发包速率
             "custom_host_timeout": None  # 主机超时时间(s)
         }
 
