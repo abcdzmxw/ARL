@@ -109,7 +109,7 @@ echo "install arl requirements ..."
 pip3.6 install -r requirements.txt
 if [ ! -f app/config.yaml ]; then
   echo "create config.yaml"
-  cp app/config.yaml.example  app/config.yaml
+  cp app/config.yaml  app/config.yaml
 fi
 
 if [ ! -f /usr/bin/phantomjs ]; then
