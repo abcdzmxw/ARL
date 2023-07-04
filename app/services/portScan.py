@@ -104,6 +104,8 @@ class PortScan:
 
 def port_scan(targets, ports=Config.TOP_10, service_detect=False, os_detect=False,
               port_parallelism=32, port_min_rate=64, custom_host_timeout=None):
+
+    logger.info("targets={},ports={},service_detect={},os_detect={},port_parallelism={},port_min_rate={},custom_host_timeout={}".format(targets, ports, service_detect, os_detect, port_parallelism, port_min_rate, custom_host_timeout))
     targets = list(set(targets))
     targets = list(filter(utils.not_in_black_ips, targets))
     ps = PortScan(targets=targets, ports=ports, service_detect=service_detect, os_detect=os_detect,
