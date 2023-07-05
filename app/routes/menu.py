@@ -4,7 +4,8 @@ from . import ARLResource, get_arl_parser
 from app import utils
 from app.modules import ErrorMsg
 from ..services.system.menu_service import save_menu, menu_page_list, is_exist_menu_code, get_by_id, update_menu, \
-    delete_menu_by_id, get_menu_by_role_id, get_user_menu_list, get_first_level_menu_list, menu_list
+    delete_menu_by_id, get_menu_by_role_id, get_user_menu_list, get_first_level_menu_list, menu_list, \
+    delete_role_menu_by_role_id, save_role_menu
 from flask import g
 
 ns = Namespace('menu', description="菜单管理")
@@ -41,6 +42,9 @@ delete_menu_fields = ns.model('deleteMenu', {
     'menu_id': fields.Integer(required=True, description="菜单id")
 })
 
+assign_role_menu_fields = ns.model('assignMenu', {
+    'menu_id': fields.String(required=True, description="菜单id")
+})
 
 @ns.route('/')
 class ARLMenu(ARLResource):
@@ -194,6 +198,30 @@ class AssignMenu(ARLResource):
         logger.info("role_id.....{}".format(role_id))
         data = get_menu_by_role_id(role_id=role_id)
         return utils.build_ret(ErrorMsg.Success, data)
+
+    @auth
+    @ns.expect(assign_role_menu_fields)
+    def patch(self, role_id=None):
+        """
+        给角色分配菜单
+        """
+        args = self.parse_args(assign_role_menu_fields)
+
+        menu_id_str = args.pop('menu_id')
+        logger.info("role_id_str={}".format(menu_id_str))
+        menu_id_array = menu_id_str.split(',')
+
+        for menu_id in menu_id_array:
+            logger.info("menu_id.....{}".format(menu_id))
+            menu = get_by_id(menu_id=menu_id)
+            if menu is None:
+                return utils.return_msg(code=500, message="选择了不存在的菜单", data=None)
+
+        delete_role_menu_by_role_id(role_id)
+
+        save_role_menu(role_id=role_id, menu_id_str=menu_id_str)
+
+        return utils.return_msg(200, "分配成功")
 
 
 @ns.route('/getUserMenuList')

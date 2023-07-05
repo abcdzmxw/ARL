@@ -140,3 +140,11 @@ def get_user_role_list(username):
     logger.info("get_user_role_list, query_sql={}, username={}".format(query_sql, username))
     role_list = db_utils.get_query_list(sql=query_sql, args=username)
     return role_list
+
+
+def role_list():
+    """
+    查询所有的角色列表
+    """
+    query_sql = "SELECT r.id, r.role_name,r.role_code FROM t_role r"
+    return db_utils.get_query_list(sql=query_sql)
