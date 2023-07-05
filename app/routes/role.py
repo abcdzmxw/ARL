@@ -5,7 +5,7 @@ from app import utils
 from app.modules import ErrorMsg
 from flask import g
 from ..services.system.role_service import get_by_role_code, save_role, get_by_role_id, update_role, delete_by_role_id, \
-    role_page_list, get_user_role_list
+    role_page_list, get_user_role_list, role_list
 
 ns = Namespace('role', description="角色管理")
 
@@ -137,4 +137,22 @@ class AssignRoleList(ARLResource):
         logger.info("current_user.....{}".format(current_user))
 
         data = get_user_role_list(username=current_user)
+        return utils.build_ret(ErrorMsg.Success, data)
+
+
+@ns.route('/list')
+class MenuList(ARLResource):
+
+    @auth
+    @ns.expect()
+    def get(self):
+        """
+        查询所有角色列表
+        """
+        try:
+            data = role_list()
+            logger.info("数据已经返回111.....{}".format(data))
+        except Exception as e:
+            logger.exception(e)
+            return utils.build_ret(ErrorMsg.Error, {"error": str(e)})
         return utils.build_ret(ErrorMsg.Success, data)

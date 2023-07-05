@@ -53,6 +53,28 @@ def delete_menu_by_id(menu_id):
     db_utils.execute_update(sql=delete_sql, args=menu_id)
 
 
+def delete_role_menu_by_role_id(role_id):
+    delete_sql = "DELETE FROM t_role_menu WHERE role_id = %s"
+    logger.info("delete_role_menu_by_role_id, delete_sql={}, role_id={}".format(delete_sql, role_id))
+    db_utils.execute_update(sql=delete_sql, args=role_id)
+
+
+def save_role_menu(role_id, menu_id_str):
+    """
+    保存角色菜单关系
+    """
+    current_user = g.get('current_user')
+    menu_id_array = menu_id_str.split(',')
+    values = [(role_id, menu_id, current_user) for menu_id in menu_id_array]
+
+    logger.info("save_role_menu  values={}".format(values))
+    # 执行插入语句
+    insert_sql = "INSERT INTO t_role_menu (role_id, menu_id, created_by) VALUES (%s, %s, %s)"
+    logger.info("save_role_menu, insert_sql={}, values={}".format(insert_sql, values))
+    db_utils.execute_executemany_insert(sql=insert_sql, args=values)
+    logger.info("save_role_menu  执行完成.....")
+
+
 def menu_page_list(args):
     page = args.pop("page", 1)
     size = args.pop("size", 10)
