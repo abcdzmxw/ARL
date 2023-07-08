@@ -17,7 +17,7 @@ def generate_verification_validate_code(length=6):
 
 def generate_verification_image(validate_code):
     # 创建 ImageCaptcha 实例
-    captcha = ImageCaptcha(width=200, height=60, fonts=['Arial.ttf'])
+    captcha = ImageCaptcha()
     # 生成验证码图片
     image = captcha.generate(validate_code)
     encoded_image = base64.b64encode(image.getvalue()).decode('utf-8')
