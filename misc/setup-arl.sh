@@ -1,5 +1,4 @@
 #!/bin/bash
-
 set -e
 
 echo "cd /opt/"
@@ -42,7 +41,6 @@ fi
 if ! command -v nuclei &> /dev/null
 then
   echo "install nuclei_2.9.4 ..."
-  wget https://github.com/projectdiscovery/nuclei/releases/download/v2.9.4/nuclei_2.9.4_linux_amd64.zip
   unzip nuclei_2.9.4_linux_amd64.zip && mv nuclei /usr/bin/ && rm -f nuclei_2.9.4_linux_amd64.zip
   nuclei
 fi
@@ -73,7 +71,7 @@ cd ../
 
 if [ ! -f /usr/local/bin/ncrack ]; then
   echo "Download ncrack ..."
-  wget https://github.com/1c3z/arl_files/raw/master/ncrack -O /usr/local/bin/ncrack
+  mv ncrack /usr/local/bin/ncrack
   chmod +x /usr/local/bin/ncrack
 fi
 
@@ -86,12 +84,12 @@ fi
 mkdir -p /data/GeoLite2
 if [ ! -f /data/GeoLite2/GeoLite2-ASN.mmdb ]; then
   echo "download GeoLite2-ASN.mmdb ..."
-  wget https://github.com/P3TERX/GeoLite.mmdb/raw/download/GeoLite2-ASN.mmdb -O /data/GeoLite2/GeoLite2-ASN.mmdb
+  cp /opt/ARL/docker/GeoLite2/GeoLite2-ASN.mmdb /data/GeoLite2/GeoLite2-ASN.mmdb
 fi
 
 if [ ! -f /data/GeoLite2/GeoLite2-City.mmdb ]; then
   echo "download GeoLite2-City.mmdb ..."
-  wget https://github.com/P3TERX/GeoLite.mmdb/raw/download/GeoLite2-City.mmdb -O /data/GeoLite2/GeoLite2-City.mmdb
+  cp /opt/ARL/docker/GeoLite2/GeoLite2-City.mmdb /data/GeoLite2/GeoLite2-City.mmdb
 fi
 
 cd ARL
@@ -130,7 +128,7 @@ fi
 
 if [ ! -f /etc/ssl/certs/dhparam.pem ]; then
   echo "download dhparam.pem"
-  curl https://ssl-config.mozilla.org/ffdhe2048.txt > /etc/ssl/certs/dhparam.pem
+  cp /opt/ARL/misc/dhparam.pem /etc/ssl/certs/dhparam.pem
 fi
 
 
@@ -181,4 +179,3 @@ systemctl status arl-worker-github
 systemctl status arl-scheduler
 
 echo "install done"
-
