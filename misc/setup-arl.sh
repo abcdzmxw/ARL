@@ -84,12 +84,12 @@ fi
 mkdir -p /data/GeoLite2
 if [ ! -f /data/GeoLite2/GeoLite2-ASN.mmdb ]; then
   echo "download GeoLite2-ASN.mmdb ..."
-  wget https://github.com/1c3z/arl_files/raw/master/GeoLite2-ASN.mmdb -O /data/GeoLite2/GeoLite2-ASN.mmdb
+  wget https://github.com/P3TERX/GeoLite.mmdb/raw/download/GeoLite2-ASN.mmdb -O /data/GeoLite2/GeoLite2-ASN.mmdb
 fi
 
 if [ ! -f /data/GeoLite2/GeoLite2-City.mmdb ]; then
   echo "download GeoLite2-City.mmdb ..."
-  wget https://github.com/1c3z/arl_files/raw/master/GeoLite2-City.mmdb -O /data/GeoLite2/GeoLite2-City.mmdb
+  wget https://github.com/P3TERX/GeoLite.mmdb/raw/download/GeoLite2-City.mmdb -O /data/GeoLite2/GeoLite2-City.mmdb
 fi
 
 cd ARL
