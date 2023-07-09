@@ -119,12 +119,6 @@ if [ ! -f /usr/bin/phantomjs ]; then
   chmod +x  /usr/bin/phantomjs
 fi
 
-if [ ! -f /etc/nginx/conf.d/arl.conf ]; then
-  echo "copy arl.conf"
-  cp misc/arl.conf /etc/nginx/conf.d
-fi
-
-
 
 if [ ! -f /etc/ssl/certs/dhparam.pem ]; then
   echo "download dhparam.pem"
