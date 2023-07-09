@@ -26,7 +26,9 @@ add_menu_fields = ns.model('AddMenu', {
     'sort': fields.Integer(required=True, description="排序"),
     'parent_id': fields.Integer(required=False, description="父菜单id"),
     'click_uri': fields.String(required=False, description="uri"),
-    'route': fields.String(required=False, description="前端路由编码")
+    'route': fields.String(required=False, description="前端路由编码"),
+    'jump_url': fields.String(required=False, description="跳转url"),
+    'icon': fields.String(required=False, description="icon代码")
 })
 
 update_menu_fields = ns.model('updateMenu', {
@@ -35,7 +37,9 @@ update_menu_fields = ns.model('updateMenu', {
     'sort': fields.Integer(required=True, description="排序"),
     'parent_id': fields.Integer(required=False, description="父菜单id"),
     'click_uri': fields.String(required=False, description="uri"),
-    'route': fields.String(required=False, description="前端路由编码")
+    'route': fields.String(required=False, description="前端路由编码"),
+    'jump_url': fields.String(required=False, description="跳转url"),
+    'icon': fields.String(required=False, description="icon代码")
 })
 
 delete_menu_fields = ns.model('deleteMenu', {
@@ -63,6 +67,9 @@ class ARLMenu(ARLResource):
         parent_id = args.pop('parent_id', None)
         click_uri = args.pop('click_uri', None)
         route = args.pop('route', None)
+        jump_url = args.pop('jump_url', None)
+        icon = args.pop('icon', None)
+
         logger.info("执行插入菜单入参：menu_name:{} menu_code:{} sort:{} parent_id:{} click_uri:{} route:{}"
                     .format(menu_name, menu_code, sort, parent_id, click_uri, route))
         try:
@@ -79,7 +86,7 @@ class ARLMenu(ARLResource):
                     return utils.return_msg(code=500, message="父菜单不存在", data=None)
 
             save_menu(menu_name=menu_name, menu_code=menu_code, sort=sort, parent_id=parent_id, click_uri=click_uri,
-                      route=route)
+                      route=route, jump_url=jump_url, icon=icon)
             logger.info("执行插入菜单完成----")
         except Exception as e:
             logger.exception(e)
@@ -101,6 +108,8 @@ class ARLMenu(ARLResource):
         parent_id = args.pop('parent_id', None)
         click_uri = args.pop('click_uri', None)
         route = args.pop('route', None)
+        jump_url = args.pop('jump_url', None)
+        icon = args.pop('icon', None)
         logger.info("执行插入菜单入参：menu_name:{} sort:{} parent_id:{} click_uri:{} route:{}"
                     .format(menu_name, sort, parent_id, click_uri, route))
         try:
@@ -118,7 +127,7 @@ class ARLMenu(ARLResource):
                 if menu is None:
                     return utils.return_msg(code=500, message="父菜单不存在", data=None)
             update_menu(menu_id=menu_id, menu_name=menu_name, sort=sort, parent_id=parent_id, click_uri=click_uri,
-                        route=route)
+                        route=route, jump_url=jump_url, icon=icon)
         except Exception as e:
             logger.exception(e)
             return utils.build_ret(ErrorMsg.Error, {"error": str(e)})
