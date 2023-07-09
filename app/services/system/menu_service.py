@@ -23,25 +23,25 @@ def is_exist_menu_code(menu_code):
     return total_count
 
 
-def save_menu(menu_name, menu_code, sort, parent_id, click_uri, route):
+def save_menu(menu_name, menu_code, sort, parent_id, click_uri, route, jump_url, icon):
     logger.info("save_menu方法执行插入菜单----menu_name:{} menu_code:{} sort:{} parent_id:{} click_uri:{} route:{}"
                 .format(menu_name, menu_code, sort, parent_id, click_uri, route))
     current_user = g.get('current_user')
     # 执行插入语句
-    insert_sql = "INSERT INTO t_menu (menu_name, menu_code, click_uri, parent_id, sort, route, created_by) VALUES (%s, %s, %s, %s, %s, %s, %s)"
-    values = (menu_name, menu_code, click_uri, parent_id, sort, route, current_user)
+    insert_sql = "INSERT INTO t_menu (menu_name, menu_code, click_uri, parent_id, sort, route,jump_url, icon, created_by) VALUES (%s, %s, %s, %s, %s, %s, %s)"
+    values = (menu_name, menu_code, click_uri, parent_id, sort, route, jump_url, icon, current_user)
     logger.info("save_menu, insert_sql={}, values={}".format(insert_sql, values))
     db_utils.execute_insert(sql=insert_sql, args=values)
     logger.info("save_menu执行插入菜单完成----")
 
 
-def update_menu(menu_id, menu_name, sort, parent_id, click_uri, route):
+def update_menu(menu_id, menu_name, sort, parent_id, click_uri, route, jump_url, icon):
     logger.info("update_menu方法执行更新菜单----menu_id:{},menu_name:{} sort:{} parent_id:{} click_uri:{} route:{}"
                 .format(menu_id, menu_name, sort, parent_id, click_uri, route))
     current_user = g.get('current_user')
     # 执行插入语句
-    update_sql = "UPDATE t_menu SET menu_name = %s, click_uri = %s, parent_id = %s, sort = %s, route = %s, updated_at=NOW(), updated_by=%s WHERE id = %s"
-    values = (menu_name, click_uri, parent_id, sort, route, current_user, menu_id)
+    update_sql = "UPDATE t_menu SET menu_name = %s, click_uri = %s, parent_id = %s, sort = %s, route = %s, jump_url = %s, icon = %s, updated_at=NOW(), updated_by=%s WHERE id = %s"
+    values = (menu_name, click_uri, parent_id, sort, route, jump_url, icon, current_user, menu_id)
     logger.info("update_menu, update_sql={}, values={}".format(update_sql, values))
     db_utils.execute_update(sql=update_sql, args=values)
     logger.info("update_menu方法执行更新菜单完成")
