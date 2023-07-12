@@ -9,7 +9,7 @@ logger = utils.get_logger()
 
 def get_by_id(menu_id):
     # 执行查询语句
-    query_sql = "SELECT id,menu_name,menu_code, click_uri, parent_id, sort, route FROM t_menu WHERE id= %s "
+    query_sql = "SELECT id,menu_name,menu_code, click_uri, parent_id, sort, route, jump_url, icon FROM t_menu WHERE id= %s "
     logger.info("get_by_id, query_sql={}, menu_id={}".format(query_sql, menu_id))
     menu_obj = db_utils.get_one(sql=query_sql, args=menu_id)
     return menu_obj
@@ -28,7 +28,7 @@ def save_menu(menu_name, menu_code, sort, parent_id, click_uri, route, jump_url,
                 .format(menu_name, menu_code, sort, parent_id, click_uri, route))
     current_user = g.get('current_user')
     # 执行插入语句
-    insert_sql = "INSERT INTO t_menu (menu_name, menu_code, click_uri, parent_id, sort, route,jump_url, icon, created_by) VALUES (%s, %s, %s, %s, %s, %s, %s)"
+    insert_sql = "INSERT INTO t_menu (menu_name, menu_code, click_uri, parent_id, sort, route, jump_url, icon, created_by) VALUES (%s, %s, %s, %s, %s, %s, %s)"
     values = (menu_name, menu_code, click_uri, parent_id, sort, route, jump_url, icon, current_user)
     logger.info("save_menu, insert_sql={}, values={}".format(insert_sql, values))
     db_utils.execute_insert(sql=insert_sql, args=values)
@@ -83,7 +83,7 @@ def menu_page_list(args):
     route = args.pop("route")
 
     # 执行分页查询
-    query_sql = "SELECT id,menu_name,menu_code, click_uri, parent_id, sort, route FROM t_menu WHERE 1=1 "
+    query_sql = "SELECT id,menu_name,menu_code, click_uri, parent_id, sort, route, jump_url, icon FROM t_menu WHERE 1=1 "
 
     condition = ""
     # 如果条件存在，则添加条件到查询语句
@@ -120,7 +120,7 @@ def menu_page_list(args):
 
 def menu_list():
     # 执行分页查询
-    query_sql = "SELECT id,menu_name,menu_code, click_uri, parent_id, sort, route FROM t_menu WHERE 1=1 "
+    query_sql = "SELECT id,menu_name,menu_code, click_uri, parent_id, sort, route, jump_url, icon FROM t_menu WHERE 1=1 "
     menu_list = db_utils.get_query_list(sql=query_sql)
 
     menu_map = {}  # 创建空的菜单字典
@@ -152,7 +152,7 @@ def menu_list():
 def get_menu_by_role_id(role_id):
     logger.info("get_menu_by_role_id:, role_id:{}".format(role_id))
     # 执行分页查询
-    query_sql = "SELECT m.id,m.menu_name,m.menu_code, m.click_uri, m.parent_id, m.sort, m.route FROM t_menu m JOIN t_role_menu rm ON m.id=rm.menu_id JOIN t_role r ON rm.role_id=r.id WHERE r.id=%s"
+    query_sql = "SELECT m.id,m.menu_name,m.menu_code, m.click_uri, m.parent_id, m.sort, m.route, m.jump_url, m.icon FROM t_menu m JOIN t_role_menu rm ON m.id=rm.menu_id JOIN t_role r ON rm.role_id=r.id WHERE r.id=%s"
     logger.info("get_menu_by_role_id, query_sql={}, role_id={}".format(query_sql, role_id))
     menu_list = db_utils.get_query_list(sql=query_sql, args=role_id)
     return menu_list
@@ -161,7 +161,7 @@ def get_menu_by_role_id(role_id):
 def get_user_menu_list(username):
     logger.info("get_user_menu_list,username:{}".format(username))
     # 执行分页查询
-    query_sql = "SELECT distinct m.id,m.menu_name,m.menu_code, m.click_uri, m.parent_id, m.sort, m.route FROM t_menu m JOIN t_role_menu rm ON m.id=rm.menu_id JOIN t_role r ON rm.role_id=r.id JOIN t_user_role ur ON r.id=ur.role_id JOIN t_user u ON ur.user_id=u.id WHERE u.username=%s"
+    query_sql = "SELECT distinct m.id,m.menu_name,m.menu_code, m.click_uri, m.parent_id, m.sort, m.route, m.jump_url, m.icon FROM t_menu m JOIN t_role_menu rm ON m.id=rm.menu_id JOIN t_role r ON rm.role_id=r.id JOIN t_user_role ur ON r.id=ur.role_id JOIN t_user u ON ur.user_id=u.id WHERE u.username=%s"
 
     logger.info("get_user_menu_list, query_sql={}, username={}".format(query_sql, username))
     menu_list = db_utils.get_query_list(sql=query_sql, args=username)
@@ -194,7 +194,7 @@ def get_user_menu_list(username):
 
 def get_first_level_menu_list():
     # 执行分页查询
-    query_sql = "SELECT m.id,m.menu_name,m.menu_code, m.click_uri, m.parent_id, m.sort, m.route FROM t_menu m WHERE m.parent_id IS NULL ORDER BY m.sort"
+    query_sql = "SELECT m.id,m.menu_name,m.menu_code, m.click_uri, m.parent_id, m.sort, m.route, m.jump_url, m.icon FROM t_menu m WHERE m.parent_id IS NULL ORDER BY m.sort"
     logger.info("get_first_level_menu_list, query_sql={}".format(query_sql))
     menu_list = db_utils.get_query_list(sql=query_sql)
     return menu_list
