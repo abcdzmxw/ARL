@@ -28,7 +28,7 @@ def save_menu(menu_name, menu_code, sort, parent_id, click_uri, route, jump_url,
                 .format(menu_name, menu_code, sort, parent_id, click_uri, route))
     current_user = g.get('current_user')
     # 执行插入语句
-    insert_sql = "INSERT INTO t_menu (menu_name, menu_code, click_uri, parent_id, sort, route, jump_url, icon, created_by) VALUES (%s, %s, %s, %s, %s, %s, %s)"
+    insert_sql = "INSERT INTO t_menu (menu_name, menu_code, click_uri, parent_id, sort, route, jump_url, icon, created_by) VALUES (%s, %s,%s, %s, %s, %s, %s, %s, %s)"
     values = (menu_name, menu_code, click_uri, parent_id, sort, route, jump_url, icon, current_user)
     logger.info("save_menu, insert_sql={}, values={}".format(insert_sql, values))
     db_utils.execute_insert(sql=insert_sql, args=values)

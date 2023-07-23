@@ -19,6 +19,8 @@ def user_page_list(args):
     size = args.pop("size", 10)
     username = args.pop("username")
     name = args.pop("name")
+    phone = args.pop("phone")
+    email = args.pop("email")
 
     # 执行分页查询
     query_sql = "SELECT user_id,name,username,email,phone FROM t_user WHERE 1=1 "

@@ -148,3 +148,11 @@ def role_list():
     """
     query_sql = "SELECT r.id, r.role_name,r.role_code FROM t_role r"
     return db_utils.get_query_list(sql=query_sql)
+
+
+def user_use_role(role_id):
+    """
+    查询该角色被其他用户引用的总数
+    """
+    count_query_sql = "SELECT count(1) FROM t_user_role where role_id" + role_id
+    return db_utils.get_query_total(sql=count_query_sql)

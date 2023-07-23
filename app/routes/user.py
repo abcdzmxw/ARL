@@ -121,7 +121,9 @@ search_user_fields = ns.model('SearchUser', {
     'page': fields.Integer(required=True, description="当前页数"),
     'size': fields.Integer(required=True, description="每页条数"),
     'username': fields.String(required=False, description="账号"),
-    'name': fields.String(required=False, description="用户名称")
+    'name': fields.String(required=False, description="用户名称"),
+    'phone': fields.String(required=False, description="电话"),
+    'email': fields.String(required=False, description="邮箱")
 })
 
 
@@ -234,7 +236,13 @@ class ARLUser(ARLResource):
         args = self.parse_args(delete_user_fields)
         user_id = args.pop('user_id')
         try:
+            userObj = get_by_user_id(user_id=user_id)
             delete_by_user_id(user_id=user_id)
+
+            # 删除该用户的角色对应关系信息
+            if userObj:
+                delete_user_role(user_id=userObj['id'])
+
         except Exception as e:
             logger.exception(e)
             return utils.build_ret(ErrorMsg.Error, {"error": str(e)})
