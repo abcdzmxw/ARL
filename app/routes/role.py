@@ -4,8 +4,10 @@ from . import ARLResource, get_arl_parser
 from app import utils
 from app.modules import ErrorMsg
 from flask import g
+
+from ..services.system.menu_service import delete_role_menu_by_role_id
 from ..services.system.role_service import get_by_role_code, save_role, get_by_role_id, update_role, delete_by_role_id, \
-    role_page_list, get_user_role_list, role_list
+    role_page_list, get_user_role_list, role_list, user_use_role
 
 ns = Namespace('role', description="角色管理")
 
@@ -26,7 +28,8 @@ add_role_fields = ns.model('AddRole', {
 
 update_role_fields = ns.model('updateRole', {
     'id': fields.Integer(required=True, description="角色id"),
-    'role_name': fields.String(required=True, description="角色名称")
+    'role_name': fields.String(required=True, description="角色名称"),
+    'role_code': fields.String(required=True, description="角色编码")
 })
 
 delete_role_fields = ns.model('deleteRole', {
@@ -70,11 +73,18 @@ class ARLRole(ARLResource):
         """
         args = self.parse_args(update_role_fields)
         role_name = args.pop('role_name')
+        role_code = args.pop('role_code')
         role_id = args.pop('id')
         # 判断是否存在记录
         role = get_by_role_id(role_id=role_id)
         if role is None:
             return utils.return_msg(code=500, message="角色不存在", data=None)
+
+        roleObj = get_by_role_code(role_code=role_code)
+
+        if roleObj is not None:
+            if role['id'] != roleObj['id']:
+                return utils.return_msg(code=500, message="角色编码已经存在,请更换一个", data=None)
 
         try:
             update_role(role_id=role_id, role_name=role_name)
@@ -94,7 +104,15 @@ class ARLRole(ARLResource):
         args = self.parse_args(delete_role_fields)
         role_id = args.pop('id')
         try:
+            count = user_use_role(role_id=role_id)
+            if count > 0:
+                return utils.return_msg(code=500, message="角色已被用户用户引用,请取消引用后再删除角色!", data=None)
+
+            # 删除角色
             delete_by_role_id(role_id=role_id)
+
+            # 删除角色菜单对应关系信息
+            delete_role_menu_by_role_id(role_id=role_id)
         except Exception as e:
             logger.exception(e)
             return utils.build_ret(ErrorMsg.Error, {"error": str(e)})
