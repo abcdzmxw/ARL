@@ -142,6 +142,18 @@ def get_user_role_list(username):
     return role_list
 
 
+def get_user_role_list_by_userid(user_id):
+    """
+    查询用户的角色列表
+    """
+    logger.info("get_user_role_list_by_userid,user_id:{}".format(user_id))
+    # 执行分页查询
+    query_sql = "SELECT r.id, r.role_name,r.role_code FROM t_role r JOIN t_user_role ur ON r.id=ur.role_id WHERE ur.user_id%s"
+    logger.info("get_user_role_list_by_userid, query_sql={}, user_id={}".format(query_sql, user_id))
+    role_list = db_utils.get_query_list(sql=query_sql, args=user_id)
+    return role_list
+
+
 def role_list():
     """
     查询所有的角色列表
@@ -154,5 +166,5 @@ def user_use_role(role_id):
     """
     查询该角色被其他用户引用的总数
     """
-    count_query_sql = "SELECT count(1) FROM t_user_role where role_id" + role_id
+    count_query_sql = "SELECT count(1) FROM t_user_role where role_id=" + role_id
     return db_utils.get_query_total(sql=count_query_sql)

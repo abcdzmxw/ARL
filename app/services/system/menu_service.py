@@ -53,6 +53,12 @@ def delete_menu_by_id(menu_id):
     db_utils.execute_update(sql=delete_sql, args=menu_id)
 
 
+def delete_menu_by_parent_id(menu_parent_id):
+    delete_sql = "DELETE FROM t_menu WHERE parent_id = %s"
+    logger.info("delete_menu_by_parent_id, delete_sql={}, menu_parent_id={}".format(delete_sql, menu_parent_id))
+    db_utils.execute_update(sql=delete_sql, args=menu_parent_id)
+
+
 def delete_role_menu_by_role_id(role_id):
     delete_sql = "DELETE FROM t_role_menu WHERE role_id = %s"
     logger.info("delete_role_menu_by_role_id, delete_sql={}, role_id={}".format(delete_sql, role_id))
@@ -103,8 +109,8 @@ def menu_page_list(args):
     query_sql += " LIMIT " + str(size) + " OFFSET " + str(offset)
     logger.info("menu_page_list, count_query_sql={}, query_sql={}".format(count_query_sql, query_sql))
     query_total = db_utils.get_query_total(sql=count_query_sql)
-    menu_list = db_utils.get_query_list(sql=query_sql)
-    for menu in menu_list:
+    menu0bj_list = db_utils.get_query_list(sql=query_sql)
+    for menu in menu0bj_list:
         if menu["parent_id"] is not None:
             menu["parent_dto"] = get_by_id(menu["parent_id"])
 
@@ -112,7 +118,7 @@ def menu_page_list(args):
         "page": page,
         "size": size,
         "total": query_total,
-        "items": menu_list
+        "items": menu0bj_list
     }
 
     return result
@@ -198,3 +204,11 @@ def get_first_level_menu_list():
     logger.info("get_first_level_menu_list, query_sql={}".format(query_sql))
     menu_list = db_utils.get_query_list(sql=query_sql)
     return menu_list
+
+
+def role_use_menu(menu_id):
+    """
+    查询该菜单被其他角色引用的总数
+    """
+    count_query_sql = "SELECT count(1) FROM t_role_menu where menu_id=" + menu_id
+    return db_utils.get_query_total(sql=count_query_sql)
