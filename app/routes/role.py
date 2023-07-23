@@ -7,7 +7,7 @@ from flask import g
 
 from ..services.system.menu_service import delete_role_menu_by_role_id
 from ..services.system.role_service import get_by_role_code, save_role, get_by_role_id, update_role, delete_by_role_id, \
-    role_page_list, get_user_role_list, role_list, user_use_role
+    role_page_list, get_user_role_list, role_list, user_use_role, get_user_role_list_by_userid
 
 ns = Namespace('role', description="角色管理")
 
@@ -34,6 +34,10 @@ update_role_fields = ns.model('updateRole', {
 
 delete_role_fields = ns.model('deleteRole', {
     'id': fields.Integer(required=True, description="角色id")
+})
+
+user_role_fields = ns.model('getUserRole', {
+    'user_id': fields.Integer(required=True, description="用户id")
 })
 
 
@@ -149,12 +153,29 @@ class AssignRoleList(ARLResource):
     @auth
     def get(self):
         """
-        查询用户角色列表
+        查询当前用户角色列表
         """
         current_user = g.get('current_user')
         logger.info("current_user.....{}".format(current_user))
 
         data = get_user_role_list(username=current_user)
+        return utils.build_ret(ErrorMsg.Success, data)
+
+
+@ns.route('/getUserRoleList')
+class UserRoleList(ARLResource):
+    parser = get_arl_parser(user_role_fields, location='args')
+
+    @auth
+    @ns.expect(parser)
+    def get(self):
+        """
+        查询用户角色列表
+        """
+        args = self.parser.parse_args()
+        user_id = args.pop("user_id")
+        logger.info("user_id.....{}".format(user_id))
+        data = get_user_role_list_by_userid(user_id=user_id)
         return utils.build_ret(ErrorMsg.Success, data)
 
 
