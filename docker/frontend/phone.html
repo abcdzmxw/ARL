@@ -1,0 +1,86 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>生成香港手机号码并保存</title>
+
+<!-- JavaScript 代码 -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+<script>
+function generateHKMobileNumber(count) {
+  const mobileNumbers = [];
+  const prefixOptions = ['5', '6', '9'];
+  for (let i = 0; i < count; i++) {
+	const prefix = prefixOptions[Math.floor(Math.random() * prefixOptions.length)];
+    const randomNumber = Math.floor(1000000 + Math.random() * 9000000); // 随机生成7位数字
+    const mobileNumber = prefix + randomNumber.toString();
+    mobileNumbers.push(mobileNumber);
+  }
+  return mobileNumbers;
+}
+
+function generateAndSaveMobiles() {
+	const inputElement = document.querySelector("#countInput");
+	const inputValue = inputElement.value;
+	
+	var flag = isPositiveInteger(inputValue);
+	if(!flag){
+		alert("请输入正整数");
+		return;
+	}
+	const count = parseInt(inputValue);
+
+	const mobileNumbers = generateHKMobileNumber(count); // 生成10个随机香港手机号码示例
+	const txtContent = mobileNumbers.join("\r\n");
+	const data = new Blob([txtContent], { type: "text/plain;charset=utf-8" });
+	saveAs(data, "hk_mobile_numbers.txt");
+}
+
+function isPositiveInteger(str) {
+  return /^[1-9]\d*$/.test(str);
+}
+
+</script>
+
+
+</head>
+<body>
+  <h1>生成香港手机号码并保存</h1>
+  
+  <label for="countInput">生成数量：</label>
+  <input type="number" id="countInput">
+  <br>
+  <button onclick="generateAndSaveMobiles()">生成香港手机号码并保存</button>
+
+
+<h1>香港手机号码的规则如下：</h1>
+<h2>香港手机号码由8个数字组成，以6或9开头。通常的格式是：6xxxxxxx 或 9xxxxxxx。</h2>
+<h3>前两位数字表示移动网络的代码，具体含义如下：</h3>
+<h3>5 开头的号码：属于香港的 GSM 900 网络，由 HKT (Hutchison Telephone Company Limited) 和数码通 (SmarTone) 运营商提供。</h3>
+<h3>6 开头的号码：属于香港的 GSM 1800 网络，由香港中华电信 (China Mobile Hong Kong) 运营商提供。</h3>
+<h3>9 开头的号码：属于香港的 3G WCDMA 网络，由3香港 (Three HK) 运营商提供。</h3>
+<h3>香港手机号码不区分运营商，即无论是 HKT、数码通、香港中华电信还是3香港，手机号码的格式都是一样的。</h3>
+<h3>通常情况下，香港手机号码不包含区号。香港的区号是852，但在拨打本地电话时通常不需要加区号，只需直接拨打8位的手机号码。</h3>
+<h3>香港手机号码没有国际区号，所以在国际拨号时，需要先拨打香港的国际区号 +852，然后再拨打8位的手机号码。</h3>
+<h3>请注意，以上是香港手机号码的一般规则，但在实际应用中，可能会有特殊情况和变化。如果你需要生成真实的香港手机号码，建议使用合法的手机号码生成工具，并确保生成的号码符合香港手机号码的规则和要求
+</h3>
+<h3></h3>
+<h3></h3>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>
