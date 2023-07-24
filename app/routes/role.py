@@ -37,7 +37,7 @@ delete_role_fields = ns.model('deleteRole', {
 })
 
 user_role_fields = ns.model('getUserRole', {
-    'user_id': fields.Integer(required=True, description="用户id")
+    'user_id': fields.String(required=True, description="用户id")
 })
 
 

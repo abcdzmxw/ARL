@@ -124,10 +124,16 @@ def menu_page_list(args):
         parent_id = menu["parent_id"]
         if parent_id is not None:
             if menu_map.get(parent_id) is None:
-                menus.append(get_by_id(parent_id))
+                parent_menu = get_by_id(parent_id)
+                logger.info("......................parent_id={},parent_menu={}".format(parent_id, parent_menu))
+                menus.append(parent_menu)
 
     for menu in menus:
-        menu0bj_list.append(menu)
+        if menu:
+            menu0bj_list.append(menu)
+        else:
+            logger.info("menu是空的,menu={}".format(menu))
+
 
     result = {
         "page": page,
