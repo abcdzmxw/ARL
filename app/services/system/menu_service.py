@@ -110,9 +110,24 @@ def menu_page_list(args):
     logger.info("menu_page_list, count_query_sql={}, query_sql={}".format(count_query_sql, query_sql))
     query_total = db_utils.get_query_total(sql=count_query_sql)
     menu0bj_list = db_utils.get_query_list(sql=query_sql)
+    menu_map = {}
     for menu in menu0bj_list:
-        if menu["parent_id"] is not None:
-            menu["parent_dto"] = get_by_id(menu["parent_id"])
+        parent_id = menu["parent_id"]
+        if parent_id is not None:
+            parent_menu = get_by_id(parent_id)
+            menu["parent_dto"] = parent_menu
+        else:
+            menu_map[menu["id"]] = menu["id"]
+
+    menus = []
+    for menu in menu0bj_list:
+        parent_id = menu["parent_id"]
+        if parent_id is not None:
+            if menu_map.get(parent_id) is None:
+                menus.append(get_by_id(parent_id))
+
+    for menu in menus:
+        menu0bj_list.append(menu)
 
     result = {
         "page": page,
