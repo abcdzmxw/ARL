@@ -148,7 +148,7 @@ def get_user_role_list_by_userid(user_id):
     """
     logger.info("get_user_role_list_by_userid,user_id:{}".format(user_id))
     # 执行分页查询
-    query_sql = "SELECT r.id, r.role_name,r.role_code FROM t_role r JOIN t_user_role ur ON r.id=ur.role_id WHERE ur.user_id=%s"
+    query_sql = "SELECT r.id, r.role_name,r.role_code FROM t_role r JOIN t_user_role ur ON r.id=ur.role_id JOIN t_user u ON ur.user_id=u.id WHERE u.user_id=%s"
     logger.info("get_user_role_list_by_userid, query_sql={}, user_id={}".format(query_sql, user_id))
     role_list = db_utils.get_query_list(sql=query_sql, args=user_id)
     return role_list
