@@ -15,7 +15,7 @@ function generateHKMobileNumber(count) {
   for (let i = 0; i < count; i++) {
 	const randomMobileOperatorCode = mobileOperatorCodes[Math.floor(Math.random() * mobileOperatorCodes.length)];
 	const randomNumber = String(Math.floor(Math.random() * 100000000)).padStart(8, '0');
-    const mobileNumber = randomMobileOperatorCode + randomNumber.toString();
+    const mobileNumber = '+7' + randomMobileOperatorCode + randomNumber.toString();
     mobileNumbers.push(mobileNumber);
   }
   return mobileNumbers;
