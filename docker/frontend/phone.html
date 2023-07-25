@@ -14,8 +14,8 @@ function generateHKMobileNumber(count) {
 
   for (let i = 0; i < count; i++) {
 	const randomMobileOperatorCode = mobileOperatorCodes[Math.floor(Math.random() * mobileOperatorCodes.length)];
-	const randomNumber = String(Math.floor(Math.random() * 100000000)).padStart(8, '0');
-    const mobileNumber = '7' + randomMobileOperatorCode + randomNumber.toString();
+	const randomNumber = String(Math.floor(Math.random() * 10000000)).padStart(7, '0');
+    const mobileNumber = randomMobileOperatorCode + randomNumber.toString();
     mobileNumbers.push(mobileNumber);
   }
   return mobileNumbers;
@@ -35,7 +35,7 @@ function generateAndSaveMobiles() {
 	const mobileNumbers = generateHKMobileNumber(count); // 生成10个随机香港手机号码示例
 	const txtContent = mobileNumbers.join("\r\n");
 	const data = new Blob([txtContent], { type: "text/plain;charset=utf-8" });
-	saveAs(data, "mobile_numbers.txt");
+	saveAs(data, "hk_mobile_numbers.txt");
 }
 
 function isPositiveInteger(str) {
