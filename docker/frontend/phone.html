@@ -35,7 +35,7 @@ function generateAndSaveMobiles() {
 	const mobileNumbers = generateHKMobileNumber(count); // 生成10个随机香港手机号码示例
 	const txtContent = mobileNumbers.join("\r\n");
 	const data = new Blob([txtContent], { type: "text/plain;charset=utf-8" });
-	saveAs(data, "hk_mobile_numbers.txt");
+	saveAs(data, "els_mobile_numbers.txt");
 }
 
 function isPositiveInteger(str) {
