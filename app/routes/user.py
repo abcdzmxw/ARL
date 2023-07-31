@@ -40,7 +40,7 @@ class LoginARL(ARLResource):
         用户登录(不要验证码)
         """
         args = self.parse_args(login_fields)
-        data = utils.user_login2(**args)
+        data = utils.user_login(**args)
         return utils.build_ret(ErrorMsg.Success, data)
 
 
@@ -53,7 +53,7 @@ class LoginARL2(ARLResource):
         用户登录(要验证码)
         """
         args = self.parse_args(login_fields2)
-        data = utils.user_login(**args)
+        data = utils.user_login2(**args)
         return utils.build_ret(ErrorMsg.Success, data)
 
 
