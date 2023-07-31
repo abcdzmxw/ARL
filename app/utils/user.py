@@ -24,7 +24,7 @@ def login_log(username, user_id, token):
     db_utils.execute_insert(sql=insert_sql, args=values)
 
 
-def user_login(username=None, password=None, validate_code=None, user_key=None):
+def user_login2(username=None, password=None, validate_code=None, user_key=None):
     returnObj = {'code': 401}
 
     # 验证码只能用一次 调用了登录接口后没成功就的重新获取验证码
@@ -71,7 +71,7 @@ def user_login(username=None, password=None, validate_code=None, user_key=None):
         return returnObj
 
 
-def user_login2(username=None, password=None, validate_code=None, user_key=None):
+def user_login(username=None, password=None, validate_code=None, user_key=None):
     returnObj = {'code': 401}
 
     # 验证码只能用一次 调用了登录接口后没成功就的重新获取验证码
