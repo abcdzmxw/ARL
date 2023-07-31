@@ -38,7 +38,7 @@ def user_login(username=None, password=None, validate_code=None, user_key=None):
 
     # 从redis获取校验码进行验证
     redis_validate_code = redis_utils.get(key=user_key)
-    if not redis_validate_code or redis_validate_code != validate_code:
+    if not redis_validate_code or redis_validate_code.lower() != validate_code.lower():
         if redis_validate_code:
             # 删除redis的验证码
             redis_utils.delete(key=user_key)
