@@ -1,0 +1,85 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>生成土耳其手机号码并保存</title>
+
+<!-- JavaScript 代码 -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+<script>
+function generateHGMobileNumber(count) {
+  const mobileNumbers = [];
+  const mobileOperatorCodes = ['501', '505', '506', '507', '530', '531', '532', '533', '534', '535', '536', '537', '538', '539', '540', '541', '542', '543', '544', '545', '546', '547', '548', '549', '551', '552', '553', '554', '555', '559', '510', '516', '524', '850'];
+
+  for (let i = 0; i < count; i++) {
+	const randomOperatorCode = mobileOperatorCodes[Math.floor(Math.random() * mobileOperatorCodes.length)];
+
+    // 生成随机的后7位数字
+    const randomSuffixNumber = Math.floor(Math.random() * 10000000);
+    const randomSuffixString = String(randomSuffixNumber).padStart(7, '0');
+
+    mobileNumbers.push(randomOperatorCode + randomSuffixString);
+  }
+  return mobileNumbers;
+}
+
+function generateAndSaveMobiles() {
+	const inputElement = document.querySelector("#countInput");
+	const inputValue = inputElement.value;
+	
+	var flag = isPositiveInteger(inputValue);
+	if(!flag){
+		alert("请输入正整数");
+		return;
+	}
+	const count = parseInt(inputValue);
+
+	const mobileNumbers = generateHGMobileNumber(count);
+	const txtContent = mobileNumbers.join("\r\n");
+	const data = new Blob([txtContent], { type: "text/plain;charset=utf-8" });
+	saveAs(data, "hk_mobile_numbers.txt");
+}
+
+function isPositiveInteger(str) {
+  return /^[1-9]\d*$/.test(str);
+}
+
+
+</script>
+
+
+</head>
+<body>
+  <h1>生成土耳其手机号码并保存</h1>
+  
+  <label for="countInput">生成数量：</label>
+  <input type="number" id="countInput">
+  <br>
+  <button onclick="generateAndSaveMobiles()">生成土耳其手机号码并保存</button>
+
+
+<h1>国家代码：土耳其的国家代码是+90。在国际拨号时，需要将+90加在土耳其手机号码前面。</h1>
+
+<h1>1.前三位代表运营商</h1>
+<h1>2.后面7位随机生成</h1>
+<h1><a target="_blank" href="https://www.chahaoba.com/%E5%9C%9F%E8%80%B3%E5%85%B6#myarticletalk" title="土耳其电话具体规则">土耳其电话具体规则</a>
+</h1>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>
