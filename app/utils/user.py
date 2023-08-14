@@ -1,10 +1,7 @@
-import datetime
 from flask import g
 from flask import request
 from app.config import Config
-from . import gen_md5, random_choices, get_logger
-import jwt
-import pytz
+from . import gen_md5, get_logger
 import functools
 from ..services.system.db_utils import get_db_utils
 from ..services.system.jwt_service import generate_jwt, parse_jwt
@@ -120,8 +117,7 @@ def user_login_header(token):
         return item
 
     try:
-        secret_key = Config.JWT_SECRET_KEY
-        payload = jwt.decode(jwt=token, key=secret_key, algorithms=['HS256'])
+        payload = parse_jwt(token=token)
     except Exception as e:
         logger.exception(e)
         return False

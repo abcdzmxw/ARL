@@ -30,6 +30,7 @@ def generate_jwt(username, user_id):
 # 解析 JWT
 def parse_jwt(token):
     secret_key = Config.JWT_SECRET_KEY
+    logger.info("token= {}".format(token))
     payload = jwt.decode(jwt=token, key=secret_key, algorithms=['HS256'])
     return payload
 
