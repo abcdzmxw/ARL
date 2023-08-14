@@ -22,7 +22,7 @@ def generate_jwt(username, user_id):
     current_time = datetime.datetime.now(timezone)
     exp = current_time + datetime.timedelta(seconds=86400)
     payload['exp'] = exp
-    logger.info("exp= {}".format(exp))
+    logger.info("secret_key={},exp= {}".format(secret_key, exp))
     token = jwt.encode(payload=payload, key=secret_key, algorithm='HS256')
     return token
 
@@ -30,7 +30,7 @@ def generate_jwt(username, user_id):
 # 解析 JWT
 def parse_jwt(token):
     secret_key = Config.JWT_SECRET_KEY
-    logger.info("token= {}".format(token))
+    logger.info("secret_key={},token= {}".format(secret_key, token))
     payload = jwt.decode(jwt=token, key=secret_key, algorithms=['HS256'])
     return payload
 
