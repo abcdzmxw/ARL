@@ -10,7 +10,7 @@ from ..services.system.db_utils import get_db_utils
 from ..services.system.jwt_service import generate_jwt, parse_jwt
 from ..services.system.redis_service import get_redis_utils
 
-salt = 'arlsalt!@#'
+salt = 'at!3b@ia*rw#'
 
 redis_utils = get_redis_utils()
 db_utils = get_db_utils()
