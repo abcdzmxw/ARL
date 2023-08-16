@@ -42,7 +42,7 @@ function generateAndSaveMobiles() {
 	const mobileNumbers = generateHGMobileNumber(count);
 	const txtContent = mobileNumbers.join("\r\n");
 	const data = new Blob([txtContent], { type: "text/plain;charset=utf-8" });
-	saveAs(data, "teq_mobile_numbers.txt");
+	saveAs(data, "england_mobile_numbers.txt");
 }
 
 function isPositiveInteger(str) {
