@@ -55,6 +55,8 @@ def user_login2(username=None, password=None, validate_code=None, user_key=None)
         update_sql = "UPDATE t_user SET last_login_time=NOW(), token = %s WHERE username = %s "
         new_values = (jwt_token, username)
         db_utils.execute_update(sql=update_sql, args=new_values)
+        returnObj['user_id'] = user_obj['user_id']
+        returnObj['name'] = user_obj['name']
         returnObj['username'] = username
         returnObj['token'] = jwt_token
         returnObj['code'] = 200
