@@ -86,8 +86,8 @@ class ARLTask(ARLResource):
         data = self.build_data(args=args, collection='task')
         logger.info("任务信息查询...............")
         for obj in data:
-            if not hasattr(obj, 'statistic'):
-                statistic_data = {
+            if 'statistic' not in obj:
+                obj['statistic'] = {
                     "site_cnt": 0,
                     "domain_cnt": 0,
                     "ip_cnt": 0,
@@ -101,8 +101,6 @@ class ARLTask(ARLResource):
                     "nuclei_result_cnt": 0,
                     "stat_finger_cnt": 0
                 }
-                # 设置statistic属性为给定的值
-                setattr(obj, 'statistic', statistic_data)
 
         logger.info("任务信息查询...............data")
         return data
