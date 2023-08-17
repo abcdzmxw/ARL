@@ -59,7 +59,6 @@ def user_login2(username=None, password=None, validate_code=None, user_key=None)
         returnObj['name'] = user_obj['name']
         returnObj['username'] = username
         returnObj['token'] = jwt_token
-        returnObj['code'] = 200
         returnObj['message'] = 'success'
 
         return returnObj
