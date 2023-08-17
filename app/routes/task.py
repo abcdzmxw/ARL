@@ -85,7 +85,7 @@ class ARLTask(ARLResource):
         args = self.parser.parse_args()
         data = self.build_data(args=args, collection='task')
         logger.info("任务信息查询...............")
-        for obj in data:
+        for obj in data['items']:
             if 'statistic' not in obj:
                 obj['statistic'] = {
                     "site_cnt": 0,
