@@ -85,6 +85,23 @@ class ARLTask(ARLResource):
         args = self.parser.parse_args()
         data = self.build_data(args=args, collection='task')
         logger.info("任务信息查询...............")
+        # 给每个对象添加 statistic 属性
+        for item in data["items"]:
+            if "statistic" not in item:
+                item["statistic"] = {
+                    "site_cnt": 0,
+                    "domain_cnt": 0,
+                    "ip_cnt": 0,
+                    "cert_cnt": 0,
+                    "service_cnt": 0,
+                    "fileleak_cnt": 0,
+                    "url_cnt": 0,
+                    "vuln_cnt": 0,
+                    "npoc_service_cnt": 0,
+                    "cip_cnt": 0,
+                    "nuclei_result_cnt": 0,
+                    "stat_finger_cnt": 0
+                }
 
         logger.info("任务信息查询...............data")
         return data
