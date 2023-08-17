@@ -85,6 +85,25 @@ class ARLTask(ARLResource):
         args = self.parser.parse_args()
         data = self.build_data(args=args, collection='task')
 
+        for obj in data:
+            if not hasattr(obj, 'attribute1'):
+                statistic_data = {
+                    "site_cnt": 0,
+                    "domain_cnt": 0,
+                    "ip_cnt": 0,
+                    "cert_cnt": 0,
+                    "service_cnt": 0,
+                    "fileleak_cnt": 0,
+                    "url_cnt": 0,
+                    "vuln_cnt": 0,
+                    "npoc_service_cnt": 0,
+                    "cip_cnt": 0,
+                    "nuclei_result_cnt": 0,
+                    "stat_finger_cnt": 0
+                }
+                # 设置statistic属性为给定的值
+                setattr(obj, 'statistic', statistic_data)
+
         return data
 
     @auth
