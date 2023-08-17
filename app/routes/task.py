@@ -84,9 +84,9 @@ class ARLTask(ARLResource):
         """
         args = self.parser.parse_args()
         data = self.build_data(args=args, collection='task')
-
+        logger.info("任务信息查询...............")
         for obj in data:
-            if not hasattr(obj, 'attribute1'):
+            if not hasattr(obj, 'statistic'):
                 statistic_data = {
                     "site_cnt": 0,
                     "domain_cnt": 0,
@@ -104,6 +104,7 @@ class ARLTask(ARLResource):
                 # 设置statistic属性为给定的值
                 setattr(obj, 'statistic', statistic_data)
 
+        logger.info("任务信息查询...............data")
         return data
 
     @auth
