@@ -60,7 +60,7 @@ def user_login2(username=None, password=None, validate_code=None, user_key=None)
         returnObj['username'] = username
         returnObj['token'] = jwt_token
         returnObj['message'] = 'success'
-
+        returnObj['code'] = 200
         return returnObj
     else:
         # 删除redis的验证码
