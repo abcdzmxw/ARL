@@ -1,5 +1,8 @@
 import re
+from datetime import datetime
+
 import bson
+from flask import g
 from flask_restx import Resource, Api, reqparse, fields, Namespace
 from bson import ObjectId
 from app import celerytask
@@ -116,7 +119,8 @@ class ARLTask(ARLResource):
 
         name = args.pop('name')
         target = args.pop('target')
-
+        args['create_user'] = g.get('current_user')
+        args['create_time'] = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         try:
             task_data_list = submit_task_task(target=target, name=name, options=args)
         except Exception as e:
