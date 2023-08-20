@@ -1,5 +1,10 @@
+from datetime import datetime
+
 import bson
 import re
+
+from flask import g
+
 from app import utils
 from app.modules import TaskStatus, TaskTag, TaskType, CeleryAction
 from app import celerytask
@@ -234,6 +239,10 @@ def restart_task(task_id):
     name = task_data["name"]
     if name_pre not in name:
         task_data["name"] = name_pre + name
+
+    # 设置创建人与创建时间
+    task_data['create_user'] = g.get('current_user')
+    task_data['create_time'] = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
     task_type = task_data["type"]
     task_tag = task_data.get("task_tag", "")
