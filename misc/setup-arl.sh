@@ -132,9 +132,9 @@ fi
 
 cd /opt/ARL/
 
-chmod +x ./docker/worker/gen_crt.sh
+chmod +x docker/worker/gen_crt.sh
 echo "gen cert ..."
-sh ./docker/worker/gen_crt.sh
+sh docker/worker/gen_crt.sh
 
 
 if [ ! -f /etc/systemd/system/arl-web.service ]; then
