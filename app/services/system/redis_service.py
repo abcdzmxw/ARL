@@ -76,9 +76,9 @@ def get_redis_utils():
             if redis_utils is None:
                 logger.info("get_redis_utils 开始初始化RedisUtils")
                 redis_utils = RedisUtils.instance(
-                    host='192.168.0.103',
+                    host='127.0.0.1',
                     port=6379,
-                    password='glaxy',
+                    password='HRwOi8vcy5uYS1j',
                     db=0
                 )
                 logger.info("get_redis_utils 初始化RedisUtils redis_utils={}".format(redis_utils))
