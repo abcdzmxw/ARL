@@ -163,7 +163,7 @@ def get_db_utils():
         with db_lock:
             if db_utils is None:
                 db_utils = DatabaseUtils.instance(
-                    host='192.168.1.100',
+                    host='127.0.0.1',
                     user='root',
                     password='Hjrtnbec*38',
                     database='galaxy_arl',
