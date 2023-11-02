@@ -340,6 +340,7 @@ class CaptchaARL(ARLResource):
         logger.info("开始获取验证码..................")
         # 生成验证码
         validate_code = generate_verification_validate_code()
+        logger.info("开始获取验证码...............validate_code={}...".format(validate_code))
         # 生成验证码图片
         encoded_image = generate_verification_image(validate_code=validate_code)
 
