@@ -346,10 +346,10 @@ class CaptchaARL(ARLResource):
 
         random_uuid = uuid.uuid4()
         user_key = random_uuid.hex
-        logger.info("开始获取验证码.........user_key=".format(user_key)
+        logger.info("开始获取验证码.........user_key={}").format(user_key)
         # 设置键为'key'，值为'value'，过期时间为2分钟=120秒
         redis_utils.set(key=user_key, value=validate_code, expiration=120)
-        logger.info("开始获取验证码.........user_111key=".format(user_key)
+        logger.info("开始获取验证码.........user_111key={}").format(user_key)
         obj = {"userKey": user_key, "captcherImg": encoded_image}
 
         return utils.build_ret(ErrorMsg.Success, obj)
